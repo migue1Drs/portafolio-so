@@ -3,6 +3,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CopyCodeBlock } from "@/components/ui/CopyCodeBlock";
 import { LinuxTerminal } from "@/components/ui/LinuxTerminal";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
+import { ReadMarker } from "@/components/ui/ReadMarker";
 
 export default function Tema5Page() {
   return (
@@ -31,14 +32,14 @@ int main() {
     printf("Tamaño de página:%d \\n\\n", (int)sysconf(_SC_PAGESIZE));
     printf("Tamaño de página:%d \\n\\n", (int)getpagesize());
     return EXIT_SUCCESS;
-}`} />
-
-        <LinuxTerminal command="gcc -o pagesize pagesize.c && ./pagesize"
+}`} 
+          compileCommand="gcc -o pagesize pagesize.c"
+          runCommand="./pagesize"
           output={`Tamaño de página:4096 
 
 Tamaño de página:4096 
 `}
-          title="bash — tamaño de página del sistema" />
+        />
 
         <ReflectionBox>
           <p className="mb-2">
@@ -99,12 +100,13 @@ int main() {
     free(arreglo);
     printf("Memoria liberada.\\n");
     return 0;
-}`} />
-        <LinuxTerminal command="gcc -o malloc_ej malloc_ejemplo.c && ./malloc_ej"
+}`} 
+          compileCommand="gcc -o malloc_ej malloc_ejemplo.c"
+          runCommand="./malloc_ej"
           output={`Arreglo dinámico: 10 20 30 40 50 
 Dirección base: 0x55a3f2c012a0
 Memoria liberada.`}
-          title="bash — malloc y free" />
+        />
 
         {/* mmap */}
         <SectionHeading id="5-3-mmap" number="5.3" title="Mapeo de memoria con mmap() / munmap()" />
@@ -133,12 +135,13 @@ int main() {
     if (munmap(region, size) == 0)
         printf("Memoria desmapeada correctamente.\\n");
     return 0;
-}`} />
-        <LinuxTerminal command="gcc -o mmap_ej mmap_ejemplo.c && ./mmap_ej"
+}`} 
+          compileCommand="gcc -o mmap_ej mmap_ejemplo.c"
+          runCommand="./mmap_ej"
           output={`Región mapeada en: 0x7f4a3c000000
 Contenido: "Datos en memoria mapeada con mmap()"
 Memoria desmapeada correctamente.`}
-          title="bash — mmap / munmap" />
+        />
 
         {/* sysinfo */}
         <SectionHeading id="5-4-sysinfo" number="5.4" title="Información del sistema con sysinfo" />
@@ -170,6 +173,8 @@ Swap:          2.0Gi       256Mi       1.7Gi`}
             detectar fugas de memoria y estudiar los algoritmos de reemplazo de páginas (LRU) del kernel.
           </p>
         </ReflectionBox>
+
+        <ReadMarker topicId="tema-5" />
 
       </article>
     </div>

@@ -3,6 +3,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CopyCodeBlock } from "@/components/ui/CopyCodeBlock";
 import { LinuxTerminal } from "@/components/ui/LinuxTerminal";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
+import { ReadMarker } from "@/components/ui/ReadMarker";
 
 export default function Tema6Page() {
   return (
@@ -220,6 +221,8 @@ fork_example.c            FILE       540 bytes`}
             <code className="text-[#f5a623]"> link()</code> y <code className="text-[#f5a623]">symlink()</code>.
           </p>
         </ReflectionBox>
+
+        <ReadMarker topicId="tema-6" />
 
       </article>
     </div>

@@ -3,6 +3,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CopyCodeBlock } from "@/components/ui/CopyCodeBlock";
 import { LinuxTerminal } from "@/components/ui/LinuxTerminal";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
+import { ReadMarker } from "@/components/ui/ReadMarker";
 
 export default function Tema7Page() {
   return (
@@ -207,6 +208,8 @@ Recibí señal:14 SIGALRM`}
             precisión (microsegundos).
           </p>
         </ReflectionBox>
+
+        <ReadMarker topicId="tema-7" />
 
       </article>
     </div>

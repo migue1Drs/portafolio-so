@@ -7,6 +7,10 @@ import { ReflectionBox } from "@/components/ui/ReflectionBox";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ForkTreeVisualization } from "@/components/ui/ForkTreeVisualization";
 import { ProcessStateDiagram } from "@/components/ui/ProcessStateDiagram";
+import { MockTerminal } from "@/components/ui/MockTerminal";
+import { TopicQuiz } from "@/components/ui/TopicQuiz";
+import { ReadMarker } from "@/components/ui/ReadMarker";
+import { TEMA2_QUIZ } from "@/lib/quiz-data";
 
 export default function Tema2Page() {
   return (
@@ -175,8 +179,9 @@ int main(int argc, char *argv[]) {
             fprintf(stdout, "el hijo:%d con pid %ld termino\\n", j, (long)hijo[j]);
     }
     exit(EXIT_SUCCESS);
-}`} />
-        <InteractiveTerminal command="gcc -o waitpid_fact waitpid_factorial.c && ./waitpid_fact 5 3 4"
+}`}
+          compileCommand="gcc -o waitpid_fact waitpid_factorial.c"
+          runCommand="./waitpid_fact 5 3 4"
           output={`soy el hijo con pid = 15001 
 El factorial es:120
 soy el hijo con pid = 15002 
@@ -186,7 +191,7 @@ El factorial es:24
 el hijo:0 con pid 15001 termino
 el hijo:1 con pid 15002 termino
 el hijo:2 con pid 15003 termino`}
-          title="bash — waitpid con factoriales" />
+        />
         <ReflectionBox>
           <p className="mb-2">
             <strong className="text-white">¿Qué aprendí?</strong> Con <code className="text-[#f5a623]">waitpid(-1, ...)</code> el
@@ -247,9 +252,12 @@ int main(void) {
 Padre en ejecución. PID=16800
 Hijo terminado. PID=16801`}
           title="bash — creando un zombie" />
-        <LinuxTerminal command="ps aux | grep -E 'Z|zombie'"
+        <MockTerminal
+          expectedCommand="ps aux | grep zombie"
           output={`migue1  16801  0.0  0.0      0     0 pts/1  Z+   12:10   0:00 [zombie] <defunct>`}
-          title="bash — verificando zombie con ps" />
+          title="bash — verificando zombie con ps"
+          hint="Usa ps aux con grep para filtrar procesos zombie"
+        />
 
         {/* 2.8 exec — CÓDIGO EXACTO DEL PDF */}
         <SectionHeading id="2-8-exec" number="2.8" title="Sistema de llamada exec (Familia execl)" />
@@ -381,6 +389,15 @@ Todos los hilos completados.`}
             variables de condición.
           </p>
         </ReflectionBox>
+
+        {/* ── Quiz de Comprensión ── */}
+        <TopicQuiz
+          topicId="tema-2"
+          title="Test — Procesos e Hilos"
+          questions={TEMA2_QUIZ}
+        />
+
+        <ReadMarker topicId="tema-2" />
 
       </article>
     </div>

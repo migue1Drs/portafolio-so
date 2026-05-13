@@ -4,10 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PORTFOLIO_TOPICS } from "@/lib/constants";
+import { useProgress } from "@/lib/progress-context";
 
 export function Sidebar() {
   const pathname = usePathname();
   const [activeHash, setActiveHash] = useState<string>("");
+  const { isTopicComplete, getCompletionPercent, progress, resetProgress } = useProgress();
+
+  const completionPercent = getCompletionPercent();
 
   useEffect(() => {
     // Collect all subtopic hashes for the current page
@@ -74,10 +78,30 @@ export function Sidebar() {
         </p>
       </div>
 
+      {/* Progress overview */}
+      <div className="px-6 py-3">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] text-[#888888] uppercase tracking-wider font-bold">
+            Progreso general
+          </span>
+          <span className="text-[10px] text-[#f5a623] font-bold font-mono">
+            {completionPercent}%
+          </span>
+        </div>
+        <div className="w-full h-1.5 bg-[#30363d] rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-[#f5a623] to-[#d48810] rounded-full transition-all duration-700 ease-out progress-bar-glow"
+            style={{ width: `${completionPercent}%` }}
+          />
+        </div>
+      </div>
+
       <nav className="flex-1 px-6 space-y-4">
         {PORTFOLIO_TOPICS.map((topic, i) => {
           const isActive = pathname === topic.href;
           const numberStr = (i + 1).toString().padStart(2, '0');
+          const topicComplete = isTopicComplete(topic.id);
+          const topicQuizPassed = progress[topic.id]?.quizPassed;
           
           return (
             <div key={topic.id} className="group">
@@ -85,16 +109,41 @@ export function Sidebar() {
                 href={topic.href}
                 className="flex items-center"
               >
-                <div className={`text-xs font-bold mr-4 transition-colors ${isActive ? "text-[#f5a623]" : "text-[#555555] group-hover:text-[#888888]"}`}>
-                  {numberStr}
+                {/* Completion indicator */}
+                <div className="mr-3 shrink-0">
+                  {topicComplete ? (
+                    <div className="w-5 h-5 rounded-full bg-[#238636] flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  ) : (
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-[8px] font-bold transition-colors ${
+                      isActive 
+                        ? "border-[#f5a623] text-[#f5a623]" 
+                        : "border-[#484f58] text-[#484f58] group-hover:border-[#888888]"
+                    }`}>
+                      {numberStr}
+                    </div>
+                  )}
                 </div>
-                <div className={`text-sm font-bold transition-colors ${
+
+                <div className={`text-sm font-bold transition-colors flex-1 ${
                   isActive
                     ? "text-white"
+                    : topicComplete
+                    ? "text-[#8b949e] group-hover:text-[#f5a623]"
                     : "text-[#cccccc] group-hover:text-[#f5a623]"
                 }`}>
                   {topic.title}
                 </div>
+
+                {/* Quiz badge */}
+                {topicQuizPassed && (
+                  <span className="ml-2 text-[8px] bg-[#23863620] text-[#3fb950] px-1.5 py-0.5 rounded-full font-bold shrink-0">
+                    QUIZ ✓
+                  </span>
+                )}
               </Link>
               
               {topic.subtopics && isActive && (
@@ -125,7 +174,15 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-6 mt-auto">
+      <div className="p-6 mt-auto space-y-3">
+        {/* Reset progress */}
+        <button
+          onClick={resetProgress}
+          className="w-full text-[10px] text-[#484f58] hover:text-[#f85149] transition-colors font-bold uppercase tracking-wider py-2"
+        >
+          ↺ Reiniciar progreso
+        </button>
+
         <div className="bg-[#252525] border border-[#333333] rounded-sm p-4 text-center">
           <div className="text-[#f5a623] text-xs font-bold uppercase mb-2 tracking-widest">Autores:</div>
           <div className="text-xs text-[#cccccc] font-semibold mb-1">Gonzalez Giron Luis Eduardo</div>

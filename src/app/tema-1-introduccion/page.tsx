@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/ui/PageHeader";
 import { LinuxTerminal } from "@/components/ui/LinuxTerminal";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
+import { ReadMarker } from "@/components/ui/ReadMarker";
 
 export default function Tema1Page() {
   return (
@@ -138,6 +139,8 @@ physical id	: 0`}
             que automaticen la recopilación de métricas del sistema.
           </p>
         </ReflectionBox>
+
+        <ReadMarker topicId="tema-1" />
       </article>
     </div>
   );

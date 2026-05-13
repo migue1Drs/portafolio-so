@@ -3,6 +3,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CopyCodeBlock } from "@/components/ui/CopyCodeBlock";
 import { LinuxTerminal } from "@/components/ui/LinuxTerminal";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
+import { PipeAnimation } from "@/components/ui/PipeAnimation";
+import { MockTerminal } from "@/components/ui/MockTerminal";
+import { TopicQuiz } from "@/components/ui/TopicQuiz";
+import { ReadMarker } from "@/components/ui/ReadMarker";
+import { TEMA3_QUIZ } from "@/lib/quiz-data";
 
 export default function Tema3Page() {
   return (
@@ -22,6 +27,8 @@ export default function Tema3Page() {
           en Unix/Linux. Permiten que la salida de un proceso se convierta en la entrada de otro, creando un canal 
           de comunicación <strong className="text-white">unidireccional</strong>.
         </p>
+
+        <PipeAnimation />
         <p className="mt-4">
           Existen dos tipos principales:
         </p>
@@ -444,10 +451,11 @@ key        semid      owner      perms      nsems
           title="bash — inspección de recursos IPC"
         />
 
-        <LinuxTerminal
-          command="ipcrm -m 65536 && ipcrm -s 32768 && echo 'Recursos IPC eliminados'"
+        <MockTerminal
+          expectedCommand="ipcrm -m 65536"
           output={`Recursos IPC eliminados`}
           title="bash — eliminación de recursos IPC"
+          hint="Usa ipcrm con la flag -m seguido del shmid"
         />
 
         <ReflectionBox>
@@ -465,6 +473,15 @@ key        semid      owner      perms      nsems
             alternativas POSIX (sem_open, shm_open, mq_open) que ofrecen una API más moderna y portable.
           </p>
         </ReflectionBox>
+
+        {/* ── Quiz de Comprensión ── */}
+        <TopicQuiz
+          topicId="tema-3"
+          title="Test — Mecanismos IPC"
+          questions={TEMA3_QUIZ}
+        />
+
+        <ReadMarker topicId="tema-3" />
 
       </article>
     </div>

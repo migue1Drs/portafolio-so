@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/ui/PageHeader";
+import { ReadMarker } from "@/components/ui/ReadMarker";
 
 export default function PrologoPage() {
   return (
@@ -92,6 +93,8 @@ export default function PrologoPage() {
             de terminal y análisis reflexivo.
           </p>
         </div>
+
+        <ReadMarker topicId="prologo" />
       </article>
     </div>
   );

@@ -4,6 +4,7 @@ import { CopyCodeBlock } from "@/components/ui/CopyCodeBlock";
 import { InteractiveTerminal } from "@/components/ui/InteractiveTerminal";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { ReadMarker } from "@/components/ui/ReadMarker";
 
 export default function Tema8Page() {
   return (
@@ -46,11 +47,10 @@ int main() {
     }
 
     return EXIT_SUCCESS;
-}`} />
-          <InteractiveTerminal
-            command="gcc -o mi_pwd mi_pwd.c && ./mi_pwd"
+}`} 
+            compileCommand="gcc -o mi_pwd mi_pwd.c"
+            runCommand="./mi_pwd"
             output={`/home/migue1drs/Descargas/blog-SO/portafolio-so`}
-            title="bash — ejecución de mi_pwd"
           />
           <ReflectionBox>
             <p className="mb-2">
@@ -91,13 +91,12 @@ int main(int argc, char *argv[]) {
     printf("Nuevo directorio: %s\\n", getcwd(buf, sizeof(buf)));
 
     return EXIT_SUCCESS;
-}`} />
-          <InteractiveTerminal
-            command="gcc -o mi_cd mi_cd.c && ./mi_cd /tmp && pwd"
+}`} 
+            compileCommand="gcc -o mi_cd mi_cd.c"
+            runCommand="./mi_cd /tmp && pwd"
             output={`Directorio cambiado exitosamente.
 Nuevo directorio: /tmp
 /home/migue1drs/Descargas/blog-SO/portafolio-so`}
-            title="bash — La trampa del cd"
           />
           <ReflectionBox>
             <p className="mb-2">
@@ -139,12 +138,11 @@ int main(int argc, char *argv[]) {
 
     printf("Directorio '%s' creado con éxito.\\n", argv[1]);
     return EXIT_SUCCESS;
-}`} />
-          <InteractiveTerminal
-            command="gcc -o mi_mkdir mi_mkdir.c && ./mi_mkdir test_dir && ls -ld test_dir"
+}`} 
+            compileCommand="gcc -o mi_mkdir mi_mkdir.c"
+            runCommand="./mi_mkdir test_dir && ls -ld test_dir"
             output={`Directorio 'test_dir' creado con éxito.
 drwxr-xr-x 2 migue1 migue1 4096 may  7 14:00 test_dir`}
-            title="bash — creación de directorios"
           />
           <ReflectionBox>
             <p className="mb-2">
@@ -180,11 +178,10 @@ int main(int argc, char *argv[]) {
 
     printf("El archivo '%s' ha sido desenlazado.\\n", argv[1]);
     return EXIT_SUCCESS;
-}`} />
-          <InteractiveTerminal
-            command="touch test_file.txt && gcc -o mi_rm mi_rm.c && ./mi_rm test_file.txt"
+}`} 
+            compileCommand="touch test_file.txt && gcc -o mi_rm mi_rm.c"
+            runCommand="./mi_rm test_file.txt"
             output={`El archivo 'test_file.txt' ha sido desenlazado.`}
-            title="bash — eliminando un archivo"
           />
           <ReflectionBox>
             <p className="mb-2">
@@ -195,6 +192,8 @@ int main(int argc, char *argv[]) {
             </p>
           </ReflectionBox>
         </ScrollReveal>
+
+        <ReadMarker topicId="tema-8" />
 
       </article>
     </div>
