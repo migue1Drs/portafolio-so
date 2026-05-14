@@ -3,116 +3,128 @@ import { LinuxTerminal } from "@/components/ui/LinuxTerminal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
 import { ReadMarker } from "@/components/ui/ReadMarker";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { TopicQuiz } from "@/components/ui/TopicQuiz";
+import { TEMA1_QUIZ } from "@/lib/quiz-data";
 
 export default function Tema1Page() {
   return (
     <div className="animate-in fade-in duration-700 max-w-[1000px] mx-auto w-full">
       <PageHeader
         number="Tema 1"
-        title="Introducción al sistema operativo Linux"
+        title="Introducción a los Sistemas Operativos"
         description="Fundamentos teóricos de los Sistemas Operativos, su arquitectura, clasificación y evolución hasta los sistemas modernos y móviles."
       />
 
-      <article className="space-y-8 text-[#b0b8c4] leading-relaxed">
+      <article className="space-y-10 text-[#b0b8c4] leading-relaxed">
         {/* 1.1 Introducción */}
         <section>
-          <SectionHeading id="1-1-introduccion" number="1.1" title="Introducción a los Sistemas Operativos" />
+          <SectionHeading id="1-1-introduccion" number="1.1" title="Introducción" />
           <p className="mb-4">
-            Un <strong className="text-white">sistema operativo (SO)</strong> es el software fundamental de todo dispositivo de cómputo. Actúa como el administrador principal de los recursos del hardware y proporciona una interfaz para la interacción del usuario.
+            Un <strong className="text-white">sistema operativo (SO)</strong> es un conjunto de programas encargado de administrar los recursos de un dispositivo de cómputo. Proporciona una interfaz que permite la interacción del usuario y un núcleo (kernel) responsable de la comunicación con el hardware.
           </p>
+          <p className="mb-4">Existen varias definiciones clave:</p>
+          <ol className="list-decimal list-inside space-y-2 mb-6 ml-2">
+            <li>Software que controla el hardware.</li>
+            <li>Programa que controla la ejecución de otros programas y actúa como interfaz.</li>
+            <li>Administrador de recursos (procesadores, almacenamiento, dispositivos E/S, datos).</li>
+          </ol>
           <p className="mb-4">
-            Sus responsabilidades principales se dividen en varias áreas críticas:
+            Sus responsabilidades principales abarcan:
           </p>
           <ul className="list-disc list-inside space-y-2 mb-4 ml-2">
-            <li><strong className="text-[#f5a623]">Administración de procesos:</strong> Gestiona las entidades en ejecución evitando conflictos como interbloqueos y asegurando la sincronización.</li>
-            <li><strong className="text-[#f5a623]">Administración de memoria:</strong> Aísla procesos, asigna espacios de memoria dinámicamente y protege el acceso.</li>
-            <li><strong className="text-[#f5a623]">Seguridad y Recursos:</strong> Implementa políticas de acceso controlado, equidad y eficiencia en el uso del hardware.</li>
+            <li><strong className="text-white">Administración de procesos:</strong> Evitar conflictos como sincronización incorrecta, falta de exclusión mutua o interbloqueos.</li>
+            <li><strong className="text-white">Administración de memoria:</strong> Aislar procesos, asignar espacios y controlar el acceso.</li>
+            <li><strong className="text-white">Seguridad y Recursos:</strong> Políticas como no compartición o compartición controlada, equidad y eficiencia.</li>
           </ul>
         </section>
 
         {/* 1.2 Clasificación */}
         <section>
           <SectionHeading id="1-2-clasificacion" number="1.2" title="Clasificación de los sistemas operativos" />
-          <p className="mb-4">
-            A lo largo de la historia, los SO han evolucionado adaptándose a diferentes arquitecturas y necesidades. Podemos clasificarlos de la siguiente manera:
+          <p className="mb-6">
+            A lo largo de la historia, los SO se han clasificado según su uso y arquitectura:
           </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-            <SpotlightCard className="bg-[#161b22] border border-[#30363d] p-6 hover:border-[#8b949e] transition-colors">
-              <h3 className="text-white font-bold mb-3">Por Lotes y Tiempo Real</h3>
-              <p className="text-sm text-[#8b949e]">
-                Los sistemas <strong className="text-white">por lotes</strong> agrupaban trabajos similares para evitar tiempos muertos del procesador (ej. SCOPE). Los sistemas de <strong className="text-white">tiempo real</strong> priorizan el cumplimiento estricto de tiempos de respuesta sobre la interacción del usuario (ej. RTLinux, VxWorks).
-              </p>
-            </SpotlightCard>
-            
-            <SpotlightCard className="bg-[#161b22] border border-[#30363d] p-6 hover:border-[#8b949e] transition-colors">
-              <h3 className="text-white font-bold mb-3">Multitarea y Paralelos</h3>
-              <p className="text-sm text-[#8b949e]">
-                La <strong className="text-white">multitarea</strong> permite ejecución concurrente alternando tareas mediante la planificación de procesos e hilos. Los sistemas <strong className="text-white">paralelos</strong> explotan múltiples procesadores reales para aumentar el rendimiento simultáneo.
-              </p>
-            </SpotlightCard>
-            
-            <SpotlightCard className="bg-[#161b22] border border-[#30363d] p-6 hover:border-[#8b949e] transition-colors">
-              <h3 className="text-white font-bold mb-3">Distribuidos y de Red</h3>
-              <p className="text-sm text-[#8b949e]">
-                En los <strong className="text-white">distribuidos</strong>, múltiples equipos procesan tareas de forma transparente al usuario, tolerando fallos. En los de <strong className="text-white">red</strong>, los equipos conservan su autonomía pero comparten recursos como servidores web o archivos.
-              </p>
-            </SpotlightCard>
-            
-            <SpotlightCard className="bg-[#161b22] border border-[#30363d] p-6 hover:border-[#8b949e] transition-colors">
-              <h3 className="text-white font-bold mb-3">Dispositivos Móviles</h3>
-              <p className="text-sm text-[#8b949e]">
-                Optimizados para recursos limitados y pantallas táctiles. Destacan <strong className="text-white">iOS</strong> (basado en XNU/Mac OS X), el extinto <strong className="text-white">Symbian</strong> y <strong className="text-white">Android</strong> (basado en el kernel de Linux y fuertemente dependiente de máquinas virtuales).
-              </p>
-            </SpotlightCard>
+
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-white font-bold mb-2">1.2.1 Sistemas operativos por lotes</h3>
+              <p>Procesan grandes cantidades de trabajos agrupados con poca o ninguna interacción del usuario, reduciendo tiempos muertos del procesador. Ejemplo: SCOPE, EXEC II.</p>
+            </div>
+
+            <div>
+              <h3 className="text-white font-bold mb-2">1.2.2 Sistemas operativos de tiempo real</h3>
+              <p>Priorizan la ejecución correcta y oportuna (comportamiento determinista) sobre la interacción del usuario. Se usan en control de tráfico aéreo, sector automotriz, etc. Ejemplos: VxWorks, FreeRTOS, QNX.</p>
+            </div>
+
+            <div>
+              <h3 className="text-white font-bold mb-2">1.2.3 Sistemas operativos de multitarea</h3>
+              <p>Soportan la ejecución concurrente de múltiples tareas alternando su ejecución mediante planificación. Puede ser a nivel de procesos o hilos (threads). Ejemplos: UNIX, macOS, Windows, GNU/Linux.</p>
+            </div>
+
+            <div>
+              <h3 className="text-white font-bold mb-2">1.2.4 Sistemas operativos distribuidos</h3>
+              <p>Distribuyen trabajos entre múltiples procesadores, viéndose como una única entidad para el usuario. Pueden ser <strong className="text-white">fuertemente acoplados</strong> (comparten memoria/reloj) o <strong className="text-white">débilmente acoplados</strong>. Destacan por su tolerancia a fallos. Ejemplos: Amoeba, Mach.</p>
+            </div>
+
+            <div>
+              <h3 className="text-white font-bold mb-2">1.2.5 Sistemas operativos de red</h3>
+              <p>Interconectan computadoras que conservan su autonomía, compartiendo recursos como archivos o impresoras. Ejemplos: Windows Server, Novell NetWare.</p>
+            </div>
+
+            <div>
+              <h3 className="text-white font-bold mb-2">1.2.6 Sistemas operativos paralelos</h3>
+              <p>Explotan arquitecturas multiprocesador o multinúcleo ejecutando procesos simultáneamente, lo que requiere mecanismos eficientes de sincronización.</p>
+            </div>
+
+            <div>
+              <h3 className="text-[#f5a623] font-bold mb-3 mt-6">1.2.7 Sistemas operativos para dispositivos móviles</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-[#161b22] border border-[#30363d] p-4 rounded">
+                  <h4 className="text-white font-bold">Symbian</h4>
+                  <p className="text-sm mt-2">Dominante en la era Nokia. Su núcleo y procesos operaban en un espacio protegido (C++). Fue superado por su complejidad de desarrollo.</p>
+                </div>
+                <div className="bg-[#161b22] border border-[#30363d] p-4 rounded">
+                  <h4 className="text-white font-bold">iOS (iPhone OS)</h4>
+                  <p className="text-sm mt-2">Basado en Mac OS X (XNU). Arquitectura en capas: Aplicaciones, Middleware (Cocoa Touch, Media, Core Services) y Kernel. Interfaz puramente multitáctil.</p>
+                </div>
+                <div className="bg-[#161b22] border border-[#30363d] p-4 rounded">
+                  <h4 className="text-white font-bold">BlackBerry</h4>
+                  <p className="text-sm mt-2">Kernel basado en Java (arquitectura ARM), con una fuerte administración de memoria dividida.</p>
+                </div>
+                <div className="bg-[#161b22] border border-[#30363d] p-4 rounded">
+                  <h4 className="text-white font-bold">Android</h4>
+                  <p className="text-sm mt-2">Basado en el kernel de GNU/Linux. Inicialmente usó Dalvik y luego ART. Destaca por su código abierto, conectividad avanzada y uso extendido globalmente.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* 1.3 Evidencias */}
+        {/* Ejecución (Requisito) */}
         <section>
-          <SectionHeading id="1-3-evidencias" number="1.3" title="Evidencias y Ejecución en el Sistema" />
+          <SectionHeading id="1-3-ejecucion" number="1.3" title="Evidencia de Ejecución" />
           <p className="mb-4">
-            Para comprobar la naturaleza <strong className="text-white">multitarea</strong> e identificar el núcleo del sistema sobre el que trabajamos, ejecutamos los siguientes comandos:
+            Para comprobar las capacidades de nuestro sistema operativo Linux actual como un entorno <strong>multitarea</strong> y moderno, ejecutamos comandos para verificar la información del núcleo (kernel) y los procesos activos:
           </p>
 
           <LinuxTerminal
-            command="uname -a && cat /etc/os-release | grep PRETTY"
+            command="uname -a && ps -e | wc -l"
             output={`Linux migue1drs-pc 6.8.0-45-generic #45-Ubuntu SMP x86_64 GNU/Linux
-PRETTY_NAME="Ubuntu 24.04 LTS"`}
-            title="bash — Información del OS y Kernel"
-          />
-
-          <p className="my-4">
-            Al ser un SO de propósito general moderno, soporta multitarea gestionando múltiples procesos concurrentemente. Podemos verificar la cantidad de procesos que nuestro SO administra en este momento:
-          </p>
-
-          <LinuxTerminal
-            command="ps -e | wc -l"
-            output={`342`}
-            title="bash — Conteo de procesos actuales"
-          />
-
-          <p className="my-4">
-            Y para observar los procesadores lógicos disponibles para tareas <strong className="text-white">paralelas/concurrentes</strong>:
-          </p>
-
-          <LinuxTerminal
-            command="nproc && lscpu | grep 'Core(s) per socket'"
-            output={`8
-Core(s) per socket:  4`}
-            title="bash — Información de procesamiento"
+342`}
+            title="bash — Kernel y Procesos"
           />
         </section>
 
         <ReflectionBox>
           <p className="mb-3">
-            <strong className="text-white">¿Qué aprendí?</strong> Aprendí a clasificar los sistemas operativos según sus paradigmas y cómo han evolucionado desde el simple procesamiento por lotes hasta los modernos SO para móviles.
+            <strong className="text-white">¿Qué aprendí?</strong> Aprendí a conceptualizar correctamente qué es un sistema operativo y a clasificarlo según sus paradigmas y usos históricos (por lotes, tiempo real, paralelos). Además, comprendí las diferencias arquitectónicas clave entre sistemas móviles como iOS (XNU) y Android (kernel Linux + máquina virtual).
           </p>
           <p>
-            <strong className="text-white">¿Cómo podría mejorar?</strong> Podría investigar más a fondo cómo interactúan el núcleo y la capa de middleware.
+            <strong className="text-white">¿Cómo podría mejorarla?</strong> Podría mejorarla profundizando en cómo se implementa la máquina virtual de Android (ART) frente a Dalvik para entender cómo gestionan la memoria y afectan el consumo de batería del dispositivo, e intentar crear un script que monitorice recursos en tiempo real.
           </p>
         </ReflectionBox>
+
+        <TopicQuiz topicId="tema-1" title="Test — Introducción a los SO" questions={TEMA1_QUIZ} />
 
         <ReadMarker topicId="tema-1" />
       </article>

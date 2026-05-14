@@ -5,84 +5,101 @@ import { ReflectionBox } from "@/components/ui/ReflectionBox";
 import { TopicQuiz } from "@/components/ui/TopicQuiz";
 import { ReadMarker } from "@/components/ui/ReadMarker";
 import { TEMA5_QUIZ } from "@/lib/quiz-data";
+import { MemoryPartitionsDiagram } from "@/components/ui/MemoryPartitionsDiagram";
+import { MemoryBitmapDiagram } from "@/components/ui/MemoryBitmapDiagram";
 
 export default function Tema5Page() {
   return (
     <div className="animate-in fade-in duration-700 max-w-[1000px] mx-auto w-full">
       <PageHeader
         number="Tema 5"
-        title="Administración de Memoria"
-        description="Gestión de la memoria principal, modelos de multiprogramación, memoria virtual y herramientas de diagnóstico en sistemas Linux."
+        title="Administración de memoria"
+        description="Gestión eficiente de la memoria principal, paginación, segmentación, reasignación, protección, y memoria virtual mediante el sistema operativo."
       />
 
       <article className="space-y-10 text-[#b0b8c4] leading-relaxed">
+        {/* Intro */}
+        <section>
+          <p className="mb-4">
+            La memoria principal es un recurso limitado que debe administrar de forma eficiente el sistema operativo. Se debe tener presente que sólo los procesos activos de mayor prioridad deberían estar en memoria para un mayor desempeño.
+          </p>
+          <p className="mb-4">
+            Una de las tareas más importantes y complejas de un sistema operativo es la administración de memoria, lo cual implica asignarlo y compartirlo entre varios procesos activos, así como administrar el intercambio entre la memoria principal y el disco (swap).
+          </p>
+        </section>
+
         {/* 5.1 */}
         <section>
           <SectionHeading id="5-1-introduccion" number="5.1" title="Introducción" />
           <p className="mb-4">
-            Una de las tareas más importantes y complejas de un sistema operativo es la administración de memoria. Esto implica tratar la memoria principal como un recurso para asignarlo y compartirlo entre varios procesos activos, manteniendo en ella la mayor cantidad posible.
+            Las herramientas básicas de la administración de memoria son la <strong className="text-white">paginación</strong> (tamaño constante) y la <strong className="text-white">segmentación</strong> (tamaño variable). En la paginación, cada proceso se divide en páginas de tamaño constante y relativamente pequeña. 
           </p>
           <p className="mb-4">
-            Las herramientas básicas son la <strong className="text-white">paginación</strong> (división en páginas de tamaño constante) y la <strong className="text-white">segmentación</strong> (partes de tamaño variable).
+            Para visualizar el tamaño de la página de memoria en su sistema, puede ejecutar <code className="text-[#58a6ff]">getconf PAGESIZE</code>, que comúnmente retorna 4KB (4096 bytes) en arquitecturas x86. En C, se utilizan las funciones <code className="text-[#f5a623]">sysconf()</code> y <code className="text-[#f5a623]">getpagesize()</code>.
           </p>
-          <p className="mb-6">
-            En la mayoría de las arquitecturas x86-64, el tamaño de página predeterminado es de <strong className="text-[#f5a623]">4KB (4096 bytes)</strong>. Puedes verificar esto en tu terminal con:
-          </p>
-          
-          <div className="bg-[#090c10] border border-[#30363d] p-4 rounded-xl font-mono text-sm text-[#8b949e] mb-8">
-            <span className="text-[#3fb950]">$</span> getconf PAGESIZE
-            <br />
-            4096
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+                <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">PROTOTIPO sysconf</span>
+              </div>
+              <code className="block text-sm font-mono text-[#e6edf3]">
+                <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;unistd.h&gt;</span><br /><br />
+                <span className="text-[#ff7b72]">long</span> <span className="text-[#d2a8ff]">sysconf</span>(<span className="text-[#ff7b72]">int</span> name);
+              </code>
+            </div>
+            <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+                <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">PROTOTIPO getpagesize</span>
+              </div>
+              <code className="block text-sm font-mono text-[#e6edf3]">
+                <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;unistd.h&gt;</span><br /><br />
+                <span className="text-[#ff7b72]">int</span> <span className="text-[#d2a8ff]">getpagesize</span>(<span className="text-[#ff7b72]">void</span>);
+              </code>
+            </div>
           </div>
 
-          <h3 className="text-white font-bold mb-4 italic">Ejemplo: Obtener tamaño de página en C</h3>
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Ejemplo: Obtener el tamaño de página</h3>
           <CopyCodeBlock 
-            filename="get_pagesize.c" 
+            filename="pagesize.c" 
             language="C" 
             code={`#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 
-int main()
-{
- printf("Tamaño de página (sysconf): %d bytes\\n", (int)sysconf(_SC_PAGESIZE));
- printf("Tamaño de página (getpagesize): %d bytes\\n", (int)getpagesize());
- return EXIT_SUCCESS;
+int main() {
+    printf("Tamaño de página: %d \\n\\n", (int)sysconf(_SC_PAGESIZE));
+    printf("Tamaño de página: %d \\n\\n", (int)getpagesize());
+    return EXIT_SUCCESS;
 }`} 
-            compileCommand="gcc get_pagesize.c -o pagesize"
+            compileCommand="gcc pagesize.c -o pagesize"
             runCommand="./pagesize"
-            output={`Tamaño de página (sysconf): 4096 bytes
-Tamaño de página (getpagesize): 4096 bytes`}
+            output={`Tamaño de página: 4096 
+
+Tamaño de página: 4096 `} 
           />
         </section>
 
-        {/* 5.3 */}
+        {/* 5.2 & 5.3 */}
         <section>
-          <SectionHeading id="5-3-modelos" number="5.3" title="Modelos de multiprogramación" />
+          <SectionHeading id="5-3-modelos" number="5.2 y 5.3" title="Modelos de multiprogramación y particiones fijas" />
           <p className="mb-4">
-            El uso de la CPU se puede mejorar mediante la multiprogramación. Un modelo probabilístico útil para analizar esto considera que un proceso ocupa una fracción <code className="text-[#f5a623]">p</code> de su tiempo esperando E/S. Si hay <code className="text-[#f5a623]">n</code> procesos en memoria, la utilización de la CPU es:
+            El uso de la CPU se puede mejorar mediante la multiprogramación. Desde un punto de vista probabilístico, si un proceso ocupa una fracción <code className="text-[#58a6ff]">p</code> de su tiempo en el estado de espera de E/S, y hay <code className="text-[#58a6ff]">n</code> procesos, el uso de la CPU está dado por: <code className="text-white font-mono">CPU = 1 - p^n</code>.
           </p>
-          <div className="bg-[#161b22] border border-[#30363d] p-6 rounded-xl text-center my-6">
-            <code className="text-2xl text-white font-serif">Utilización CPU = 1 − p<sup>n</sup></code>
-          </div>
+          <p className="mb-4">
+            Para organizar la memoria, la forma más sencilla es dividirla en partes (particiones fijas). Se puede utilizar colas independientes o una sola cola general, aunque cada una presenta desventajas en el uso del espacio o el favoritismo por trabajos más grandes.
+          </p>
+
+          <MemoryPartitionsDiagram />
         </section>
 
         {/* 5.5 */}
         <section>
-          <SectionHeading id="5-5-reasignacion" number="5.5" title="Reasignación y Protección" />
+          <SectionHeading id="5-5-reasignacion" number="5.5" title="Reasignación y protección" />
           <p className="mb-4">
-            La multiprogramación presenta dos problemas esenciales:
-          </p>
-          <ul className="list-disc list-inside space-y-4 mb-6 ml-2">
-            <li>
-              <strong className="text-white">Reasignación:</strong> El cargador debe ajustar las direcciones de salto dependiendo de en qué partición de memoria se cargue el programa.
-            </li>
-            <li>
-              <strong className="text-white">Protección:</strong> Evitar que un proceso acceda o modifique la memoria de otro proceso o del sistema operativo.
-            </li>
-          </ul>
-          <p>
-            Hardware como los <strong className="text-[#58a6ff]">registros base y límite</strong> resuelven esto sumando el valor base a cada dirección generada y verificando que no exceda el límite establecido.
+            La multiprogramación presenta dos problemas: <strong>la reasignación</strong> y <strong>la protección</strong>. Cuando un programa se carga en una partición, debe adaptar sus direcciones lógicas. Esto se soluciona con hardware usando el <strong className="text-white">registro base</strong> (indica el inicio de la partición) y el <strong className="text-white">registro límite</strong> (indica la longitud, para no invadir áreas externas).
           </p>
         </section>
 
@@ -90,76 +107,77 @@ Tamaño de página (getpagesize): 4096 bytes`}
         <section>
           <SectionHeading id="5-6-intercambio" number="5.6" title="Intercambio (Swap)" />
           <p className="mb-4">
-            Cuando hay más procesos de los que la RAM puede albergar, el sistema mueve los procesos inactivos al disco. Esto se conoce como <strong className="text-white">intercambio</strong> o <strong className="text-white">swap</strong>.
+            El traslado de procesos de la memoria principal al disco y viceversa se llama intercambio (swap). En GNU/Linux, se puede verificar con el comando <code className="text-[#58a6ff]">swapon -s</code>. En C se usan las funciones <code className="text-[#f5a623]">swapon()</code> y <code className="text-[#f5a623]">swapoff()</code>.
           </p>
-          <div className="bg-[#090c10] border border-[#30363d] p-4 rounded-xl font-mono text-xs text-[#8b949e] mb-6">
-            <span className="text-[#3fb950]">$</span> swapon
-            <br />
-            NAME      TYPE      SIZE   USED  PRIO
-            /dev/dm-1 partition 976M   50M   -2
+
+          <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-6 max-w-2xl">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+              <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">PROTOTIPOS SWAP</span>
+            </div>
+            <code className="block text-sm font-mono text-[#e6edf3]">
+              <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;unistd.h&gt;</span><br />
+              <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;sys/swap.h&gt;</span><br /><br />
+              <span className="text-[#ff7b72]">int</span> <span className="text-[#d2a8ff]">swapon</span>(<span className="text-[#ff7b72]">const char</span> *path, <span className="text-[#ff7b72]">int</span> swapflags);<br />
+              <span className="text-[#ff7b72]">int</span> <span className="text-[#d2a8ff]">swapoff</span>(<span className="text-[#ff7b72]">const char</span> *path);
+            </code>
           </div>
-          <p>
-            En C, se pueden usar las funciones <code className="text-[#f5a623]">swapon()</code> y <code className="text-[#f5a623]">swapoff()</code> para administrar estas áreas desde el código (requiere privilegios de root).
-          </p>
         </section>
 
         {/* 5.7 & 5.8 */}
         <section>
-          <SectionHeading id="5-8-registro-uso" number="5.8" title="Registro del uso de memoria" />
-          <p className="mb-6">
-            Existen dos formas principales de llevar el registro de qué partes de la memoria están libres u ocupadas:
+          <SectionHeading id="5-8-registro-uso" number="5.7 y 5.8" title="Registro de uso (Mapas de bits y Listas ligadas)" />
+          <p className="mb-4">
+            Existen formas utilizadas para llevar un registro del uso de la memoria:
           </p>
+          <ul className="list-disc list-inside space-y-2 mb-4 ml-2 text-[#b0b8c4]">
+            <li><strong className="text-white">Mapas de bits:</strong> La memoria se divide en unidades de asignación, marcadas con 1 (ocupado) o 0 (libre).</li>
+            <li><strong className="text-white">Listas ligadas:</strong> Cada entrada especifica un hueco (H) o proceso (P). Algoritmos de asignación comunes son: <span className="text-[#58a6ff]">Primer ajuste</span> (usado por UNIX), <span className="text-[#58a6ff]">Siguiente ajuste</span>, <span className="text-[#58a6ff]">Mejor ajuste</span> y <span className="text-[#58a6ff]">Peor ajuste</span>.</li>
+          </ul>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-[#161b22] border border-[#30363d] p-5 rounded-xl">
-              <h4 className="text-white font-bold mb-3">Mapas de Bits</h4>
-              <p className="text-sm mb-4">La memoria se divide en unidades; a cada una le corresponde un bit (0=libre, 1=ocupado). La búsqueda de huecos grandes es lenta.</p>
-              <div className="flex gap-1 justify-center font-mono text-[10px]">
-                {[1,1,1,0,0,1,1,0].map((v, i) => (
-                  <div key={i} className={`w-6 h-6 flex items-center justify-center border ${v ? 'bg-[#ff5f5620] border-[#ff5f56] text-[#ff5f56]' : 'bg-[#23863620] border-[#238636] text-[#3fb950]'}`}>{v}</div>
-                ))}
-              </div>
-            </div>
-            <div className="bg-[#161b22] border border-[#30363d] p-5 rounded-xl">
-              <h4 className="text-white font-bold mb-3">Listas Ligadas</h4>
-              <p className="text-sm mb-4">Mantiene una lista de segmentos (Proceso o Hueco) ordenada por direcciones. Permite algoritmos como:</p>
-              <ul className="text-[11px] space-y-1 text-[#8b949e]">
-                <li>• <strong className="text-white">Primer ajuste:</strong> El primero que sirva (rápido).</li>
-                <li>• <strong className="text-white">Mejor ajuste:</strong> El más cercano al tamaño (lento).</li>
-                <li>• <strong className="text-white">Peor ajuste:</strong> El hueco más grande.</li>
-              </ul>
-            </div>
-          </div>
+          <MemoryBitmapDiagram />
         </section>
 
         {/* 5.9 */}
         <section>
-          <SectionHeading id="5-9-memoria-virtual" number="5.9" title="Memoria Virtual" />
+          <SectionHeading id="5-9-memoria-virtual" number="5.9" title="Memoria virtual" />
           <p className="mb-4">
-            Permite que el tamaño combinado de los programas exceda la memoria física. El sistema operativo mantiene solo las partes necesarias en RAM y el resto en disco.
+            Permite que el tamaño combinado de los programas exceda la memoria física, mediante la Unidad de Administración de la Memoria (MMU) que traduce direcciones virtuales a físicas usando páginas. En Linux, el parámetro <code className="text-[#58a6ff]">vm.swappiness</code> (default: 60 en Ubuntu) controla qué tan agresivo es el paginado a disco.
           </p>
-          <p className="mb-6">
-            La <strong className="text-white">MMU</strong> (Memory Management Unit) mapea direcciones virtuales a marcos de página físicos de forma transparente para el proceso.
-          </p>
-          
-          <div className="bg-[#161b22] border-l-4 border-[#f5a623] p-4 rounded-r-xl">
-            <h4 className="text-white font-bold mb-2">Configuración: Swappiness</h4>
-            <p className="text-sm mb-2">
-              Controla qué tan agresivo es el sistema para mover páginas al swap (valor 0-100). En Ubuntu el default es 60.
-            </p>
-            <code className="text-xs bg-black/30 p-1 rounded text-[#f5a623]">cat /proc/sys/vm/swappiness</code>
-          </div>
         </section>
 
         {/* 5.10 */}
         <section>
-          <SectionHeading id="5-10-funciones" number="5.10" title="Funciones del Sistema" />
-          
-          <h3 className="text-white font-bold mt-8 mb-4 italic">Estadísticas con sysinfo()</h3>
-          <p className="mb-6">
-            La función <code className="text-[#f5a623]">sysinfo()</code> permite obtener datos sobre el uptime, carga promedio, RAM total/libre y espacio de swap.
+          <SectionHeading id="5-10-funciones" number="5.10" title="Funciones para conocer la memoria del sistema" />
+          <p className="mb-4">
+            La función <code className="text-[#f5a623]">sysinfo()</code> retorna estadísticas globales. Además, el mapeo de archivos a memoria se hace con <code className="text-[#f5a623]">mmap()</code>.
           </p>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+                <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">sysinfo</span>
+              </div>
+              <code className="block text-sm font-mono text-[#e6edf3]">
+                <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;sys/sysinfo.h&gt;</span><br /><br />
+                <span className="text-[#ff7b72]">int</span> <span className="text-[#d2a8ff]">sysinfo</span>(<span className="text-[#ff7b72]">struct sysinfo</span> *info);
+              </code>
+            </div>
+            <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+                <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">mmap / munmap</span>
+              </div>
+              <code className="block text-sm font-mono text-[#e6edf3]">
+                <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;sys/mman.h&gt;</span><br /><br />
+                <span className="text-[#ff7b72]">void*</span> <span className="text-[#d2a8ff]">mmap</span>(<span className="text-[#ff7b72]">void</span> *addr, ...);<br />
+                <span className="text-[#ff7b72]">int</span> <span className="text-[#d2a8ff]">munmap</span>(<span className="text-[#ff7b72]">void</span> *addr, <span className="text-[#ff7b72]">size_t</span> length);
+              </code>
+            </div>
+          </div>
+
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Ejemplo: Estadísticas del sistema (RAM y Swap)</h3>
           <CopyCodeBlock 
             filename="info_memoria.c" 
             language="C" 
@@ -167,51 +185,80 @@ Tamaño de página (getpagesize): 4096 bytes`}
 #include <stdlib.h>
 #include <sys/sysinfo.h>
 
+#define minuto 60
+#define hora (minuto*60)
+#define dia (hora*24)
 #define KB 1024
 
-int main ()
-{
- struct sysinfo si;
- if (sysinfo(&si) == -1) {
-  perror("sysinfo");
-  return EXIT_FAILURE;
- }
- 
- printf("Uptime: %ld segundos\\n", si.uptime);
- printf("RAM Total: %ld MB\\n", si.totalram / (KB * KB));
- printf("RAM Libre: %ld MB\\n", si.freeram / (KB * KB));
- printf("Swap Total: %ld MB\\n", si.totalswap / (KB * KB));
- printf("Procesos activos: %d\\n", si.procs);
- 
- return EXIT_SUCCESS;
+int main() {
+    struct sysinfo si;
+    sysinfo(&si);
+    
+    printf("Tiempo del sistema : %ld dias, %ld:%02ld:%02ld\\n", 
+           si.uptime/dia, (si.uptime%dia)/hora, (si.uptime%hora)/minuto, si.uptime%minuto);
+    printf("Total RAM: %ld KB\\n", si.totalram / KB);
+    printf("Libre RAM: %ld KB\\n", si.freeram / KB);
+    printf("Swap: %ld KB\\n", si.totalswap / KB);
+    printf("Cantidad de procesos: %d\\n", si.procs);
+    
+    return EXIT_SUCCESS;
 }`} 
-            compileCommand="gcc info_memoria.c -o info_mem"
-            runCommand="./info_mem"
-            output={`Uptime: 15420 segundos
-RAM Total: 16384 MB
-RAM Libre: 4120 MB
-Swap Total: 2048 MB
-Procesos activos: 124`}
+            compileCommand="gcc info_memoria.c -o info_memoria"
+            runCommand="./info_memoria"
+            output={`Tiempo del sistema : 2 dias, 4:15:32
+Total RAM: 16384000 KB
+Libre RAM: 4200000 KB
+Swap: 2048000 KB
+Cantidad de procesos: 342`}
           />
+        </section>
+
+        {/* Ejercicios */}
+        <section className="bg-[#161b22] border border-[#30363d] rounded-lg p-6 my-8">
+          <h3 className="text-[#58a6ff] font-bold text-lg mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>
+            Ejercicios Propuestos
+          </h3>
+          <ol className="list-decimal list-inside space-y-4 text-sm">
+            <li>
+              <strong className="text-white">Comandos para visualizar la memoria:</strong>
+              <ul className="list-disc list-inside ml-6 mt-2 space-y-1 text-[#8b949e]">
+                <li><code className="text-[#58a6ff]">free -m / -h</code> (Muestra la memoria libre/ocupada en formato megabytes o humano).</li>
+                <li><code className="text-[#58a6ff]">top</code> (Monitor en tiempo real que incluye el uso de la RAM).</li>
+                <li><code className="text-[#58a6ff]">vmstat -s -S M</code> (Estadísticas de la memoria virtual).</li>
+                <li><code className="text-[#58a6ff]">swapon -s</code> (Muestra las particiones o archivos swap activos).</li>
+                <li><code className="text-[#58a6ff]">pmap -x [PID]</code> (Muestra el mapa de memoria detallado del proceso).</li>
+              </ul>
+            </li>
+            <li>
+              <strong className="text-white">Información en el directorio /proc:</strong>
+              <ul className="list-disc list-inside ml-6 mt-2 space-y-1 text-[#8b949e]">
+                <li><code className="text-[#58a6ff]">/proc/meminfo</code> (Detalles del uso general de la RAM).</li>
+                <li><code className="text-[#58a6ff]">/proc/slabinfo</code> (Cachés del kernel).</li>
+                <li><code className="text-[#58a6ff]">/proc/swaps</code> (Información del área de intercambio activa).</li>
+              </ul>
+            </li>
+            <li>
+              <strong className="text-white">Herramientas adicionales:</strong>
+              <ul className="list-disc list-inside ml-6 mt-2 space-y-1 text-[#8b949e]">
+                <li><code className="text-[#58a6ff]">htop / nmon / monit</code> (Herramientas avanzadas e interactivas de monitorización de recursos).</li>
+                <li><code className="text-[#58a6ff]">valgrind</code> (Herramienta para detectar fugas de memoria, memory leaks, en binarios C/C++).</li>
+              </ul>
+            </li>
+          </ol>
         </section>
 
         <ReflectionBox>
           <p className="mb-2">
-            <strong className="text-white">¿Qué aprendí?</strong> Comprendí que la memoria no es solo un espacio físico, sino un recurso gestionado mediante abstracciones. La diferencia entre memoria física y virtual es clave: la MMU permite que cada proceso tenga su propio "universo" de direcciones. También aprendí a monitorizar la salud de la memoria usando <code className="text-[#f5a623]">sysinfo</code> y a entender cómo el kernel decide cuándo usar el swap mediante el parámetro <code className="text-[#f5a623]">swappiness</code>.
+            <strong className="text-white">¿Qué aprendí?</strong> Aprendí cómo el sistema operativo abstrae y protege la memoria física a través del concepto de memoria virtual y la Unidad de Manejo de Memoria (MMU). Entendí que la RAM se administra usando algoritmos de asignación (como el Primer Ajuste) sobre listas ligadas o mapas de bits. Comprendí también la importancia del 'swap' (intercambio) para mantener procesos en ejecución incluso cuando excedemos la capacidad de la memoria física instalada.
           </p>
           <p>
-            <strong className="text-white">¿Cómo podría mejorar?</strong> Podría experimentar cambiando el valor de swappiness en un entorno controlado para observar cómo impacta en el rendimiento de aplicaciones pesadas. También me interesaría investigar el uso de <code className="text-[#f5a623]">mmap</code> para proyectar archivos directamente en memoria, optimizando la E/S de archivos grandes.
+            <strong className="text-white">¿Cómo podría mejorarla?</strong> Podría escribir un programa en C que a propósito cause un 'memory leak' (con <code className="text-[#f5a623]">malloc</code> sin su respectivo <code className="text-[#f5a623]">free</code>) y luego usar la herramienta <code className="text-[#58a6ff]">valgrind</code> solicitada en los ejercicios para depurar y encontrar la fuga, observando cómo esto impacta los valores arrojados por la función <code className="text-[#f5a623]">sysinfo()</code>.
           </p>
         </ReflectionBox>
 
-        <TopicQuiz
-          topicId="tema-5"
-          title="Test — Administración de Memoria"
-          questions={TEMA5_QUIZ}
-        />
-
+        <TopicQuiz topicId="tema-5" title="Test - Administración de memoria" questions={TEMA5_QUIZ} />
         <ReadMarker topicId="tema-5" />
-
       </article>
     </div>
   );

@@ -8,7 +8,7 @@ export const PORTFOLIO_TOPICS: Topic[] = [
     subtopics: [
       { id: "1-1", title: "1.1 Introducción a los SO", href: "/tema-1-introduccion#1-1-introduccion" },
       { id: "1-2", title: "1.2 Clasificación de los SO", href: "/tema-1-introduccion#1-2-clasificacion" },
-      { id: "1-3", title: "1.3 Evidencias y Ejecución", href: "/tema-1-introduccion#1-3-evidencias" },
+      { id: "1-3", title: "1.3 Evidencias y Ejecución", href: "/tema-1-introduccion#1-3-ejecucion" },
     ]
   },
   {
@@ -17,14 +17,16 @@ export const PORTFOLIO_TOPICS: Topic[] = [
     href: "/tema-2-procesos-hilos",
     subtopics: [
       { id: "2-1", title: "2.1 Introducción a procesos", href: "/tema-2-procesos-hilos#2-1-introduccion" },
-      { id: "2-2", title: "2.2 Sistema de llamado para crear procesos", href: "/tema-2-procesos-hilos#2-2-creacion" },
+      { id: "2-2", title: "2.2 Control de procesos", href: "/tema-2-procesos-hilos#2-2-control" },
+      { id: "2-3", title: "2.3 Sistema de llamado para crear procesos", href: "/tema-2-procesos-hilos#2-3-creacion" },
       { id: "2-4", title: "2.4 Sistema de llamado para identificar procesos", href: "/tema-2-procesos-hilos#2-4-identificar" },
       { id: "2-5", title: "2.5 Sistema de llamada wait ()", href: "/tema-2-procesos-hilos#2-5-wait" },
       { id: "2-5-1", title: "2.5.1 Uso de waitpid()", href: "/tema-2-procesos-hilos#2-5-1-waitpid" },
       { id: "2-6", title: "2.6 Sistema de llamada _exit () y exit ()", href: "/tema-2-procesos-hilos#2-6-exit" },
       { id: "2-7", title: "2.7 Estado Zombi", href: "/tema-2-procesos-hilos#2-7-zombi" },
-      { id: "2-8", title: "2.8 Hilos", href: "/tema-2-procesos-hilos#2-8-hilos" },
-      { id: "2-8-2", title: "2.8.2 Creación de hilos", href: "/tema-2-procesos-hilos#2-8-2-creacion-hilos" },
+      { id: "2-8", title: "2.8 Sistema de llamada exec", href: "/tema-2-procesos-hilos#2-8-exec" },
+      { id: "2-9", title: "2.9 Hilos", href: "/tema-2-procesos-hilos#2-9-hilos" },
+      { id: "2-9-1", title: "2.9.1 Creación y sincronización de hilos", href: "/tema-2-procesos-hilos#2-9-1-creacion-hilos" },
     ]
   },
   {
@@ -37,7 +39,8 @@ export const PORTFOLIO_TOPICS: Topic[] = [
       { id: "3-1-2", title: "3.1.2 Tuberías con nombre - fifo", href: "/tema-3-ipc#3-1-2-fifo" },
       { id: "3-2", title: "3.2 Mecanismos IPC derivados de System V", href: "/tema-3-ipc#3-2-system-v" },
       { id: "3-2-1", title: "3.2.1 Llaves", href: "/tema-3-ipc#3-2-1-llaves" },
-      { id: "3-2-2", title: "3.2.2 Semáforos en derivados de System V", href: "/tema-3-ipc#3-2-2-semaforos" },
+      { id: "3-2-2", title: "3.2.2 Semáforos en System V", href: "/tema-3-ipc#3-2-2-semaforos-v" },
+      { id: "3-2-3", title: "3.2.3 Semáforos en POSIX", href: "/tema-3-ipc#3-2-3-semaforos-posix" },
       { id: "3-3", title: "3.3 Memoria compartida", href: "/tema-3-ipc#3-3-memoria" },
       { id: "3-4", title: "3.4 Cola de mensajes", href: "/tema-3-ipc#3-4-cola-mensajes" },
       { id: "3-5", title: "3.5 Información de IPC por comandos", href: "/tema-3-ipc#3-5-info-ipc" },
@@ -75,10 +78,10 @@ export const PORTFOLIO_TOPICS: Topic[] = [
     title: "7. Señales",
     href: "/tema-7-senales",
     subtopics: [
-      { id: "7-1", title: "7.1 Introducción a señales", href: "/tema-7-senales#7-1-intro" },
-      { id: "7-2", title: "7.2 Función signal()", href: "/tema-7-senales#7-2-signal" },
-      { id: "7-3", title: "7.3 setjmp / longjmp", href: "/tema-7-senales#7-3-setjmp" },
-      { id: "7-4", title: "7.4 Función alarm()", href: "/tema-7-senales#7-4-alarm" },
+      { id: "7-1", title: "7.1 Introducción", href: "/tema-7-senales#7-1-intro" },
+      { id: "7-2", title: "7.2 Tipos de señales", href: "/tema-7-senales#7-2-tipos" },
+      { id: "7-3", title: "7.3 Tratamiento de señales", href: "/tema-7-senales#7-3-tratamiento" },
+      { id: "7-4", title: "7.4 Función alarma y pausa", href: "/tema-7-senales#7-4-alarma" },
     ]
   },
   {

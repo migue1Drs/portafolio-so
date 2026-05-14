@@ -1,6 +1,56 @@
 import type { QuizQuestion } from "@/components/ui/TopicQuiz";
 
-/* ── Tema 2: Procesos e Hilos ── */
+/* ── Tema 1: Introducción a los SO ── */
+export const TEMA1_QUIZ: QuizQuestion[] = [
+  {
+    id: "t1-q1",
+    question: "¿Cuál es una de las definiciones de un sistema operativo?",
+    options: [
+      "Un software diseñado exclusivamente para interactuar con la red.",
+      "Un software que controla el hardware y actúa como interfaz entre el usuario y la computadora.",
+      "Un programa que compila código en lenguaje ensamblador.",
+      "Un sistema para la creación de bases de datos relacionales."
+    ],
+    correctIndex: 1,
+    explanation: "El sistema operativo es el software fundamental que controla la ejecución de programas y actúa como interfaz entre el usuario y el hardware."
+  },
+  {
+    id: "t1-q2",
+    question: "¿Qué tipo de sistema operativo prioriza el cumplimiento de restricciones temporales estrictas sobre la interacción con el usuario?",
+    options: [
+      "Sistema operativo de red",
+      "Sistema operativo por lotes",
+      "Sistema operativo de tiempo real",
+      "Sistema operativo distribuido"
+    ],
+    correctIndex: 2,
+    explanation: "Los sistemas de tiempo real (como VxWorks o RTLinux) buscan un comportamiento determinista, donde el tiempo de respuesta es crítico."
+  },
+  {
+    id: "t1-q3",
+    question: "¿Cuál es la diferencia principal entre sistemas distribuidos fuertemente acoplados y débilmente acoplados?",
+    options: [
+      "Los fuertemente acoplados comparten memoria principal y reloj global, los débilmente acoplados no.",
+      "Los débilmente acoplados son más rápidos que los fuertemente acoplados.",
+      "Los débilmente acoplados solo funcionan en dispositivos móviles.",
+      "No existe diferencia, son sinónimos."
+    ],
+    correctIndex: 0,
+    explanation: "En sistemas fuertemente acoplados, los procesadores comparten memoria y reloj, mientras que en los débilmente acoplados cada uno tiene su propia memoria local."
+  },
+  {
+    id: "t1-q4",
+    question: "¿Qué característica destacaba de la arquitectura de iOS?",
+    options: [
+      "No posee kernel, se comunica directamente con el hardware.",
+      "Utiliza una máquina virtual llamada Dalvik.",
+      "Se divide en capas: Aplicaciones, Middleware (Cocoa Touch, Media, Core Services) y Kernel (XNU).",
+      "Está basado en la arquitectura de Windows CE."
+    ],
+    correctIndex: 2,
+    explanation: "iOS se basa en XNU/Mac OS X y su arquitectura en capas incluye Middleware (Cocoa Touch, Core Services) y Kernel."
+  },
+];/* ── Tema 2: Procesos e Hilos ── */
 export const TEMA2_QUIZ: QuizQuestion[] = [
   {
     id: "t2-q1",

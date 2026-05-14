@@ -12,74 +12,126 @@ export default function Tema7Page() {
       <PageHeader
         number="Tema 7"
         title="Señales"
-        description="Comunicación asíncrona entre procesos: envío, captura y tratamiento de señales en sistemas UNIX/Linux."
+        description="Interrupciones de software, manejo asíncrono, rutinas de tratamiento, y control del flujo de ejecución en sistemas UNIX/Linux."
       />
 
       <article className="space-y-10 text-[#b0b8c4] leading-relaxed">
-        {/* 7.1 Introducción */}
+        {/* Intro */}
         <section>
+          <p className="mb-4">
+            Las señales son <strong>interrupciones de software</strong> que pueden ser enviadas a un proceso para informarle de algún evento asíncrono o situación especial. El sistema operativo las identifica con un número entero positivo asociado a un nombre que generalmente inicia con <code className="text-[#58a6ff]">SIG</code>.
+          </p>
+
           <SectionHeading id="7-1-intro" number="7.1" title="Introducción" />
           <p className="mb-4">
-            Las <strong className="text-white">señales</strong> son interrupciones de software enviadas a un proceso para informarle de eventos asíncronos o situaciones especiales. El sistema operativo las identifica con números enteros positivos asociados a nombres que inician con <code className="text-[#f5a623]">SIG</code>.
+            Los procesos pueden enviarse señales usando llamadas al sistema como <code className="text-[#f5a623]">kill()</code>. Cuando un proceso recibe una señal, puede proceder de tres diferentes formas:
           </p>
-          <p className="mb-4">
-            Cuando un proceso recibe una señal, puede reaccionar de tres formas:
-          </p>
-          <ul className="list-disc list-inside space-y-2 mb-6 ml-2">
-            <li><strong className="text-white">Ignorar la señal:</strong> El proceso es inmune a ella.</li>
-            <li><strong className="text-white">Acción por defecto:</strong> El kernel ejecuta una rutina predefinida (usualmente termina el proceso y puede generar un archivo <code className="text-[#58a6ff]">core</code>).</li>
-            <li><strong className="text-white">Rutina propia:</strong> El programador define un manejador (handler) para realizar acciones específicas.</li>
-          </ul>
+          <ol className="list-decimal list-inside space-y-2 mb-4 ml-2 text-[#b0b8c4]">
+            <li><strong className="text-white">Ignorar la señal:</strong> Será inmune a la misma, siempre que tenga mayor prioridad. (Algunas como <code className="text-[#ff7b72]">SIGKILL</code> y <code className="text-[#ff7b72]">SIGSTOP</code> no pueden ser ignoradas).</li>
+            <li><strong className="text-white">Invocar rutina por defecto:</strong> Aportada por el kernel. Suele terminar el proceso y, en algunos casos (como error de bus o violación de segmento), generar un archivo <code className="text-[#58a6ff]">core</code> con un volcado de memoria para depuración.</li>
+            <li><strong className="text-white">Invocar a una rutina propia:</strong> El programador escribe su propio manejador (handler) para ejecutar acciones específicas al recibirla.</li>
+          </ol>
         </section>
 
         {/* 7.2 Tipos de señales */}
         <section>
           <SectionHeading id="7-2-tipos" number="7.2" title="Tipos de señales" />
-          <p className="mb-6">
-            Las señales se clasifican según su origen (terminación de procesos, excepciones de hardware, errores de syscalls, interacción con la terminal, etc.). A continuación se resumen las principales señales definidas en <code className="text-[#58a6ff]">&lt;signal.h&gt;</code>:
+          <p className="mb-4">
+            Las señales se clasifican en grupos: terminación de procesos, excepciones inducidas (accesos inválidos, coma flotante), originadas en modo usuario, interacción con la terminal y trazado de programas. En Linux, están definidas en <code className="text-[#a5d6ff]">&lt;signal.h&gt;</code>.
           </p>
 
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden my-6">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#30363d] bg-[#0d1117]">
-                  <th className="text-left p-4 text-[#f5a623] font-bold uppercase text-xs">Señal</th>
-                  <th className="text-left p-4 text-[#f5a623] font-bold uppercase text-xs">#</th>
-                  <th className="text-left p-4 text-[#f5a623] font-bold uppercase text-xs">Acción / Genera Core</th>
-                </tr>
-              </thead>
-              <tbody className="font-mono text-[11px]">
-                <tr className="border-b border-[#30363d]"><td className="p-3 text-white font-bold">SIGHUP</td><td className="p-3">1</td><td className="p-3 text-[#8b949e]">Terminar / No</td></tr>
-                <tr className="border-b border-[#30363d]"><td className="p-3 text-white font-bold">SIGINT</td><td className="p-3">2</td><td className="p-3 text-[#8b949e]">Terminar (Ctrl+C) / No</td></tr>
-                <tr className="border-b border-[#30363d]"><td className="p-3 text-white font-bold">SIGQUIT</td><td className="p-3">3</td><td className="p-3 text-[#8b949e]">Terminar (Ctrl+\\) / Sí</td></tr>
-                <tr className="border-b border-[#30363d]"><td className="p-3 text-white font-bold">SIGILL</td><td className="p-3">4</td><td className="p-3 text-[#8b949e]">Instrucción ilegal / Sí</td></tr>
-                <tr className="border-b border-[#30363d]"><td className="p-3 text-white font-bold">SIGFPE</td><td className="p-3">8</td><td className="p-3 text-[#8b949e]">Error coma flotante / Sí</td></tr>
-                <tr className="border-b border-[#30363d]"><td className="p-3 text-white font-bold">SIGKILL</td><td className="p-3">9</td><td className="p-3 text-[#8b949e]">Terminar (Forzado) / Sí</td></tr>
-                <tr className="border-b border-[#30363d]"><td className="p-3 text-white font-bold">SIGSEGV</td><td className="p-3">11</td><td className="p-3 text-[#8b949e]">Violación de segmento / Sí</td></tr>
-                <tr className="border-b border-[#30363d]"><td className="p-3 text-white font-bold">SIGALRM</td><td className="p-3">14</td><td className="p-3 text-[#8b949e]">Alarma de reloj / No</td></tr>
-                <tr><td className="p-3 text-white font-bold">SIGUSR1/2</td><td className="p-3">16/17</td><td className="p-3 text-[#8b949e]">Uso de usuario / No</td></tr>
-              </tbody>
-            </table>
+          <div className="bg-[#0d1117] border border-[#30363d] rounded-lg overflow-hidden my-6 shadow-lg shadow-[#1f6feb]/5">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-sm">
+                <thead className="bg-[#161b22] border-b border-[#30363d]">
+                  <tr>
+                    <th className="p-3 text-[#58a6ff] font-bold">Número</th>
+                    <th className="p-3 text-[#58a6ff] font-bold border-l border-[#30363d]">Nombre</th>
+                    <th className="p-3 text-[#58a6ff] font-bold border-l border-[#30363d]">Descripción</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#30363d]">
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">01</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGHUP</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Termina el proceso líder.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">02</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGINT</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Tecla Ctrl+c pulsada.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">03</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGQUIT</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Tecla Ctrl+\ pulsada termina terminal.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">04</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGILL</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Instrucción Ilegal.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">05</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGTRAP</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Trazado de los programas.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">06</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGABRT / SIGIOT</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Terminación anormal.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">07</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGBUS</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Error de bus.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">08</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGFPE</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Error aritmético, coma flotante.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">09</td><td className="p-3 font-mono text-[#ff7b72] border-l border-[#30363d] font-bold">SIGKILL</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Eliminar procesos incondicionalmente. (No se ignora)</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">10</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGUSR1</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Señal definida por el usuario.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">11</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGSEGV</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Violación de segmento.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">12</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGUSR2</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Señal definida por el usuario.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">13</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGPIPE</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Escritura de pipe sin lectores.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">14</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGALRM</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Señal enviada por el kernel cuándo es fin del reloj ITIMER_REAL.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">15</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGTERM</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Señal de terminación del software.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">16</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGTKFLT</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Desbordamiento de coprocesador matemático.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">17</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGCHLD</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Señal enviada por el núcleo a un padre para avisarle que un hijo ha terminado.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">18</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGCONT</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Señal cuando el proceso se lleva a segundo o primer plano.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">19</td><td className="p-3 font-mono text-[#ff7b72] border-l border-[#30363d] font-bold">SIGSTOP</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Suspensión de un proceso. (No se ignora)</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">20</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGTSTP</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Suspensión debido a Ctrl+Z.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">21</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGTTIN</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Suspensión de proceso en background que trata de leer en terminal.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">22</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGTTOU</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Suspensión de proceso en background que trata de escribir en terminal.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">23</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGURG</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Datos urgentes para los sockets.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">24</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGXCPU</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Sobrepasado el límite de tiempo en el CPU.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">25</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGXFSZ</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Sobrepasado el tamaño del archivo.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">26</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGVTALARM</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Fin del temporizador ITIMER_VIRTUAL.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">27</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGPROF</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Fin del temporizador ITIMER_PROF.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">28</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGWINCH</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Cambio de tamaño de una ventana usado por X11.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">29</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGIO</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Datos disponibles para una entrada/salida.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">30</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGPWR</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Fallo de alimentación.</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">31</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGSYS</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Error de argumento en una llamada (SIGUNUSED).</td></tr>
+                  <tr className="hover:bg-[#161b22]/50"><td className="p-3 font-mono text-[#e6edf3]">32</td><td className="p-3 font-mono text-[#d2a8ff] border-l border-[#30363d]">SIGRTMIN</td><td className="p-3 text-[#b0b8c4] border-l border-[#30363d]">Marca el límite de señales en tiempo real.</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <h3 className="text-white font-bold mt-8 mb-4 italic">Envío de señales: kill()</h3>
-          <p className="mb-4">
-            Para enviar una señal se utiliza la llamada <code className="text-[#f5a623]">kill(pid, sig)</code>. El valor de <code className="text-[#f5a623]">pid</code> determina el destinatario:
-          </p>
-          <ul className="list-disc list-inside space-y-1 mb-6 ml-2 text-sm">
-            <li><code className="text-white">pid &gt; 0</code>: Proceso específico.</li>
-            <li><code className="text-white">pid = 0</code>: Todo el grupo de procesos del emisor.</li>
-            <li><code className="text-white">pid = -1</code>: Todos los procesos con el mismo ID real (excepto init).</li>
-          </ul>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+                <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">kill (Enviar Señal)</span>
+              </div>
+              <code className="block text-sm font-mono text-[#e6edf3]">
+                <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;signal.h&gt;</span><br /><br />
+                <span className="text-[#ff7b72]">int</span> <span className="text-[#d2a8ff]">kill</span>(<span className="text-[#ff7b72]">pid_t</span> pid, <span className="text-[#ff7b72]">int</span> sig);
+              </code>
+            </div>
+            <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+                <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">raise (Autoenvío)</span>
+              </div>
+              <code className="block text-sm font-mono text-[#e6edf3]">
+                <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;signal.h&gt;</span><br /><br />
+                <span className="text-[#ff7b72]">int</span> <span className="text-[#d2a8ff]">raise</span>(<span className="text-[#ff7b72]">int</span> sig);
+              </code>
+            </div>
+          </div>
         </section>
 
-        {/* 7.3 Tratamiento */}
+        {/* 7.3 Tratamiento de señales */}
         <section>
-          <SectionHeading id="7-2-signal" number="7.3" title="Tratamiento de señales" />
+          <SectionHeading id="7-3-tratamiento" number="7.3" title="Tratamiento de señales" />
           <p className="mb-4">
-            La función <code className="text-[#f5a623]">signal()</code> permite definir el comportamiento ante una señal usando: <code className="text-[#58a6ff]">SIG_DFL</code> (defecto), <code className="text-[#58a6ff]">SIG_IGN</code> (ignorar) o una dirección de función (handler).
+            La llamada <code className="text-[#f5a623]">signal()</code> permite especificar el comportamiento ante la recepción de una señal: puede ser <code className="text-[#58a6ff]">SIG_DFL</code> (defecto), <code className="text-[#58a6ff]">SIG_IGN</code> (ignorar), o un puntero a una función (handler).
           </p>
-          
+
+          <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-6 max-w-2xl">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+              <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">PROTOTIPO signal</span>
+            </div>
+            <code className="block text-sm font-mono text-[#e6edf3]">
+              <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;signal.h&gt;</span><br /><br />
+              <span className="text-[#ff7b72]">typedef void</span> (*sighandler_t)(<span className="text-[#ff7b72]">int</span>);<br />
+              <span className="text-[#ff7b72]">sighandler_t</span> <span className="text-[#d2a8ff]">signal</span>(<span className="text-[#ff7b72]">int</span> signum, <span className="text-[#ff7b72]">sighandler_t</span> handler);
+            </code>
+          </div>
+
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Ejemplo: Capturar Ctrl+C (SIGINT)</h3>
           <CopyCodeBlock 
             filename="controlC.c" 
             language="C" 
@@ -90,42 +142,59 @@ export default function Tema7Page() {
 
 void sigint_handler(int sig) {
     static int cont = 0;
-    printf("señal número %d recibida\\n", sig);
-    if (cont < 20)
-        printf("Contador = %d\\n", cont++);
-    else
+    printf("\\nSeñal número %d recibida\\n", sig);
+    
+    if (cont < 3) {
+        printf("Has intentado interrumpirme. Faltan %d intentos más.\\n", 3 - cont);
+        cont++;
+    } else {
+        printf("Me rindo. Saliendo...\\n");
         exit(EXIT_SUCCESS);
-        
-    // Reestablecer manejador (depende de la versión de UNIX)
-    signal(SIGINT, sigint_handler);
+    }
+    
+    // Reestablecer la señal para el próximo intento (requerido en algunos UNIX viejos)
+    if (signal(SIGINT, sigint_handler) == SIG_ERR) {
+        perror("Señal"); exit(EXIT_FAILURE);
+    }
 }
 
 int main() {
     if (signal(SIGINT, sigint_handler) == SIG_ERR) {
-        perror("señal");
-        exit(EXIT_FAILURE);
+        perror("señal"); exit(EXIT_FAILURE);
     }
-    while (1) {
-        printf("En espera de Ctrl+c\\n");
-        sleep(5);
+    
+    printf("En espera de Ctrl+c... (Intenta 4 veces)\\n");
+    while(1) {
+        sleep(99);
     }
     return EXIT_SUCCESS;
 }`} 
             compileCommand="gcc controlC.c -o controlC"
             runCommand="./controlC"
-            output={`En espera de Ctrl+c
-^Cseñal número 2 recibida
-Contador = 0
-En espera de Ctrl+c`}
+            output={`En espera de Ctrl+c... (Intenta 4 veces)
+^C
+Señal número 2 recibida
+Has intentado interrumpirme. Faltan 3 intentos más.
+^C
+Señal número 2 recibida
+Has intentado interrumpirme. Faltan 2 intentos más.
+^C
+Señal número 2 recibida
+Has intentado interrumpirme. Faltan 1 intentos más.
+^C
+Señal número 2 recibida
+Me rindo. Saliendo...`}
           />
         </section>
 
-        {/* 7.3.1 */}
+        {/* 7.3.1 Funciones setjmp y longjmp */}
         <section>
           <SectionHeading id="7-3-setjmp" number="7.3.1" title="Funciones setjmp y longjmp" />
           <p className="mb-4">
-            <code className="text-[#f5a623]">setjmp()</code> guarda el contexto de ejecución (punteros, pila, registros) en un buffer <code className="text-[#58a6ff]">jmp_buf</code>. <code className="text-[#f5a623]">longjmp()</code> restaura este entorno, devolviendo el flujo al punto del <code className="text-[#f5a623]">setjmp</code>.
+            Permiten a un proceso realizar saltos no locales hacia un contexto anterior, algo muy útil al gestionar señales. <code className="text-[#f5a623]">setjmp()</code> guarda el estado (registros, pila) en un buffer, retornando 0 inicialmente. Cuando el handler llama a <code className="text-[#f5a623]">longjmp()</code>, la ejecución salta de regreso a donde estaba <code className="text-[#f5a623]">setjmp()</code>, pero ahora retornando un valor diferente (generalmente 1), rompiendo el flujo secuencial asíncronamente.
           </p>
+
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Ejemplo: Salto no local desde un Handler (SIGUSR1)</h3>
           <CopyCodeBlock 
             filename="retorno.c" 
             language="C" 
@@ -138,86 +207,123 @@ En espera de Ctrl+c`}
 jmp_buf env;
 
 void sigusr1_handler(int sig) {
-    printf("\\nRecibí SIGUSR1, regresando...\\n");
+    printf("\\n>>> Recibí SIGUSR1. Ejecutando longjmp...\\n");
+    signal(SIGUSR1, sigusr1_handler);
     longjmp(env, 1);
 }
 
 int main() {
+    int i;
     signal(SIGUSR1, sigusr1_handler);
-    for (int i=0; i < 5; i++) {
-        if (setjmp(env) == 0)
-            printf("Punto de regreso en estado %d\\n", i);
-        else
-            printf("Regreso al punto del estado %d\\n", i);
-        sleep(10);
+    
+    for (i = 0; i < 3; i++) {
+        if (setjmp(env) == 0) {
+            printf("Punto de guardado (estado %d). Envíame SIGUSR1 (kill -10 %d)\\n", i, getpid());
+        } else {
+            // Esta parte se ejecuta cuando se retorna del longjmp
+            printf("He regresado asíncronamente al punto del estado %d\\n", i);
+        }
+        sleep(5); // Simulamos procesamiento
     }
     return EXIT_SUCCESS;
 }`} 
             compileCommand="gcc retorno.c -o retorno"
             runCommand="./retorno & sleep 1 && kill -10 $!"
-            output={`Punto de regreso en estado 0
-Recibí SIGUSR1, regresando...
-Regreso al punto del estado 0`}
+            output={`Punto de guardado (estado 0). Envíame SIGUSR1 (kill -10 24891)
+
+>>> Recibí SIGUSR1. Ejecutando longjmp...
+He regresado asíncronamente al punto del estado 0
+Punto de guardado (estado 1). Envíame SIGUSR1 (kill -10 24891)`}
           />
         </section>
 
-        {/* 7.4 */}
+        {/* 7.4 Alarma y Pausa */}
         <section>
-          <SectionHeading id="7-4-alarm" number="7.4" title="Función alarma y pausa" />
-          <p className="mb-6">
-            <code className="text-[#f5a623]">alarm(seconds)</code> programa una señal SIGALRM. Solo puede haber una alarma por proceso. <code className="text-[#f5a623]">pause()</code> suspende el proceso hasta recibir cualquier señal.
+          <SectionHeading id="7-4-alarma" number="7.4" title="Función alarma y pausa" />
+          <p className="mb-4">
+            La función <code className="text-[#f5a623]">alarm()</code> configura un temporizador en el sistema. Cuando transcurren los segundos solicitados, el kernel envía la señal <code className="text-[#58a6ff]">SIGALRM</code>. Por otro lado, la función <code className="text-[#f5a623]">pause()</code> suspende incondicionalmente al proceso hasta que reciba una señal capturable.
           </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+                <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">alarm</span>
+              </div>
+              <code className="block text-sm font-mono text-[#e6edf3]">
+                <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;unistd.h&gt;</span><br /><br />
+                <span className="text-[#ff7b72]">unsigned int</span> <span className="text-[#d2a8ff]">alarm</span>(<span className="text-[#ff7b72]">unsigned int</span> seconds);
+              </code>
+            </div>
+            <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 my-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 rounded-full bg-[#58a6ff]"></div>
+                <span className="text-xs font-bold text-[#58a6ff] uppercase tracking-wider">pause</span>
+              </div>
+              <code className="block text-sm font-mono text-[#e6edf3]">
+                <span className="text-[#ff7b72]">#include</span> <span className="text-[#a5d6ff]">&lt;unistd.h&gt;</span><br /><br />
+                <span className="text-[#ff7b72]">int</span> <span className="text-[#d2a8ff]">pause</span>(<span className="text-[#ff7b72]">void</span>);
+              </code>
+            </div>
+          </div>
+
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Ejemplo: Temporizador con SIGALRM</h3>
           <CopyCodeBlock 
-            filename="alarma_cont.c" 
+            filename="alarma.c" 
             language="C" 
             code={`#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-int salir = 1;
+#define SEG 3
+
+int salir = 1; // TRUE
 
 void accion(int signum) {
-    printf("\\nRecibí señal:%d SIGALRM\\n", signum);
-    salir = 0;
+    printf("\\nRecibí señal: %d (SIGALRM)\\n", signum);
+    salir = 0; // FALSE
 }
 
-int main() {
-    int i=0;
-    printf("Alarma en 2 segundos...\\n");
+int main(int argc, char *argv[]) {
+    int i = 0;
+    
+    printf("En %d segundos recibirás una alarma...\\n", SEG);
     signal(SIGALRM, accion);
-    alarm(2);
+    
+    alarm(SEG); // Iniciar temporizador del kernel
+    
     while(salir) {
-        i++; // Contando...
+        printf("Procesando: %d\\n", i++);
+        sleep(1);
     }
-    printf("Contador final: %d\\n", i);
+    
+    printf("Programa terminado correctamente.\\n");
     return EXIT_SUCCESS;
 }`} 
-            compileCommand="gcc alarma_cont.c -o alarma_cont"
-            runCommand="./alarma_cont"
-            output={`Alarma en 2 segundos...
-Recibí señal:14 SIGALRM
-Contador final: 1548231`}
+            compileCommand="gcc alarma.c -o alarma"
+            runCommand="./alarma"
+            output={`En 3 segundos recibirás una alarma...
+Procesando: 0
+Procesando: 1
+Procesando: 2
+
+Recibí señal: 14 (SIGALRM)
+Programa terminado correctamente.`}
           />
         </section>
 
         <ReflectionBox>
           <p className="mb-2">
-            <strong className="text-white">¿Qué aprendí?</strong> Comprendí que las señales permiten una comunicación asíncrona fundamental. El uso de <code className="text-[#f5a623]">setjmp/longjmp</code> es una herramienta poderosa pero peligrosa para manejar flujos de error, y aprendí cómo el kernel usa temporizadores para interrumpir procesos pesados.
+            <strong className="text-white">¿Qué aprendí?</strong> Aprendí que las señales son el mecanismo principal de interrupción asíncrona entre procesos y el kernel en Linux. Pude interactuar con los handlers modificando el comportamiento predeterminado con <code className="text-[#f5a623]">signal()</code>. Descubrí el poder asíncrono de <code className="text-[#f5a623]">longjmp()</code>, el cual rompe por completo el flujo estructurado habitual en C y funciona casi como un bloque de <code className="text-[#58a6ff]">try/catch</code> moderno para el sistema operativo.
           </p>
           <p>
-            <strong className="text-white">¿Cómo podría mejorarla?</strong> Podría mejorarla implementando manejadores de señales con <code className="text-[#f5a623]">sigaction()</code> en lugar de <code className="text-[#f5a623]">signal()</code>, ya que es más portable y seguro. También intentaría combinar <code className="text-[#f5a623]">alarm()</code> con señales personalizadas como <code className="text-[#f5a623]">SIGUSR1</code> para controlar procesos en segundo plano.
+            <strong className="text-white">¿Cómo podría mejorarla?</strong> Se podría mejorar programando un servidor robusto en C que escuche sockets y maneje elegantemente las peticiones de cierre mediante <code className="text-[#58a6ff]">SIGTERM</code>, asegurando que se libere la memoria, se cierren descriptores de archivo y se termine la conexión de base de datos antes de hacer el <code className="text-[#f5a623]">exit()</code> definitivo, evitando dejar recursos atascados.
           </p>
         </ReflectionBox>
 
-        <TopicQuiz
-          topicId="tema-7"
-          title="Test — Señales"
-          questions={TEMA7_QUIZ}
-        />
-
+        <TopicQuiz topicId="tema-7" title="Test - Señales" questions={TEMA7_QUIZ} />
         <ReadMarker topicId="tema-7" />
-
       </article>
     </div>
   );
