@@ -49,20 +49,9 @@ export default function Tema2Page() {
 
         {/* 2.2 */}
         <section>
-          <SectionHeading id="2-2-control" number="2.2" title="Control de procesos" />
+          <SectionHeading id="2-2-creacion" number="2.2" title="Sistema de llamado para crear procesos" />
           <p className="mb-4">
-            El sistema operativo actúa como el controlador central. La creación implica asignar un ID único, insertarlo en la lista, determinar prioridad y crear su Bloque de Control de Proceso (PCB).
-          </p>
-          <p>
-            En GNU/Linux, el kernel usa la estructura <code className="text-[#58a6ff]">task_struct</code> para representar cada proceso.
-          </p>
-        </section>
-
-        {/* 2.3 */}
-        <section>
-          <SectionHeading id="2-3-fork" number="2.3" title="Sistema de llamado para crear procesos" />
-          <p className="mb-4">
-            La creación de procesos se realiza principalmente a través de <code className="text-[#f5a623]">fork()</code>. El hijo recibe una copia del espacio de direcciones del padre (Copy-on-write).
+            El sistema operativo actúa como el controlador central. La creación de procesos se realiza principalmente a través de <code className="text-[#f5a623]">fork()</code>. El hijo recibe una copia del espacio de direcciones del padre (Copy-on-write).
           </p>
           <CopyCodeBlock 
             filename="fork_cow.c" 
@@ -105,7 +94,7 @@ Hijo: PID=14501, x=5`}
 
         {/* 2.5 */}
         <section>
-          <SectionHeading id="2-5-wait" number="2.5" title="Sistema de llamada wait()" />
+          <SectionHeading id="2-5-wait" number="2.5" title="Sistema de llamada wait ()" />
           <p className="mb-4">
             Permite que un padre suspenda su ejecución hasta que uno de sus hijos termine.
           </p>
@@ -143,7 +132,7 @@ Padre detectó fin del hijo.`}
 
         {/* 2.6 */}
         <section>
-          <SectionHeading id="2-6-exit" number="2.6" title="Sistema de llamada _exit() y exit()" />
+          <SectionHeading id="2-6-exit" number="2.6" title="Sistema de llamada _exit () y exit ()" />
           <p>
             Finalizan el proceso. <code className="text-[#f5a623]">exit()</code> realiza limpieza de buffers antes de llamar al sistema <code className="text-[#f5a623]">_exit()</code>.
           </p>
@@ -192,7 +181,12 @@ int main() {
         </section>
 
         <ReflectionBox>
-          <p>Aprendí la importancia de la sincronización y el ciclo de vida de los procesos.</p>
+          <p className="mb-2">
+            <strong className="text-white">¿Qué aprendí?</strong> Aprendí la importancia de la sincronización y el ciclo de vida de los procesos. Comprendí cómo <code className="text-[#f5a623]">fork()</code> duplica el espacio de memoria y cómo procesos huérfanos pueden convertirse en zombis si el padre no realiza un <code className="text-[#f5a623]">wait()</code>. Además, observé que los hilos permiten paralelismo de forma mucho más ligera.
+          </p>
+          <p>
+            <strong className="text-white">¿Cómo podría mejorarla?</strong> Podría mejorar escribiendo un programa concurrente más complejo que combine la creación de múltiples hilos manejando recursos y comparando su tiempo de ejecución con procesos independientes.
+          </p>
         </ReflectionBox>
 
         <TopicQuiz topicId="tema-2" title="Test - Procesos e Hilos" questions={TEMA2_QUIZ} />

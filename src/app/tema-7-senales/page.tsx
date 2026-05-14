@@ -205,6 +205,9 @@ Contador final: 1548231`}
           <p className="mb-2">
             <strong className="text-white">¿Qué aprendí?</strong> Comprendí que las señales permiten una comunicación asíncrona fundamental. El uso de <code className="text-[#f5a623]">setjmp/longjmp</code> es una herramienta poderosa pero peligrosa para manejar flujos de error, y aprendí cómo el kernel usa temporizadores para interrumpir procesos pesados.
           </p>
+          <p>
+            <strong className="text-white">¿Cómo podría mejorarla?</strong> Podría mejorarla implementando manejadores de señales con <code className="text-[#f5a623]">sigaction()</code> en lugar de <code className="text-[#f5a623]">signal()</code>, ya que es más portable y seguro. También intentaría combinar <code className="text-[#f5a623]">alarm()</code> con señales personalizadas como <code className="text-[#f5a623]">SIGUSR1</code> para controlar procesos en segundo plano.
+          </p>
         </ReflectionBox>
 
         <TopicQuiz

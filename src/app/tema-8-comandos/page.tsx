@@ -132,7 +132,12 @@ int main(int argc, char *argv[]) {
         </section>
 
         <ReflectionBox>
-          <p>Al construir estos comandos, entendí que las herramientas de sistema son accesibles para cualquier programador mediante la API de POSIX.</p>
+          <p className="mb-2">
+            <strong className="text-white">¿Qué aprendí?</strong> Al construir estos comandos, entendí que las herramientas del sistema son accesibles para cualquier programador mediante la API de POSIX. Comprendí que comandos como <code className="text-[#f5a623]">cd</code> no pueden ser programas independientes porque afectan al entorno de la shell padre, y que <code className="text-[#f5a623]">rm</code> en realidad desenlaza (<code className="text-[#f5a623]">unlink</code>) inodos en lugar de "borrar" mágicamente el archivo.
+          </p>
+          <p>
+            <strong className="text-white">¿Cómo podría mejorarla?</strong> Podría mejorar estos comandos añadiéndoles soporte para banderas (flags) mediante <code className="text-[#f5a623]">getopt()</code>, por ejemplo, implementando <code className="text-[#f5a623]">mkdir -p</code> para crear directorios padres, o implementando <code className="text-[#f5a623]">rm -r</code> utilizando recursividad en directorios mediante la API de <code className="text-[#f5a623]">dirent.h</code>.
+          </p>
         </ReflectionBox>
 
         <ReadMarker topicId="tema-8" />

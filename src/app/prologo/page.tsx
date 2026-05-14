@@ -83,6 +83,10 @@ export default function PrologoPage() {
                 <span className="text-[#f5a623] mt-0.5">▸</span>
                 <span><strong className="text-white">Tema 7:</strong> Señales</span>
               </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#f5a623] mt-0.5">▸</span>
+                <span><strong className="text-white">Tema 8:</strong> Implementación de comandos POSIX</span>
+              </li>
             </ul>
           </div>
 
