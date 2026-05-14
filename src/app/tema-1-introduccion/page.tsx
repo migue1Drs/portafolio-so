@@ -1,7 +1,9 @@
 import { PageHeader } from "@/components/ui/PageHeader";
 import { LinuxTerminal } from "@/components/ui/LinuxTerminal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
 import { ReadMarker } from "@/components/ui/ReadMarker";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export default function Tema1Page() {
   return (
@@ -9,134 +11,106 @@ export default function Tema1Page() {
       <PageHeader
         number="Tema 1"
         title="Introducción al sistema operativo Linux"
-        description="Fundamentos del sistema operativo GNU/Linux: su arquitectura, el kernel, la shell y los comandos esenciales para la administración del sistema."
+        description="Fundamentos teóricos de los Sistemas Operativos, su arquitectura, clasificación y evolución hasta los sistemas modernos y móviles."
       />
 
       <article className="space-y-8 text-[#b0b8c4] leading-relaxed">
+        {/* 1.1 Introducción */}
         <section>
-          <h2 className="text-xl text-white font-bold mb-4 border-b border-[#333333] pb-2">
-            ¿Qué es Linux?
-          </h2>
+          <SectionHeading id="1-1-introduccion" number="1.1" title="Introducción a los Sistemas Operativos" />
           <p className="mb-4">
-            Linux es un <strong className="text-white">sistema operativo de código abierto</strong> basado en Unix. 
-            Fue creado por <strong className="text-white">Linus Torvalds</strong> en 1991 y es mantenido por una 
-            comunidad global de desarrolladores. El término &quot;Linux&quot; técnicamente se refiere al <em>kernel</em>, 
-            mientras que el sistema completo se conoce como <strong className="text-white">GNU/Linux</strong>, ya que 
-            incluye herramientas del proyecto GNU.
+            Un <strong className="text-white">sistema operativo (SO)</strong> es el software fundamental de todo dispositivo de cómputo. Actúa como el administrador principal de los recursos del hardware y proporciona una interfaz para la interacción del usuario.
           </p>
           <p className="mb-4">
-            A diferencia de sistemas operativos propietarios, Linux ofrece total transparencia en su funcionamiento 
-            interno, lo que lo convierte en la herramienta ideal para el estudio de Sistemas Operativos.
+            Sus responsabilidades principales se dividen en varias áreas críticas:
           </p>
+          <ul className="list-disc list-inside space-y-2 mb-4 ml-2">
+            <li><strong className="text-[#f5a623]">Administración de procesos:</strong> Gestiona las entidades en ejecución evitando conflictos como interbloqueos y asegurando la sincronización.</li>
+            <li><strong className="text-[#f5a623]">Administración de memoria:</strong> Aísla procesos, asigna espacios de memoria dinámicamente y protege el acceso.</li>
+            <li><strong className="text-[#f5a623]">Seguridad y Recursos:</strong> Implementa políticas de acceso controlado, equidad y eficiencia en el uso del hardware.</li>
+          </ul>
         </section>
 
+        {/* 1.2 Clasificación */}
         <section>
-          <h2 className="text-xl text-white font-bold mb-4 border-b border-[#333333] pb-2">
-            Arquitectura del sistema
-          </h2>
+          <SectionHeading id="1-2-clasificacion" number="1.2" title="Clasificación de los sistemas operativos" />
           <p className="mb-4">
-            La arquitectura de Linux se organiza en capas:
+            A lo largo de la historia, los SO han evolucionado adaptándose a diferentes arquitecturas y necesidades. Podemos clasificarlos de la siguiente manera:
           </p>
-          <div className="bg-[#1c1c1c] border border-[#333333] rounded-sm p-6 my-6">
-            <div className="space-y-3 text-sm font-mono">
-              <div className="bg-[#2d333b] border border-[#444c56] rounded p-3 text-center text-white font-bold">
-                Aplicaciones de Usuario (programas, scripts, utilidades)
-              </div>
-              <div className="text-center text-[#f5a623]">↓</div>
-              <div className="bg-[#2d333b] border border-[#444c56] rounded p-3 text-center text-white font-bold">
-                Shell (bash, zsh) — Intérprete de Comandos
-              </div>
-              <div className="text-center text-[#f5a623]">↓</div>
-              <div className="bg-[#2d333b] border border-[#444c56] rounded p-3 text-center text-white font-bold">
-                Llamadas al Sistema (System Calls API)
-              </div>
-              <div className="text-center text-[#f5a623]">↓</div>
-              <div className="bg-[#1a1a2e] border border-[#f5a623] rounded p-3 text-center text-[#f5a623] font-bold">
-                Kernel de Linux (gestión de procesos, memoria, I/O, filesystem)
-              </div>
-              <div className="text-center text-[#f5a623]">↓</div>
-              <div className="bg-[#2d333b] border border-[#444c56] rounded p-3 text-center text-white font-bold">
-                Hardware (CPU, RAM, Discos, Periféricos)
-              </div>
-            </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+            <SpotlightCard className="bg-[#161b22] border border-[#30363d] p-6 hover:border-[#8b949e] transition-colors">
+              <h3 className="text-white font-bold mb-3">Por Lotes y Tiempo Real</h3>
+              <p className="text-sm text-[#8b949e]">
+                Los sistemas <strong className="text-white">por lotes</strong> agrupaban trabajos similares para evitar tiempos muertos del procesador (ej. SCOPE). Los sistemas de <strong className="text-white">tiempo real</strong> priorizan el cumplimiento estricto de tiempos de respuesta sobre la interacción del usuario (ej. RTLinux, VxWorks).
+              </p>
+            </SpotlightCard>
+            
+            <SpotlightCard className="bg-[#161b22] border border-[#30363d] p-6 hover:border-[#8b949e] transition-colors">
+              <h3 className="text-white font-bold mb-3">Multitarea y Paralelos</h3>
+              <p className="text-sm text-[#8b949e]">
+                La <strong className="text-white">multitarea</strong> permite ejecución concurrente alternando tareas mediante la planificación de procesos e hilos. Los sistemas <strong className="text-white">paralelos</strong> explotan múltiples procesadores reales para aumentar el rendimiento simultáneo.
+              </p>
+            </SpotlightCard>
+            
+            <SpotlightCard className="bg-[#161b22] border border-[#30363d] p-6 hover:border-[#8b949e] transition-colors">
+              <h3 className="text-white font-bold mb-3">Distribuidos y de Red</h3>
+              <p className="text-sm text-[#8b949e]">
+                En los <strong className="text-white">distribuidos</strong>, múltiples equipos procesan tareas de forma transparente al usuario, tolerando fallos. En los de <strong className="text-white">red</strong>, los equipos conservan su autonomía pero comparten recursos como servidores web o archivos.
+              </p>
+            </SpotlightCard>
+            
+            <SpotlightCard className="bg-[#161b22] border border-[#30363d] p-6 hover:border-[#8b949e] transition-colors">
+              <h3 className="text-white font-bold mb-3">Dispositivos Móviles</h3>
+              <p className="text-sm text-[#8b949e]">
+                Optimizados para recursos limitados y pantallas táctiles. Destacan <strong className="text-white">iOS</strong> (basado en XNU/Mac OS X), el extinto <strong className="text-white">Symbian</strong> y <strong className="text-white">Android</strong> (basado en el kernel de Linux y fuertemente dependiente de máquinas virtuales).
+              </p>
+            </SpotlightCard>
           </div>
         </section>
 
+        {/* 1.3 Evidencias */}
         <section>
-          <h2 className="text-xl text-white font-bold mb-4 border-b border-[#333333] pb-2">
-            Comandos básicos de Linux
-          </h2>
+          <SectionHeading id="1-3-evidencias" number="1.3" title="Evidencias y Ejecución en el Sistema" />
           <p className="mb-4">
-            La terminal es la principal herramienta de interacción con Linux. Algunos comandos fundamentales incluyen:
+            Para comprobar la naturaleza <strong className="text-white">multitarea</strong> e identificar el núcleo del sistema sobre el que trabajamos, ejecutamos los siguientes comandos:
           </p>
 
           <LinuxTerminal
-            command="uname -a"
-            output={`Linux migue1drs-pc 6.8.0-45-generic #45-Ubuntu SMP x86_64 GNU/Linux`}
-            title="bash — información del sistema"
+            command="uname -a && cat /etc/os-release | grep PRETTY"
+            output={`Linux migue1drs-pc 6.8.0-45-generic #45-Ubuntu SMP x86_64 GNU/Linux
+PRETTY_NAME="Ubuntu 24.04 LTS"`}
+            title="bash — Información del OS y Kernel"
           />
 
-          <LinuxTerminal
-            command="ls -la /proc/self"
-            output={`total 0
-dr-xr-xr-x  9 migue1drs migue1drs 0 mayo  7 12:00 .
-dr-xr-xr-x 298 root      root      0 mayo  7 08:00 ..
--r--r--r--  1 migue1drs migue1drs 0 mayo  7 12:00 cmdline
--r--r--r--  1 migue1drs migue1drs 0 mayo  7 12:00 status
-lrwxrwxrwx  1 migue1drs migue1drs 0 mayo  7 12:00 exe -> /usr/bin/ls
-lrwxrwxrwx  1 migue1drs migue1drs 0 mayo  7 12:00 cwd -> /home/migue1drs`}
-            title="bash — sistema de archivos /proc"
-          />
-
-          <LinuxTerminal
-            command="cat /etc/os-release | head -5"
-            output={`PRETTY_NAME="Ubuntu 24.04 LTS"
-NAME="Ubuntu"
-VERSION_ID="24.04"
-VERSION="24.04 LTS (Noble Numbat)"
-ID=ubuntu`}
-            title="bash — versión de distribución"
-          />
-        </section>
-
-        <section>
-          <h2 className="text-xl text-white font-bold mb-4 border-b border-[#333333] pb-2">
-            El sistema de archivos virtual /proc
-          </h2>
-          <p className="mb-4">
-            Linux expone información del kernel en tiempo real a través del pseudo-sistema de archivos <code className="bg-[#2d333b] px-2 py-0.5 rounded text-[#f5a623] text-sm">/proc</code>. 
-            Cada proceso en ejecución tiene un directorio en <code className="bg-[#2d333b] px-2 py-0.5 rounded text-[#f5a623] text-sm">/proc/[PID]</code> que contiene 
-            información como su estado, los archivos que tiene abiertos, la memoria que consume, etc.
+          <p className="my-4">
+            Al ser un SO de propósito general moderno, soporta multitarea gestionando múltiples procesos concurrentemente. Podemos verificar la cantidad de procesos que nuestro SO administra en este momento:
           </p>
 
           <LinuxTerminal
-            command="cat /proc/cpuinfo | head -10"
-            output={`processor	: 0
-vendor_id	: GenuineIntel
-cpu family	: 6
-model		: 142
-model name	: Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz
-stepping	: 10
-microcode	: 0xf4
-cpu MHz		: 800.000
-cache size	: 6144 KB
-physical id	: 0`}
-            title="bash — información del CPU"
+            command="ps -e | wc -l"
+            output={`342`}
+            title="bash — Conteo de procesos actuales"
+          />
+
+          <p className="my-4">
+            Y para observar los procesadores lógicos disponibles para tareas <strong className="text-white">paralelas/concurrentes</strong>:
+          </p>
+
+          <LinuxTerminal
+            command="nproc && lscpu | grep 'Core(s) per socket'"
+            output={`8
+Core(s) per socket:  4`}
+            title="bash — Información de procesamiento"
           />
         </section>
 
         <ReflectionBox>
           <p className="mb-3">
-            <strong className="text-white">¿Qué aprendí?</strong> En esta primera práctica comprendí la arquitectura 
-            fundamental de Linux y cómo el kernel actúa como intermediario entre el hardware y las aplicaciones de usuario 
-            a través de las llamadas al sistema. El pseudo-sistema de archivos <code className="text-[#f5a623]">/proc</code> fue 
-            una revelación, ya que permite acceder a información interna del sistema operativo como si fuera un archivo normal.
+            <strong className="text-white">¿Qué aprendí?</strong> Aprendí a clasificar los sistemas operativos según sus paradigmas y cómo han evolucionado desde el simple procesamiento por lotes hasta los modernos SO para móviles.
           </p>
           <p>
-            <strong className="text-white">¿Cómo podría mejorar?</strong> Podría profundizar en la exploración de 
-            <code className="text-[#f5a623]"> /sys</code> y <code className="text-[#f5a623]">/dev</code>, que son otros 
-            pseudo-sistemas de archivos que exponen información de hardware. También sería útil escribir scripts de shell 
-            que automaticen la recopilación de métricas del sistema.
+            <strong className="text-white">¿Cómo podría mejorar?</strong> Podría investigar más a fondo cómo interactúan el núcleo y la capa de middleware.
           </p>
         </ReflectionBox>
 

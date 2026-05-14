@@ -4,7 +4,6 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { ProgressProvider } from "@/lib/progress-context";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 
 const geistSans = Geist({
@@ -34,7 +33,6 @@ export default function RootLayout({
     >
       <body className="flex flex-col min-h-screen bg-[#111111]">
         <ProgressProvider>
-          <ScrollProgress />
           <Navbar />
 
           <div className="flex flex-1 max-w-[1600px] mx-auto w-full relative">

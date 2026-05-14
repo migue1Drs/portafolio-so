@@ -227,3 +227,212 @@ export const TEMA3_QUIZ: QuizQuestion[] = [
     explanation: "La memoria compartida no tiene mecanismos de sincronización integrados. Si ambos acceden simultáneamente, ocurre una condición de carrera (race condition). Los semáforos actúan como candados para garantizar Exclusión Mutua (mutex) y también para sincronizar el estado (ej. esperar si el buffer está vacío/lleno)."
   }
 ];
+
+/* ── Tema 5: Administración de memoria ── */
+export const TEMA5_QUIZ: QuizQuestion[] = [
+  {
+    id: "t5-q1",
+    question: "¿Cuál es la función de la Unidad de Administración de Memoria (MMU)?",
+    options: [
+      "Asignar prioridad a los procesos en la cola de CPU",
+      "Asociar las direcciones virtuales generadas por el programa con las direcciones físicas de la RAM",
+      "Controlar la velocidad de transferencia entre el disco duro y la memoria principal",
+      "Eliminar procesos inactivos para liberar espacio en el mapa de bits",
+    ],
+    correctIndex: 1,
+    explanation:
+      "La MMU es un chip (o parte de la CPU) que mapea direcciones virtuales a físicas. Gracias a ella, los programas pueden creer que tienen un espacio de direcciones continuo cuando en realidad está fragmentado en marcos de página físicos.",
+  },
+  {
+    id: "t5-q2",
+    question: "Si un proceso espera por E/S el 80% de su tiempo (p=0.8) y hay 3 procesos en memoria, ¿cuál es el porcentaje de uso de la CPU según el modelo probabilístico?",
+    options: [
+      "20%",
+      "48.8%",
+      "51.2%",
+      "80%",
+    ],
+    correctIndex: 2,
+    explanation:
+      "La fórmula es CPU = 1 - p^n. En este caso: 1 - (0.8)^3 = 1 - 0.512 = 0.488 (o 48.8% de uso). La probabilidad de que los 3 esperen a la vez es 51.2%.",
+  },
+  {
+    id: "t5-q3",
+    question: "¿Qué algoritmo de asignación de memoria busca en toda la lista para encontrar el hueco más pequeño que sea suficiente?",
+    options: [
+      "Primer ajuste (First-fit)",
+      "Siguiente ajuste (Next-fit)",
+      "Mejor ajuste (Best-fit)",
+      "Peor ajuste (Worst-fit)",
+    ],
+    correctIndex: 2,
+    explanation:
+      "El 'Mejor ajuste' recorre toda la lista para encontrar el hueco que más se aproxime al tamaño solicitado, intentando no desperdiciar huecos grandes para procesos pequeños.",
+  },
+  {
+    id: "t5-q4",
+    question: "¿Para qué sirven los registros 'base' y 'límite' en la multiprogramación con particiones fijas?",
+    options: [
+      "Para acelerar la velocidad del bus de datos",
+      "Para resolver los problemas de reasignación y protección de memoria",
+      "Para contar cuántas páginas han sido enviadas al swap",
+      "Para permitir que un proceso crezca dinámicamente",
+    ],
+    correctIndex: 1,
+    explanation:
+      "El registro base permite que las direcciones relativas se conviertan en absolutas sumando el inicio de la partición. El registro límite asegura que un proceso no acceda a memoria fuera de su partición (protección).",
+  },
+  {
+    id: "t5-q5",
+    question: "En Linux, ¿qué indica un valor de 'swappiness' igual a 60?",
+    options: [
+      "Que el sistema usará el swap cuando la RAM llegue al 60% de ocupación",
+      "Que el 60% de la memoria está reservada para el kernel",
+      "Que cuando la RAM llegue al 40% de uso (60% libre), empezará a paginar al disco",
+      "Que el archivo swapfile tiene un tamaño de 60 GB",
+    ],
+    correctIndex: 2,
+    explanation:
+      "El valor de swappiness (0-100) controla la agresividad del intercambio. Un valor de 60 (común en Ubuntu) indica que el sistema empezará a mover páginas al swap cuando la RAM disponible sea relativamente baja (aproximadamente al 40% de uso de RAM).",
+  },
+];
+
+/* ── Tema 6: Sistema de Archivos ── */
+export const TEMA6_QUIZ: QuizQuestion[] = [
+  {
+    id: "t6-q1",
+    question: "¿Qué sección del sistema de archivos contiene metadatos como el tamaño, total de archivos y espacio libre?",
+    options: [
+      "Boot",
+      "Superbloque",
+      "Lista de Inodos",
+      "Bloque de datos",
+    ],
+    correctIndex: 1,
+    explanation:
+      "El superbloque es la estructura fundamental que describe el estado global del sistema de archivos (tamaño, bloques libres, etc.).",
+  },
+  {
+    id: "t6-q2",
+    question: "¿Qué información NO se encuentra almacenada directamente en el inodo de un archivo?",
+    options: [
+      "Permisos de acceso",
+      "Identificador del propietario (UID)",
+      "El nombre del archivo",
+      "Tamaño del archivo",
+    ],
+    correctIndex: 2,
+    explanation:
+      "El nombre del archivo no está en el inodo; se almacena en el directorio, el cual asocia nombres con números de inodo (enlaces).",
+  },
+  {
+    id: "t6-q3",
+    question: "¿Cuál es la función del 'Major Number' en un archivo de dispositivo?",
+    options: [
+      "Indicar el número de unidad dentro del dispositivo",
+      "Especificar el tamaño máximo de transferencia de datos",
+      "Identificar el tipo de dispositivo (disco, terminal, etc.) para buscar el driver correcto",
+      "Establecer la prioridad de acceso al bus de E/S",
+    ],
+    correctIndex: 2,
+    explanation:
+      "El 'Major Number' identifica el tipo de dispositivo y permite al kernel asociarlo con un controlador (driver) específico. El 'Minor Number' identifica la unidad específica.",
+  },
+  {
+    id: "t6-q4",
+    question: "¿Para qué sirve la función sync() en C?",
+    options: [
+      "Para sincronizar la hora del sistema con un servidor NTP",
+      "Para forzar que los datos y metadatos en caché se escriban físicamente en el disco",
+      "Para permitir que dos hilos compartan la misma variable",
+      "Para verificar si un sistema de archivos está montado",
+    ],
+    correctIndex: 1,
+    explanation:
+      "sync() vuelca todos los buffers de caché del kernel al disco duro, asegurando la integridad de los datos ante un posible fallo de energía.",
+  },
+  {
+    id: "t6-q5",
+    question: "¿Qué diferencia a un dispositivo de bloque de uno de carácter?",
+    options: [
+      "Los de bloque son más lentos",
+      "Los de bloque usan un buffer caché y gestionan datos en unidades de tamaño fijo (sectores)",
+      "Los de carácter solo pueden leerse, no escribirse",
+      "Los de bloque solo existen en sistemas distribuidos",
+    ],
+    correctIndex: 1,
+    explanation:
+      "Los dispositivos de bloque (como discos) transfieren datos en bloques fijos y usan caché. Los de carácter (como teclados) manejan flujos lineales de bytes sin buffer intermedio del kernel.",
+  },
+];
+
+/* ── Tema 7: Señales ── */
+export const TEMA7_QUIZ: QuizQuestion[] = [
+  {
+    id: "t7-q1",
+    question: "¿Qué señales de Linux NO pueden ser capturadas ni ignoradas por un proceso?",
+    options: [
+      "SIGINT y SIGTERM",
+      "SIGKILL y SIGSTOP",
+      "SIGUSR1 y SIGUSR2",
+      "SIGSEGV y SIGILL",
+    ],
+    correctIndex: 1,
+    explanation:
+      "SIGKILL (9) y SIGSTOP (19) son señales que el kernel maneja directamente para asegurar el control del sistema; el proceso no tiene oportunidad de tratarlas.",
+  },
+  {
+    id: "t7-q2",
+    question: "Si llamamos a kill(0, SIGKILL), ¿a quién se le envía la señal?",
+    options: [
+      "Al proceso con PID 0 (kernel)",
+      "Solo al proceso que realiza la llamada",
+      "A todos los procesos que pertenecen al mismo grupo que el emisor",
+      "A todos los procesos del sistema (broadcast)",
+    ],
+    correctIndex: 2,
+    explanation:
+      "Cuando pid = 0, la señal se envía a todos los procesos cuyo ID de grupo de proceso es igual al del proceso que envía la señal.",
+  },
+  {
+    id: "t7-q3",
+    question: "¿Qué par de funciones permiten realizar un salto no local de retorno a un estado guardado?",
+    options: [
+      "fork() y wait()",
+      "signal() y raise()",
+      "setjmp() y longjmp()",
+      "alarm() y pause()",
+    ],
+    correctIndex: 2,
+    explanation:
+      "setjmp() guarda el entorno (registros, pila, etc.) y longjmp() restaura dicho entorno, permitiendo 'saltar' de vuelta a un punto anterior del programa.",
+  },
+  {
+    id: "t7-q4",
+    question: "¿Cuál es el comportamiento por defecto de SIGALRM?",
+    options: [
+      "Ignorar la señal",
+      "Suspender el proceso",
+      "Terminar la ejecución del proceso",
+      "Reiniciar el temporizador",
+    ],
+    correctIndex: 2,
+    explanation:
+      "A menos que se defina un manejador (handler), la acción por defecto de SIGALRM es finalizar el proceso.",
+  },
+  {
+    id: "t7-q5",
+    question: "¿Para qué sirve la función pause()?",
+    options: [
+      "Para detener el programa por un tiempo fijo",
+      "Para suspender el proceso hasta que se reciba cualquier señal capturable",
+      "Para liberar la memoria del proceso",
+      "Para esperar a que un hijo termine",
+    ],
+    correctIndex: 1,
+    explanation:
+      "pause() pone al proceso a dormir hasta que llega una señal que o bien termina el proceso o bien invoca a un manejador de señales.",
+  },
+];
+
+

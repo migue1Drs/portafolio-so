@@ -112,8 +112,8 @@ export function Sidebar() {
                 {/* Completion indicator */}
                 <div className="mr-3 shrink-0">
                   {topicComplete ? (
-                    <div className="w-5 h-5 rounded-full bg-[#238636] flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-5 h-5 rounded-full bg-[#f5a623] flex items-center justify-center">
+                      <svg className="w-3 h-3 text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -140,7 +140,7 @@ export function Sidebar() {
 
                 {/* Quiz badge */}
                 {topicQuizPassed && (
-                  <span className="ml-2 text-[8px] bg-[#23863620] text-[#3fb950] px-1.5 py-0.5 rounded-full font-bold shrink-0">
+                  <span className="ml-2 text-[8px] bg-[#f5a62320] text-[#f5a623] px-1.5 py-0.5 rounded-full font-bold shrink-0">
                     QUIZ ✓
                   </span>
                 )}

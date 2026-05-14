@@ -1,226 +1,226 @@
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CopyCodeBlock } from "@/components/ui/CopyCodeBlock";
-import { LinuxTerminal } from "@/components/ui/LinuxTerminal";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
+import { TopicQuiz } from "@/components/ui/TopicQuiz";
 import { ReadMarker } from "@/components/ui/ReadMarker";
+import { TEMA6_QUIZ } from "@/lib/quiz-data";
 
 export default function Tema6Page() {
   return (
     <div className="animate-in fade-in duration-700 max-w-[1000px] mx-auto w-full">
       <PageHeader
         number="Tema 6"
-        title="Arquitectura del sistema de archivos"
-        description="Exploración de la estructura interna del sistema de archivos en Linux: inodos, bloques, directorios, descriptores de archivo y las llamadas al sistema para manipular archivos."
+        title="Arquitectura del Sistema de Archivos"
+        description="Estudio de la estructura lógica de los sistemas de archivos (ext2, ext3, ext4), gestión de inodos, superbloques y dispositivos de E/S en UNIX/Linux."
       />
 
-      <article className="space-y-6 text-[#b0b8c4] leading-relaxed">
+      <article className="space-y-10 text-[#b0b8c4] leading-relaxed">
+        {/* 6.1 */}
+        <section>
+          <SectionHeading id="6-1-introduccion" number="6.1" title="Introducción" />
+          <p className="mb-4">
+            El sistema de archivos en UNIX/Linux posee una estructura jerárquica y proporciona consistencia, protección y manejo dinámico de datos. El kernel trabaja a un nivel lógico, utilizando controladores (drivers) para traducir estas operaciones lógicas a direcciones físicas en el disco.
+          </p>
+          <p>
+            Cada dispositivo es identificado mediante dos números: el <strong className="text-[#f5a623]">Major Number</strong> (tipo de dispositivo) y el <strong className="text-[#f5a623]">Minor Number</strong> (unidad específica).
+          </p>
+        </section>
 
-        <SectionHeading id="6-1-estructura" number="6.1" title="Estructura del sistema de archivos" />
-        <p>
-          En Linux, <strong className="text-white">&quot;todo es un archivo&quot;</strong>. El sistema de archivos se 
-          organiza en una jerarquía de directorios partiendo de la raíz <code className="bg-[#2d333b] px-2 py-0.5 rounded text-[#f5a623] text-sm">/</code>. 
-          Internamente, cada archivo está representado por un <strong className="text-white">inodo</strong> (index node) 
-          que almacena los metadatos del archivo.
-        </p>
+        {/* 6.2 */}
+        <section>
+          <SectionHeading id="6-2-estructura-logica" number="6.2" title="Estructura lógica del sistema de archivos" />
+          <p className="mb-6">
+            Un sistema de archivos estándar (como ext4) se divide en cuatro secciones fundamentales:
+          </p>
 
-        <div className="bg-[#1c1c1c] border border-[#333333] rounded-sm p-6 my-6">
-          <h4 className="text-[#f5a623] font-bold text-sm uppercase tracking-widest mb-4">Componentes del sistema de archivos</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div className="bg-[#2d333b] border border-[#444c56] rounded p-4">
-              <span className="text-[#f5a623] font-bold">Superbloque</span>
-              <p className="text-[#a0a0a0] mt-1">Información global: tamaño, # inodos libres, # bloques libres</p>
-            </div>
-            <div className="bg-[#2d333b] border border-[#444c56] rounded p-4">
-              <span className="text-[#f5a623] font-bold">Tabla de inodos</span>
-              <p className="text-[#a0a0a0] mt-1">Metadatos de cada archivo: permisos, propietario, tamaño, punteros a bloques</p>
-            </div>
-            <div className="bg-[#2d333b] border border-[#444c56] rounded p-4">
-              <span className="text-[#f5a623] font-bold">Bloques de datos</span>
-              <p className="text-[#a0a0a0] mt-1">Contenido real de los archivos almacenado en bloques de tamaño fijo</p>
-            </div>
-            <div className="bg-[#2d333b] border border-[#444c56] rounded p-4">
-              <span className="text-[#f5a623] font-bold">Directorios</span>
-              <p className="text-[#a0a0a0] mt-1">Archivos especiales que mapean nombres → inodos</p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            {[
+              { title: "1. Boot", desc: "Contiene el código de arranque para inicializar el SO." },
+              { title: "2. Superbloque", desc: "Describe el estado global: tamaño, espacio libre, etc." },
+              { title: "3. Lista de Inodos", desc: "Metadatos de cada archivo (permisos, dueño, etc.)." },
+              { title: "4. Bloques de Datos", desc: "Donde reside el contenido real de los archivos." },
+            ].map((item, i) => (
+              <div key={i} className="bg-[#161b22] border border-[#30363d] p-4 rounded-xl hover:border-[#f5a623] transition-colors">
+                <h4 className="text-white font-bold mb-2">{item.title}</h4>
+                <p className="text-sm text-[#8b949e]">{item.desc}</p>
+              </div>
+            ))}
           </div>
-        </div>
+        </section>
 
-        <LinuxTerminal
-          command="stat /etc/passwd"
-          output={`  Archivo: /etc/passwd
-  Tamaño: 2847      	Bloques: 8          IO en bloques: 4096   archivo regular
-Dispositivo: 802h/2050d	Inodo: 131074      Enlaces: 1
-Acceso: (0644/-rw-r--r--)  UID: (    0/    root)   GID: (    0/    root)
-Acceso: 2026-05-07 12:00:01.000000000 -0600
-Modificación: 2026-05-01 10:30:00.000000000 -0600
-     Cambio: 2026-05-01 10:30:00.000000000 -0600
-  Creación: 2026-01-15 08:00:00.000000000 -0600`}
-          title="bash — información del inodo con stat"
-        />
-
-        <SectionHeading id="6-2-descriptores" number="6.2" title="Descriptores de archivo" />
-        <p>
-          Cuando un proceso abre un archivo, el kernel le asigna un <strong className="text-white">descriptor de archivo</strong> (file 
-          descriptor), que es un número entero no negativo. Los descriptores estándar son:
-        </p>
-        <ul className="list-none space-y-2 my-4 ml-4">
-          <li className="flex items-start gap-2">
-            <span className="text-[#f5a623] font-mono font-bold">0</span>
-            <span>— <strong className="text-white">stdin</strong> (entrada estándar)</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-[#f5a623] font-mono font-bold">1</span>
-            <span>— <strong className="text-white">stdout</strong> (salida estándar)</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-[#f5a623] font-mono font-bold">2</span>
-            <span>— <strong className="text-white">stderr</strong> (error estándar)</span>
-          </li>
-        </ul>
-
-        <CopyCodeBlock
-          filename="file_operations.c"
-          language="C"
-          code={`#include <stdio.h>
+        {/* 6.2.1 */}
+        <section>
+          <SectionHeading id="6-2-1-superbloque" number="6.2.1" title="El superbloque" />
+          <p className="mb-4">
+            Contiene información crítica como el tamaño del sistema, lista de bloques libres e inodos disponibles. El kernel mantiene una copia en memoria y utiliza procesos como <code className="text-[#58a6ff]">sync_supers</code> para actualizar el disco.
+          </p>
+          
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Estadísticas del Sistema de Archivos (statvfs)</h3>
+          <CopyCodeBlock 
+            filename="info_vfs.c" 
+            language="C" 
+            code={`#include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
+#include <sys/statvfs.h>
 
 int main() {
-    // Crear y escribir un archivo
-    int fd = open("prueba_so.txt", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-    if (fd == -1) {
-        perror("Error al abrir");
-        exit(1);
-    }
-    
-    printf("Archivo abierto con descriptor: %d\\n", fd);
-    
-    char *texto = "Contenido escrito con llamadas al sistema\\n";
-    ssize_t bytes = write(fd, texto, strlen(texto));
-    printf("Bytes escritos: %zd\\n", bytes);
-    close(fd);
-    
-    // Leer el archivo
-    fd = open("prueba_so.txt", O_RDONLY);
-    char buffer[256];
-    bytes = read(fd, buffer, sizeof(buffer) - 1);
-    buffer[bytes] = '\\0';
-    
-    printf("Bytes leídos: %zd\\n", bytes);
-    printf("Contenido: \\"%s\\"\\n", buffer);
-    close(fd);
-    
-    // Ver descriptores abiertos del proceso
-    printf("\\nDescriptores abiertos:\\n");
-    printf("  stdin:  %d\\n", STDIN_FILENO);
-    printf("  stdout: %d\\n", STDOUT_FILENO);
-    printf("  stderr: %d\\n", STDERR_FILENO);
-    
-    return 0;
-}`}
-        />
+ struct statvfs vfs;
+ char *ruta = "/";
+ 
+ if (statvfs(ruta, &vfs) != 0) {
+  perror("statvfs");
+  return 1;
+ }
+ 
+ printf("Información de: %s\\n", ruta);
+ printf("Tamaño de bloque: %ld bytes\\n", vfs.f_bsize);
+ printf("Bloques totales: %lu\\n", (unsigned long)vfs.f_blocks);
+ printf("Bloques libres: %lu\\n", (unsigned long)vfs.f_bfree);
+ printf("Inodos libres: %lu\\n", (unsigned long)vfs.f_ffree);
+ printf("ID del S.A.: %#lx\\n", (unsigned long)vfs.f_fsid);
+ 
+ return 0;
+}`} 
+            compileCommand="gcc info_vfs.c -o vfs_info"
+            runCommand="./vfs_info"
+            output={`Información de: /
+Tamaño de bloque: 4096 bytes
+Bloques totales: 61027555
+Bloques libres: 15728640
+Inodos libres: 3276800
+ID del S.A.: 0x5a4f21d3`}
+          />
+        </section>
 
-        <LinuxTerminal
-          command="gcc -o file_ops file_operations.c && ./file_ops"
-          output={`Archivo abierto con descriptor: 3
-Bytes escritos: 42
-Bytes leídos: 42
-Contenido: "Contenido escrito con llamadas al sistema
-"
+        {/* 6.2.2 */}
+        <section>
+          <SectionHeading id="6-2-2-inodos" number="6.2.2" title="Nodos índices (inodos)" />
+          <p className="mb-4">
+            Cada archivo tiene asociado un inodo que contiene: propietario, derechos de acceso, tamaño y localización física. <strong className="text-white">Importante:</strong> El nombre del archivo NO reside en el inodo, sino en el directorio.
+          </p>
 
-Descriptores abiertos:
-  stdin:  0
-  stdout: 1
-  stderr: 2`}
-          title="bash — operaciones con archivos"
-        />
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Obtener metadatos con stat()</h3>
+          <CopyCodeBlock 
+            filename="stat_file.c" 
+            language="C" 
+            code={`#include <stdio.h>
+#include <sys/stat.h>
+#include <time.h>
 
-        <SectionHeading id="6-3-directorios" number="6.3" title="Operaciones con directorios" />
+int main(int argc, char *argv[]) {
+ struct stat sb;
+ if (argc < 2) return 1;
+ 
+ if (stat(argv[1], &sb) == -1) return 1;
+ 
+ printf("Inodo: %ld\\n", (long)sb.st_ino);
+ printf("Tamaño: %lld bytes\\n", (long long)sb.st_size);
+ printf("Enlaces: %ld\\n", (long)sb.st_nlink);
+ printf("Último acceso: %s", ctime(&sb.st_atime));
+ 
+ return 0;
+}`} 
+            compileCommand="gcc stat_file.c -o stat_info"
+            runCommand="./stat_info stat_file.c"
+            output={`Inodo: 1258291
+Tamaño: 452 bytes
+Enlaces: 1
+Último acceso: Wed May 13 17:45:00 2026`}
+          />
+        </section>
 
-        <CopyCodeBlock
-          filename="directory_ops.c"
-          language="C"
-          code={`#include <stdio.h>
-#include <dirent.h>
+        {/* 6.3 */}
+        <section>
+          <SectionHeading id="6-3-tipos-archivos" number="6.3" title="Tipos de archivos en Linux" />
+          <div className="space-y-6">
+            <div className="bg-[#161b22] border-l-4 border-[#3fb950] p-4">
+              <h4 className="text-white font-bold">1. Ordinarios (Regulares)</h4>
+              <p className="text-sm">Contienen bytes de datos organizados linealmente. El nombre es solo una etiqueta que apunta a un inodo.</p>
+            </div>
+            <div className="bg-[#161b22] border-l-4 border-[#58a6ff] p-4">
+              <h4 className="text-white font-bold">2. Directorios</h4>
+              <p className="text-sm">Archivos especiales que mapean nombres de archivos a números de inodo. El kernel tiene derecho exclusivo de escritura.</p>
+            </div>
+            <div className="bg-[#161b22] border-l-4 border-[#f5a623] p-4">
+              <h4 className="text-white font-bold">3. Dispositivos (Especiales)</h4>
+              <p className="text-sm">Permiten la comunicación con el hardware. Pueden ser de <strong className="text-white">bloque</strong> (discos) o <strong className="text-white">carácter</strong> (teclados, terminales).</p>
+            </div>
+            <div className="bg-[#161b22] border-l-4 border-[#ff5f56] p-4">
+              <h4 className="text-white font-bold">4. Comunicación (Pipes)</h4>
+              <p className="text-sm">Archivos transitorios usados para IPC. Los datos son FIFO (First-In, First-Out).</p>
+            </div>
+          </div>
+        </section>
+
+        {/* 6.4 */}
+        <section>
+          <SectionHeading id="6-4-dispositivos" number="6.4" title="Dispositivos de Entrada y Salida" />
+          <p className="mb-6">
+            Los dispositivos se gestionan a través de <code className="text-[#58a6ff]">/dev</code>. Los dispositivos de bloque usan un <strong className="text-white">buffer caché</strong> para acelerar transferencias, mientras que los de carácter procesan flujos de bytes directamente.
+          </p>
+
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Uso de ioctl() para control de dispositivos</h3>
+          <CopyCodeBlock 
+            filename="terminal_size.c" 
+            language="C" 
+            code={`#include <stdio.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
+int main() {
+ struct winsize w;
+ if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1) return 1;
+ 
+ printf("Terminal: %d filas x %d columnas\\n", w.ws_row, w.ws_col);
+ return 0;
+}`} 
+            compileCommand="gcc terminal_size.c -o term_sz"
+            runCommand="./term_sz"
+            output={`Terminal: 24 filas x 80 columnas`}
+          />
+
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Identificación: Major y Minor Numbers</h3>
+          <CopyCodeBlock 
+            filename="major_minor.c" 
+            language="C" 
+            code={`#include <stdio.h>
+#include <sys/sysmacros.h>
 #include <sys/stat.h>
 
 int main() {
-    DIR *dir = opendir(".");
-    struct dirent *entry;
-    struct stat file_stat;
-    
-    if (dir == NULL) {
-        perror("opendir");
-        return 1;
-    }
-    
-    printf("%-25s %-10s %s\\n", "NOMBRE", "TIPO", "TAMAÑO");
-    printf("%-25s %-10s %s\\n", "-------------------------", 
-           "----------", "----------");
-    
-    while ((entry = readdir(dir)) != NULL) {
-        stat(entry->d_name, &file_stat);
-        
-        char *tipo;
-        if (S_ISDIR(file_stat.st_mode))
-            tipo = "DIR";
-        else if (S_ISREG(file_stat.st_mode))
-            tipo = "FILE";
-        else if (S_ISLNK(file_stat.st_mode))
-            tipo = "LINK";
-        else
-            tipo = "OTHER";
-        
-        printf("%-25s %-10s %ld bytes\\n", 
-               entry->d_name, tipo, file_stat.st_size);
-    }
-    
-    closedir(dir);
-    return 0;
-}`}
-        />
-
-        <LinuxTerminal
-          command="gcc -o dir_ops directory_ops.c && ./dir_ops"
-          output={`NOMBRE                    TIPO       TAMAÑO
-------------------------- ---------- ----------
-.                         DIR        4096 bytes
-..                        DIR        4096 bytes
-file_operations.c         FILE       892 bytes
-directory_ops.c           FILE       745 bytes
-prueba_so.txt             FILE       42 bytes
-fork_example.c            FILE       540 bytes`}
-          title="bash — lectura de directorios"
-        />
-
-        <LinuxTerminal
-          command="df -hT / && echo '---' && ls -li /etc/passwd /etc/shadow | head"
-          output={`S.ficheros     Tipo   Tamaño Usados  Disp Uso% Montado en
-/dev/sda2      ext4     50G    18G   30G  38% /
----
-131074 -rw-r--r-- 1 root root   2847 mayo  1 10:30 /etc/passwd
-131089 -rw-r----- 1 root shadow 1640 mayo  1 10:30 /etc/shadow`}
-          title="bash — sistema de archivos y inodos"
-        />
+ struct stat sb;
+ if (stat("/dev/sda", &sb) == -1) {
+  perror("stat /dev/sda"); return 1;
+ }
+ 
+ printf("Dispositivo: /dev/sda\\n");
+ printf("Major Number: %u\\n", major(sb.st_rdev));
+ printf("Minor Number: %u\\n", minor(sb.st_rdev));
+ return 0;
+}`} 
+            compileCommand="gcc major_minor.c -o majmin"
+            runCommand="./majmin"
+            output={`Dispositivo: /dev/sda
+Major Number: 8
+Minor Number: 0`}
+          />
+        </section>
 
         <ReflectionBox>
           <p className="mb-2">
-            <strong className="text-white">¿Qué aprendí?</strong> El sistema de archivos de Linux es una abstracción 
-            elegante que permite tratar todo como un archivo, desde documentos hasta dispositivos de hardware. 
-            Los inodos son la pieza central que almacena los metadatos, mientras que los bloques almacenan el contenido. 
-            Las llamadas al sistema <code className="text-[#f5a623]">open()</code>, <code className="text-[#f5a623]">read()</code>, 
-            <code className="text-[#f5a623]"> write()</code> y <code className="text-[#f5a623]">close()</code> son la interfaz 
-            fundamental para interactuar con archivos a nivel de kernel.
+            <strong className="text-white">¿Qué aprendí?</strong> Descubrí que en Linux "todo es un archivo", incluso el hardware. La separación entre el nombre del archivo (en el directorio) y sus metadatos (en el inodo) es fundamental para entender cómo funcionan los enlaces duros. También aprendí a usar <code className="text-[#f5a623]">ioctl</code> para obtener información directa del hardware, como el tamaño de la terminal o datos de red.
           </p>
           <p>
-            <strong className="text-white">¿Cómo mejorar?</strong> Implementar un programa que use <code className="text-[#f5a623]">lseek()</code> para 
-            acceso aleatorio en archivos binarios, y explorar la creación de enlaces duros y simbólicos mediante 
-            <code className="text-[#f5a623]"> link()</code> y <code className="text-[#f5a623]">symlink()</code>.
+            <strong className="text-white">¿Cómo podría mejorar?</strong> Me gustaría profundizar en el código fuente de los drivers del kernel para entender exactamente cómo el Major Number se convierte en una llamada a una función específica del controlador. También planeo investigar los sistemas de archivos modernos como <strong className="text-white">Btrfs</strong> o <strong className="text-white">ZFS</strong> y sus diferencias con ext4.
           </p>
         </ReflectionBox>
+
+        <TopicQuiz
+          topicId="tema-6"
+          title="Test — Sistema de Archivos"
+          questions={TEMA6_QUIZ}
+        />
 
         <ReadMarker topicId="tema-6" />
 
