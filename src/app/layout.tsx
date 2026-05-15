@@ -39,6 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased bg-[#111111] text-[#c9d1d9] custom-scrollbar`}
     >
       <body className="flex flex-col min-h-screen bg-[#111111] custom-scrollbar">
