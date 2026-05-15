@@ -136,10 +136,12 @@ export function Navbar() {
         const targetIdx = selectedIdx >= 0 ? selectedIdx : 0;
         const target = filteredResults[targetIdx];
         if (target) {
-          window.location.href = target.entry.href;
           setIsFocused(false);
           setSearchQuery("");
           setMobileMenuOpen(false);
+          inputRef.current?.blur();
+          mobileInputRef.current?.blur();
+          window.location.href = target.entry.href;
         }
       }
     },
@@ -260,7 +262,10 @@ export function Navbar() {
                   type="text"
                   placeholder="Buscar funciones, comandos..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    if (!isFocused) setIsFocused(true);
+                  }}
                   onFocus={() => setIsFocused(true)}
                   onKeyDown={handleKeyDown}
                   className="bg-transparent text-white text-xs px-3 py-2.5 w-full outline-none placeholder:text-[#666]"
@@ -354,7 +359,10 @@ export function Navbar() {
                     type="text"
                     placeholder="Buscar funciones, comandos, conceptos..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      if (!isFocused) setIsFocused(true);
+                    }}
                     onFocus={() => setIsFocused(true)}
                     onKeyDown={handleKeyDown}
                     className="bg-transparent text-white text-sm px-3 py-3 w-full outline-none placeholder:text-[#666]"
