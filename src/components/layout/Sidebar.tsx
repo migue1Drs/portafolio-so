@@ -15,21 +15,21 @@ export function Sidebar() {
 
   useEffect(() => {
     // Collect all subtopic hashes for the current page
-    const currentTopic = PORTFOLIO_TOPICS.find(t => t.href === pathname);
+    const currentTopic = PORTFOLIO_TOPICS.find((t: any) => t.href === pathname);
     if (!currentTopic || !currentTopic.subtopics) {
       setActiveHash("");
       return;
     }
 
-    const hashes = currentTopic.subtopics.map(s => s.href.split('#')[1]).filter(Boolean);
-    const elements = hashes.map(hash => document.getElementById(hash)).filter((el): el is HTMLElement => el !== null);
+    const hashes = currentTopic.subtopics.map((s: any) => s.href.split('#')[1]).filter(Boolean);
+    const elements = hashes.map((hash: any) => document.getElementById(hash)).filter((el: any): el is HTMLElement => el !== null);
 
     if (elements.length === 0) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
+      (entries: any[]) => {
         // Find the most visible entry
-        const visibleEntries = entries.filter(entry => entry.isIntersecting);
+        const visibleEntries = entries.filter((entry: any) => entry.isIntersecting);
         if (visibleEntries.length > 0) {
           // Sort by intersection ratio or just pick the first (topmost) visible element
           setActiveHash(visibleEntries[0].target.id);
@@ -41,7 +41,7 @@ export function Sidebar() {
       }
     );
 
-    elements.forEach(el => observer.observe(el));
+    elements.forEach((el: any) => observer.observe(el));
 
     // Handle initial hash on load or manual navigation
     const handleHashChange = () => {
@@ -64,13 +64,13 @@ export function Sidebar() {
     }
 
     return () => {
-      elements.forEach(el => observer.unobserve(el));
+      elements.forEach((el: any) => observer.unobserve(el));
       window.removeEventListener("hashchange", handleHashChange);
     };
   }, [pathname]);
 
   return (
-    <aside className="h-full bg-[#1c1c1c]/50 backdrop-blur-xl overflow-y-auto flex flex-col">
+    <aside className="h-full bg-[#1c1c1c]/50 backdrop-blur-xl overflow-y-auto flex flex-col custom-scrollbar">
       <div className="p-6 pb-2">
         <h3 className="text-2xl text-[#f5a623] font-bold uppercase tracking-wider mb-2">Índice</h3>
         <p className="text-xs text-[#888888] uppercase tracking-wider border-b border-[#333333] pb-4">
@@ -148,7 +148,7 @@ export function Sidebar() {
               
               {topic.subtopics && isActive && (
                 <div className="ml-8 mt-3 mb-4 space-y-2 border-l border-[#333333] pl-4">
-                  {topic.subtopics.map((sub) => {
+                  {topic.subtopics.map((sub: any) => {
                     const subHash = sub.href.split('#')[1];
                     const isSubActive = activeHash === subHash;
                     
@@ -174,7 +174,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-6 mt-auto space-y-3">
+      <div className="p-6 mt-auto">
         {/* Reset progress */}
         <button
           onClick={resetProgress}
@@ -182,12 +182,6 @@ export function Sidebar() {
         >
           ↺ Reiniciar progreso
         </button>
-
-        <div className="bg-[#252525] border border-[#333333] rounded-sm p-4 text-center">
-          <div className="text-[#f5a623] text-xs font-bold uppercase mb-2 tracking-widest">Autores:</div>
-          <div className="text-xs text-[#cccccc] font-semibold mb-1">Gonzalez Giron Luis Eduardo</div>
-          <div className="text-xs text-[#cccccc] font-semibold">Suárez Dolores Miguel</div>
-        </div>
       </div>
     </aside>
   );

@@ -16,14 +16,24 @@ export function ReflectionBox({ children }: ReflectionBoxProps) {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="my-10"
     >
-      <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-6 md:p-8 relative overflow-hidden">
-        {/* Acento superior sutil */}
+      <motion.div 
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="bg-[#161b22] border border-[#30363d] hover:border-[#4b535d] hover:shadow-[0_4px_20px_rgba(245,166,35,0.05)] rounded-lg p-6 md:p-8 relative overflow-hidden transition-all group"
+      >
+        {/* Acento superior sutil (animado) */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#30363d]">
-          <div className="w-1/4 h-full bg-[#f5a623]"></div>
+          <motion.div 
+            initial={{ width: "0%" }}
+            whileInView={{ width: "25%" }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
+            className="h-full bg-[#f5a623] group-hover:w-1/2 group-hover:bg-[#ffd33d] transition-all duration-500 ease-out"
+          ></motion.div>
         </div>
         
         <div className="flex items-center gap-2 mb-6">
-          <span className="w-2 h-2 rounded-full bg-[#f5a623]"></span>
+          <span className="w-2 h-2 rounded-full bg-[#f5a623] group-hover:shadow-[0_0_8px_rgba(245,166,35,0.8)] transition-shadow duration-300"></span>
           <h4 className="text-white font-bold text-sm md:text-base uppercase tracking-widest">
             Reflexión y Aprendizaje
           </h4>
@@ -32,7 +42,7 @@ export function ReflectionBox({ children }: ReflectionBoxProps) {
         <div className="text-[#8b949e] text-sm md:text-base leading-relaxed space-y-4">
           {children}
         </div>
-      </div>
+      </motion.div>
     </motion.div>
  );
 }

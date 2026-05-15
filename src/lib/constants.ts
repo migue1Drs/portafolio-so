@@ -1,4 +1,15 @@
-import type { Topic } from "@/types";
+export interface Subtopic {
+  id: string;
+  title: string;
+  href: string;
+}
+
+export interface Topic {
+  id: string;
+  title: string;
+  href: string;
+  subtopics?: Subtopic[];
+}
 
 export const PORTFOLIO_TOPICS: Topic[] = [
   {
@@ -47,52 +58,53 @@ export const PORTFOLIO_TOPICS: Topic[] = [
     ]
   },
   {
-    id: "tema-5",
-    title: "5. Administración de memoria",
-    href: "/tema-5-memoria",
+    id: "tema-4",
+    title: "4. Administración de memoria",
+    href: "/tema-4-memoria",
     subtopics: [
-      { id: "5-1", title: "5.1 Introducción", href: "/tema-5-memoria#5-1-introduccion" },
-      { id: "5-3", title: "5.3 Modelos de multiprogramación", href: "/tema-5-memoria#5-3-modelos" },
-      { id: "5-5", title: "5.5 Reasignación y protección", href: "/tema-5-memoria#5-5-reasignacion" },
-      { id: "5-6", title: "5.6 Intercambio (Swap)", href: "/tema-5-memoria#5-6-intercambio" },
-      { id: "5-8", title: "5.8 Registro de uso (Listas)", href: "/tema-5-memoria#5-8-registro-uso" },
-      { id: "5-9", title: "5.9 Memoria virtual", href: "/tema-5-memoria#5-9-memoria-virtual" },
-      { id: "5-10", title: "5.10 Funciones del sistema", href: "/tema-5-memoria#5-10-funciones" },
+      { id: "5-1", title: "4.1 Introducción", href: "/tema-4-memoria#5-1-introduccion" },
+      { id: "5-3", title: "4.2 Modelos de multiprogramación", href: "/tema-4-memoria#5-3-modelos" },
+      { id: "5-5", title: "4.3 Reasignación y protección", href: "/tema-4-memoria#5-5-reasignacion" },
+      { id: "5-6", title: "4.4 Intercambio (Swap)", href: "/tema-4-memoria#5-6-intercambio" },
+      { id: "5-8", title: "4.5 Registro de uso (Listas)", href: "/tema-4-memoria#5-8-registro-uso" },
+      { id: "5-9", title: "4.6 Memoria virtual", href: "/tema-4-memoria#5-9-memoria-virtual" },
+      { id: "5-10", title: "4.7 Funciones del sistema", href: "/tema-4-memoria#5-10-funciones" },
+    ]
+  },
+  {
+    id: "tema-5",
+    title: "5. Sistema de Archivos",
+    href: "/tema-5-archivos",
+    subtopics: [
+      { id: "6-1", title: "5.1 Introducción", href: "/tema-5-archivos#6-1-introduccion" },
+      { id: "6-2", title: "5.2 Estructura lógica", href: "/tema-5-archivos#6-2-estructura-logica" },
+      { id: "6-2-1", title: "5.2.1 Superbloque", href: "/tema-5-archivos#6-2-1-superbloque" },
+      { id: "6-2-2", title: "5.2.2 Inodos", href: "/tema-5-archivos#6-2-2-inodos" },
+      { id: "6-3", title: "5.3 Tipos de archivos", href: "/tema-5-archivos#6-3-tipos-archivos" },
+      { id: "6-4", title: "5.4 Dispositivos E/S", href: "/tema-5-archivos#6-4-dispositivos" },
     ]
   },
   {
     id: "tema-6",
-    title: "6. Sistema de Archivos",
-    href: "/tema-6-archivos",
+    title: "6. Señales",
+    href: "/tema-6-senales",
     subtopics: [
-      { id: "6-1", title: "6.1 Introducción", href: "/tema-6-archivos#6-1-introduccion" },
-      { id: "6-2", title: "6.2 Estructura lógica", href: "/tema-6-archivos#6-2-estructura-logica" },
-      { id: "6-2-1", title: "6.2.1 Superbloque", href: "/tema-6-archivos#6-2-1-superbloque" },
-      { id: "6-2-2", title: "6.2.2 Inodos", href: "/tema-6-archivos#6-2-2-inodos" },
-      { id: "6-3", title: "6.3 Tipos de archivos", href: "/tema-6-archivos#6-3-tipos-archivos" },
-      { id: "6-4", title: "6.4 Dispositivos E/S", href: "/tema-6-archivos#6-4-dispositivos" },
+      { id: "7-1", title: "6.1 Introducción", href: "/tema-6-senales#7-1-intro" },
+      { id: "7-2", title: "6.2 Tipos de señales", href: "/tema-6-senales#7-2-tipos" },
+      { id: "7-3", title: "6.3 Tratamiento de señales", href: "/tema-6-senales#7-3-tratamiento" },
+      { id: "7-4", title: "6.4 Función alarma y pausa", href: "/tema-6-senales#7-4-alarma" },
     ]
   },
   {
     id: "tema-7",
-    title: "7. Señales",
-    href: "/tema-7-senales",
+    title: "7. Implementación de Comandos",
+    href: "/tema-7-comandos",
     subtopics: [
-      { id: "7-1", title: "7.1 Introducción", href: "/tema-7-senales#7-1-intro" },
-      { id: "7-2", title: "7.2 Tipos de señales", href: "/tema-7-senales#7-2-tipos" },
-      { id: "7-3", title: "7.3 Tratamiento de señales", href: "/tema-7-senales#7-3-tratamiento" },
-      { id: "7-4", title: "7.4 Función alarma y pausa", href: "/tema-7-senales#7-4-alarma" },
-    ]
-  },
-  {
-    id: "tema-8",
-    title: "8. Comandos POSIX",
-    href: "/tema-8-comandos",
-    subtopics: [
-      { id: "8-1", title: "8.1 Comando pwd", href: "/tema-8-comandos#8-1-pwd" },
-      { id: "8-2", title: "8.2 Comando cd", href: "/tema-8-comandos#8-2-cd" },
-      { id: "8-3", title: "8.3 Comando mkdir", href: "/tema-8-comandos#8-3-mkdir" },
-      { id: "8-4", title: "8.4 Comando rm", href: "/tema-8-comandos#8-4-rm" },
+      { id: "8-1", title: "7.1 Sistema de Archivos", href: "/tema-7-comandos#8-1-sistema-archivos" },
+      { id: "8-2", title: "7.2 Información de Archivos y Dispositivos", href: "/tema-7-comandos#8-2-info-archivos" },
+      { id: "8-3", title: "7.3 Información del Sistema y Usuarios", href: "/tema-7-comandos#8-3-info-sistema" },
+      { id: "8-4", title: "7.4 Mensajes, Terminal y Control", href: "/tema-7-comandos#8-4-mensajes-control" },
+      { id: "8-5", title: "7.5 Red y Búsqueda de Archivos", href: "/tema-7-comandos#8-5-red-busqueda" },
     ]
   }
 ];

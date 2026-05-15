@@ -12,7 +12,7 @@ export default function Tema5Page() {
   return (
     <div className="animate-in fade-in duration-700 max-w-[1000px] mx-auto w-full">
       <PageHeader
-        number="Tema 5"
+        number="Tema 4"
         title="Administración de memoria"
         description="Gestión eficiente de la memoria principal, paginación, segmentación, reasignación, protección, y memoria virtual mediante el sistema operativo."
       />
@@ -30,7 +30,7 @@ export default function Tema5Page() {
 
         {/* 5.1 */}
         <section>
-          <SectionHeading id="5-1-introduccion" number="5.1" title="Introducción" />
+          <SectionHeading id="5-1-introduccion" number="4.1" title="Introducción" />
           <p className="mb-4">
             Las herramientas básicas de la administración de memoria son la <strong className="text-white">paginación</strong> (tamaño constante) y la <strong className="text-white">segmentación</strong> (tamaño variable). En la paginación, cada proceso se divide en páginas de tamaño constante y relativamente pequeña. 
           </p>
@@ -80,11 +80,18 @@ int main() {
 
 Tamaño de página: 4096 `} 
           />
-        </section>
 
-        {/* 5.2 & 5.3 */}
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Comprendí que la <a href="#5-1-introduccion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">paginación</a> divide la memoria en bloques de tamaño fijo (generalmente 4KB) y que funciones como <a href="#5-1-introduccion" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">sysconf()</code></a> y <a href="#5-1-introduccion" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">getpagesize()</code></a> permiten consultar este parámetro desde un programa en C.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Experimentando con páginas de tamaño grande (Huge Pages) en Linux y midiendo el impacto en el rendimiento de aplicaciones con gran consumo de memoria.
+            </p>
+          </ReflectionBox>
+        </section>
         <section>
-          <SectionHeading id="5-3-modelos" number="5.2 y 5.3" title="Modelos de multiprogramación y particiones fijas" />
+          <SectionHeading id="5-3-modelos" number="4.2" title="Modelos de multiprogramación" />
           <p className="mb-4">
             El uso de la CPU se puede mejorar mediante la multiprogramación. Desde un punto de vista probabilístico, si un proceso ocupa una fracción <code className="text-[#58a6ff]">p</code> de su tiempo en el estado de espera de E/S, y hay <code className="text-[#58a6ff]">n</code> procesos, el uso de la CPU está dado por: <code className="text-white font-mono">CPU = 1 - p^n</code>.
           </p>
@@ -93,19 +100,35 @@ Tamaño de página: 4096 `}
           </p>
 
           <MemoryPartitionsDiagram />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí que la <a href="#5-3-modelos" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">multiprogramación</a> mejora el uso de la CPU y que las particiones fijas dividen la memoria en bloques estáticos, aunque generan fragmentación interna.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Simulando visualmente cómo el algoritmo de particiones dinámicas (best-fit vs first-fit) selecciona huecos de memoria para diferentes procesos.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 5.5 */}
         <section>
-          <SectionHeading id="5-5-reasignacion" number="5.5" title="Reasignación y protección" />
+          <SectionHeading id="5-5-reasignacion" number="4.3" title="Reasignación y protección" />
           <p className="mb-4">
             La multiprogramación presenta dos problemas: <strong>la reasignación</strong> y <strong>la protección</strong>. Cuando un programa se carga en una partición, debe adaptar sus direcciones lógicas. Esto se soluciona con hardware usando el <strong className="text-white">registro base</strong> (indica el inicio de la partición) y el <strong className="text-white">registro límite</strong> (indica la longitud, para no invadir áreas externas).
           </p>
-        </section>
 
-        {/* 5.6 */}
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Entendí que el <a href="#5-5-reasignacion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">registro base y el registro límite</a> son mecanismos de hardware que permiten reasignar direcciones lógicas a físicas y proteger la memoria de cada proceso contra accesos indebidos.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Analizando con <code className="text-[#58a6ff]">pmap</code> el mapa de memoria de un proceso real para observar cómo el kernel asigna las regiones de texto, datos, heap y pila.
+            </p>
+          </ReflectionBox>
+        </section>
         <section>
-          <SectionHeading id="5-6-intercambio" number="5.6" title="Intercambio (Swap)" />
+          <SectionHeading id="5-6-intercambio" number="4.4" title="Intercambio (Swap)" />
           <p className="mb-4">
             El traslado de procesos de la memoria principal al disco y viceversa se llama intercambio (swap). En GNU/Linux, se puede verificar con el comando <code className="text-[#58a6ff]">swapon -s</code>. En C se usan las funciones <code className="text-[#f5a623]">swapon()</code> y <code className="text-[#f5a623]">swapoff()</code>.
           </p>
@@ -122,11 +145,18 @@ Tamaño de página: 4096 `}
               <span className="text-[#ff7b72]">int</span> <span className="text-[#d2a8ff]">swapoff</span>(<span className="text-[#ff7b72]">const char</span> *path);
             </code>
           </div>
-        </section>
 
-        {/* 5.7 & 5.8 */}
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Comprendí que el <a href="#5-6-intercambio" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">intercambio (swap)</a> permite al sistema operativo mover procesos inactivos al disco para liberar RAM, y que las funciones <a href="#5-6-intercambio" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">swapon()</code></a> / <a href="#5-6-intercambio" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">swapoff()</code></a> controlan este mecanismo.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Monitorizando el parámetro <code className="text-[#58a6ff]">vm.swappiness</code> en tiempo real mientras ejecuto múltiples programas, para observar cuándo el kernel decide empezar a paginar.
+            </p>
+          </ReflectionBox>
+        </section>
         <section>
-          <SectionHeading id="5-8-registro-uso" number="5.7 y 5.8" title="Registro de uso (Mapas de bits y Listas ligadas)" />
+          <SectionHeading id="5-8-registro-uso" number="4.5" title="Registro de uso (Listas)" />
           <p className="mb-4">
             Existen formas utilizadas para llevar un registro del uso de la memoria:
           </p>
@@ -136,19 +166,35 @@ Tamaño de página: 4096 `}
           </ul>
 
           <MemoryBitmapDiagram />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí que los <a href="#5-8-registro-uso" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">mapas de bits y las listas enlazadas</a> son las dos estructuras de datos fundamentales para rastrear qué regiones de la memoria están ocupadas y cuáles están libres.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Implementando en C un simulador de asignación de memoria que compare los algoritmos Primer Ajuste, Mejor Ajuste y Peor Ajuste para medir la fragmentación resultante.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 5.9 */}
         <section>
-          <SectionHeading id="5-9-memoria-virtual" number="5.9" title="Memoria virtual" />
+          <SectionHeading id="5-9-memoria-virtual" number="4.6" title="Memoria virtual" />
           <p className="mb-4">
             Permite que el tamaño combinado de los programas exceda la memoria física, mediante la Unidad de Administración de la Memoria (MMU) que traduce direcciones virtuales a físicas usando páginas. En Linux, el parámetro <code className="text-[#58a6ff]">vm.swappiness</code> (default: 60 en Ubuntu) controla qué tan agresivo es el paginado a disco.
           </p>
-        </section>
 
-        {/* 5.10 */}
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Entendí que la <a href="#5-9-memoria-virtual" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">memoria virtual</a> permite ejecutar programas más grandes que la RAM física disponible, gracias a la MMU que traduce direcciones virtuales a físicas de forma transparente.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Estudiando los algoritmos de reemplazo de páginas (LRU, FIFO, Clock) y simulando su comportamiento con diferentes patrones de acceso a memoria.
+            </p>
+          </ReflectionBox>
+        </section>
         <section>
-          <SectionHeading id="5-10-funciones" number="5.10" title="Funciones para conocer la memoria del sistema" />
+          <SectionHeading id="5-10-funciones" number="4.7" title="Funciones del sistema" />
           <p className="mb-4">
             La función <code className="text-[#f5a623]">sysinfo()</code> retorna estadísticas globales. Además, el mapeo de archivos a memoria se hace con <code className="text-[#f5a623]">mmap()</code>.
           </p>
@@ -211,6 +257,15 @@ Libre RAM: 4200000 KB
 Swap: 2048000 KB
 Cantidad de procesos: 342`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí a usar <a href="#5-10-funciones" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">sysinfo()</code></a> para obtener estadísticas globales del sistema (RAM total, libre, swap, procesos) y <a href="#5-10-funciones" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">mmap()</code></a> para mapear archivos directamente a memoria, evitando copias intermedias.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Escribiendo un programa que use <code className="text-[#f5a623]">mmap()</code> para leer un archivo grande y comparar su rendimiento contra la lectura tradicional con <code className="text-[#f5a623]">read()</code>.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* Ejercicios */}
@@ -248,14 +303,7 @@ Cantidad de procesos: 342`}
           </ol>
         </section>
 
-        <ReflectionBox>
-          <p className="mb-2">
-            <strong className="text-white">¿Qué aprendí?</strong> Aprendí cómo el sistema operativo abstrae y protege la memoria física a través del concepto de memoria virtual y la Unidad de Manejo de Memoria (MMU). Entendí que la RAM se administra usando algoritmos de asignación (como el Primer Ajuste) sobre listas ligadas o mapas de bits. Comprendí también la importancia del 'swap' (intercambio) para mantener procesos en ejecución incluso cuando excedemos la capacidad de la memoria física instalada.
-          </p>
-          <p>
-            <strong className="text-white">¿Cómo podría mejorarla?</strong> Podría escribir un programa en C que a propósito cause un 'memory leak' (con <code className="text-[#f5a623]">malloc</code> sin su respectivo <code className="text-[#f5a623]">free</code>) y luego usar la herramienta <code className="text-[#58a6ff]">valgrind</code> solicitada en los ejercicios para depurar y encontrar la fuga, observando cómo esto impacta los valores arrojados por la función <code className="text-[#f5a623]">sysinfo()</code>.
-          </p>
-        </ReflectionBox>
+
 
         <TopicQuiz topicId="tema-5" title="Test - Administración de memoria" questions={TEMA5_QUIZ} />
         <ReadMarker topicId="tema-5" />

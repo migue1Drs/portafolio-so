@@ -4,19 +4,19 @@ import type { QuizQuestion } from "@/components/ui/TopicQuiz";
 export const TEMA1_QUIZ: QuizQuestion[] = [
   {
     id: "t1-q1",
-    question: "¿Cuál es una de las definiciones de un sistema operativo?",
+    question: "¿Cuál de las siguientes opciones describe correctamente lo que es un sistema operativo?",
     options: [
-      "Un software diseñado exclusivamente para interactuar con la red.",
-      "Un software que controla el hardware y actúa como interfaz entre el usuario y la computadora.",
-      "Un programa que compila código en lenguaje ensamblador.",
-      "Un sistema para la creación de bases de datos relacionales."
+      "Es un software diseñado exclusivamente para conectarse a internet.",
+      "Es un software que administra el hardware y sirve de intermediario entre el usuario y la computadora.",
+      "Es un programa que traduce código fuente a lenguaje máquina.",
+      "Es un sistema especializado en crear bases de datos."
     ],
     correctIndex: 1,
-    explanation: "El sistema operativo es el software fundamental que controla la ejecución de programas y actúa como interfaz entre el usuario y el hardware."
+    explanation: "El sistema operativo es el software fundamental que administra los recursos del hardware y permite al usuario interactuar con la computadora."
   },
   {
     id: "t1-q2",
-    question: "¿Qué tipo de sistema operativo prioriza el cumplimiento de restricciones temporales estrictas sobre la interacción con el usuario?",
+    question: "¿Qué tipo de sistema operativo está diseñado para responder dentro de plazos de tiempo estrictos, sin importar la interacción con el usuario?",
     options: [
       "Sistema operativo de red",
       "Sistema operativo por lotes",
@@ -28,7 +28,7 @@ export const TEMA1_QUIZ: QuizQuestion[] = [
   },
   {
     id: "t1-q3",
-    question: "¿Cuál es la diferencia principal entre sistemas distribuidos fuertemente acoplados y débilmente acoplados?",
+    question: "En los sistemas distribuidos, ¿qué diferencia a los 'fuertemente acoplados' de los 'débilmente acoplados'?",
     options: [
       "Los fuertemente acoplados comparten memoria principal y reloj global, los débilmente acoplados no.",
       "Los débilmente acoplados son más rápidos que los fuertemente acoplados.",
@@ -40,7 +40,7 @@ export const TEMA1_QUIZ: QuizQuestion[] = [
   },
   {
     id: "t1-q4",
-    question: "¿Qué característica destacaba de la arquitectura de iOS?",
+    question: "¿Cómo está organizada internamente la arquitectura del sistema operativo iOS?",
     options: [
       "No posee kernel, se comunica directamente con el hardware.",
       "Utiliza una máquina virtual llamada Dalvik.",
@@ -54,7 +54,7 @@ export const TEMA1_QUIZ: QuizQuestion[] = [
 export const TEMA2_QUIZ: QuizQuestion[] = [
   {
     id: "t2-q1",
-    question: "Observa el siguiente código. ¿Cuántos procesos existen en total después de ejecutar las dos llamadas a fork()?",
+    question: "Observa el siguiente código. Después de que se ejecuten ambas llamadas a fork(), ¿cuántos procesos habrá en total (incluyendo el original)?",
     codeSnippet: `int main() {
     fork();
     fork();
@@ -74,7 +74,7 @@ export const TEMA2_QUIZ: QuizQuestion[] = [
   {
     id: "t2-q2",
     question:
-      "Un compañero reporta que su programa crea un proceso zombie. ¿Cuál es la línea problemática?",
+      "El siguiente programa genera un proceso zombie. ¿Cuál es la línea que causa este problema y por qué?",
     codeSnippet: `int main() {
     pid_t pid = fork();
     if (pid == 0) {
@@ -98,7 +98,7 @@ export const TEMA2_QUIZ: QuizQuestion[] = [
   {
     id: "t2-q3",
     question:
-      "¿Cuál es la diferencia fundamental entre fork() y exec()?",
+      "¿En qué se diferencia la función fork() de la función exec() al momento de ejecutarse?",
     options: [
       "fork() crea un nuevo proceso; exec() reemplaza la imagen del proceso actual con otro programa",
       "fork() es para procesos y exec() es para hilos",
@@ -112,7 +112,7 @@ export const TEMA2_QUIZ: QuizQuestion[] = [
   {
     id: "t2-q4",
     question:
-      "Observa este programa con hilos. ¿Qué problema potencial tiene?",
+      "Observa el siguiente programa que usa dos hilos. ¿Por qué el valor final de 'counter' podría NO ser 2,000,000?",
     codeSnippet: `int counter = 0;
 
 void *increment(void *arg) {
@@ -142,7 +142,7 @@ int main() {
   {
     id: "t2-q5",
     question:
-      "¿Qué retorna waitpid(-1, &status, WNOHANG) si no hay hijos terminados aún?",
+      "Si se llama a waitpid(-1, &status, WNOHANG) y todavía hay procesos hijos ejecutándose pero ninguno ha terminado, ¿qué valor devuelve?",
     options: [
       "Retorna -1 con errno = ECHILD",
       "Se bloquea hasta que un hijo termine",
@@ -155,7 +155,7 @@ int main() {
   },
   {
     id: "t2-q6",
-    question: "¿Qué le sucede a un proceso hijo si su proceso padre termina antes que él (sin esperarlo con wait)?",
+    question: "Si un proceso padre termina su ejecución antes que su proceso hijo y no lo esperó con wait(), ¿qué le ocurre al hijo?",
     options: [
       "El proceso hijo se convierte en un proceso zombie indefinidamente.",
       "El proceso hijo es destruido automáticamente por el sistema operativo.",
@@ -167,7 +167,7 @@ int main() {
   },
   {
     id: "t2-q7",
-    question: "Si tienes un programa que realiza cálculos matemáticos intensivos sin llamadas de I/O, ¿qué tipo de concurrencia te dará el mejor rendimiento en una CPU multi-núcleo?",
+    question: "Para un programa que solo realiza cálculos matemáticos intensivos (sin leer archivos ni usar red), ¿cuál opción aprovecha mejor una CPU con varios núcleos?",
     options: [
       "Múltiples procesos pesados creados con fork()",
       "Múltiples hilos (threads) nivel usuario manejados por la librería de C",
@@ -184,35 +184,35 @@ export const TEMA3_QUIZ: QuizQuestion[] = [
   {
     id: "t3-q1",
     question:
-      "¿Cuál es la diferencia principal entre un pipe sin nombre y un FIFO?",
+      "¿En qué se diferencia una tubería sin nombre (pipe) de una tubería con nombre (FIFO)?",
     options: [
-      "Los pipes son más rápidos que los FIFOs",
-      "Los FIFOs existen como archivos en el sistema de archivos, permitiendo comunicación entre procesos sin parentesco",
-      "Los pipes son bidireccionales y los FIFOs unidireccionales",
-      "Los FIFOs solo funcionan en System V, no en Linux",
+      "Las tuberías sin nombre son más rápidas que las FIFO.",
+      "Las FIFO se crean como archivos en el sistema de archivos, lo que permite que procesos sin relación de parentesco se comuniquen.",
+      "Las tuberías sin nombre son bidireccionales y las FIFO solo unidireccionales.",
+      "Las FIFO solo funcionan en System V, no en Linux.",
     ],
     correctIndex: 1,
     explanation:
-      "Los pipes solo funcionan entre procesos con relación padre-hijo (comparten los file descriptors del fork). Los FIFOs (named pipes) se crean con mkfifo() como archivos especiales en el filesystem, permitiendo que cualquier proceso los abra por nombre.",
+      "Las tuberías sin nombre (pipe) solo funcionan entre procesos padre-hijo. Las FIFO se crean con mkfifo() como archivos especiales en el sistema de archivos, lo que permite que cualquier proceso las abra por su nombre.",
   },
   {
     id: "t3-q2",
     question:
-      "Un proceso crea un segmento de memoria compartida con shmget() pero olvida llamar a shmctl(IPC_RMID). ¿Qué sucede?",
+      "Si un proceso crea memoria compartida con shmget() pero no la elimina con shmctl(IPC_RMID) antes de terminar, ¿qué pasa con ese segmento de memoria?",
     options: [
-      "La memoria se libera automáticamente cuando el proceso termina",
-      "El segmento persiste en el kernel hasta un reboot o hasta eliminarse con ipcrm",
-      "Se genera un segfault al terminar el proceso",
-      "Otro proceso no puede acceder al segmento",
+      "Se libera automáticamente cuando el proceso termina.",
+      "El segmento permanece en el kernel hasta que se reinicie el sistema o se borre manualmente con ipcrm.",
+      "Se produce un error de segmentación al terminar el proceso.",
+      "Ningún otro proceso puede acceder al segmento.",
     ],
     correctIndex: 1,
     explanation:
-      "Los recursos IPC de System V (semáforos, memoria compartida, colas de mensajes) persisten más allá de la vida del proceso que los creó. Deben eliminarse explícitamente con xxxctl(IPC_RMID) o con el comando 'ipcrm'. Se pueden inspeccionar con 'ipcs'.",
+      "Los recursos IPC de System V persisten en el kernel aunque el proceso que los creó haya terminado. Deben eliminarse manualmente con shmctl(IPC_RMID) o con el comando 'ipcrm'. Se pueden consultar con 'ipcs'.",
   },
   {
     id: "t3-q3",
     question:
-      "Observa este código. ¿Por qué el read() del hijo se bloquea indefinidamente?",
+      "En el siguiente código, el proceso hijo se queda esperando para siempre en read(). ¿Cuál es la causa?",
     codeSnippet: `int main() {
     int fd[2];
     pipe(fd);
@@ -229,52 +229,52 @@ export const TEMA3_QUIZ: QuizQuestion[] = [
     }
 }`,
     options: [
-      "El padre no escribió suficientes bytes",
-      "El hijo no cerró fd[1] — el kernel cree que aún podría recibir datos",
-      "Falta un flush() después del write()",
-      "El buffer es demasiado grande",
+      "El padre no escribió suficientes bytes para llenar el buffer.",
+      "El hijo no cerró el extremo de escritura (fd[1]), por lo que el kernel cree que aún podrían llegar más datos.",
+      "Falta llamar a flush() después del write() del padre.",
+      "El tamaño del buffer de lectura es demasiado grande.",
     ],
     correctIndex: 1,
     explanation:
-      "El hijo hereda ambos extremos del pipe (fd[0] y fd[1]). Como el hijo no cerró fd[1], el kernel ve que todavía hay un escritor (el propio hijo) y el read() espera indefinidamente. Regla de oro: SIEMPRE cerrar el extremo del pipe que no usas.",
+      "El hijo hereda ambos extremos del pipe. Como no cerró fd[1], el kernel detecta que todavía existe un escritor activo (el propio hijo) y read() espera datos indefinidamente. Regla: siempre cierra el extremo del pipe que no uses.",
   },
   {
     id: "t3-q4",
     question:
-      "¿Qué mecanismo IPC es el más rápido y por qué?",
+      "De todos los mecanismos de comunicación entre procesos (IPC), ¿cuál es el más rápido y cuál es la razón?",
     options: [
-      "Pipes, porque son el más simple y con menos overhead",
-      "Colas de mensajes, porque el kernel optimiza el enrutamiento",
-      "Memoria compartida, porque no hay copia de datos entre kernel y espacio de usuario",
-      "Señales, porque solo transmiten un número entero",
+      "Las tuberías (pipes), porque son las más simples.",
+      "Las colas de mensajes, porque el kernel optimiza la entrega.",
+      "La memoria compartida, porque los procesos acceden directamente a la misma zona de memoria sin copias intermedias.",
+      "Las señales, porque solo envían un número entero.",
     ],
     correctIndex: 2,
     explanation:
-      "La memoria compartida (shmem) es el IPC más rápido porque ambos procesos acceden directamente a la misma región de memoria sin copy_to_user/copy_from_user. Los pipes y colas involucran copiar datos al kernel y luego al otro proceso (doble copia).",
+      "La memoria compartida es el IPC más rápido porque ambos procesos leen y escriben directamente en la misma región de memoria, sin necesidad de copiar datos al kernel. Las tuberías y colas implican una doble copia (proceso→kernel→proceso).",
   },
   {
     id: "t3-q5",
-    question: "¿Qué sucede si un proceso intenta hacer write() en una tubería (pipe) cuyo extremo de lectura (read) ha sido cerrado por todos los otros procesos?",
+    question: "Si todos los procesos que leían de una tubería (pipe) ya cerraron su extremo de lectura, ¿qué ocurre cuando otro proceso intenta escribir en esa tubería?",
     options: [
-      "La llamada write() bloquea al proceso hasta que alguien vuelva a abrir el pipe para lectura.",
-      "La llamada write() falla silenciosamente retornando 0 bytes escritos.",
-      "El kernel envía la señal SIGPIPE al proceso escritor, lo que por defecto lo termina.",
-      "Los datos se guardan en el buffer del kernel indefinidamente."
+      "El proceso escritor se queda bloqueado esperando que alguien vuelva a abrir la lectura.",
+      "La llamada write() falla silenciosamente y devuelve 0 bytes escritos.",
+      "El kernel envía la señal SIGPIPE al proceso que intentó escribir, lo que por defecto lo termina.",
+      "Los datos se almacenan en el buffer del kernel de forma indefinida."
     ],
     correctIndex: 2,
-    explanation: "Escribir en un pipe sin lectores vivos genera una señal SIGPIPE. El comportamiento por defecto de SIGPIPE es terminar el proceso. Para evitar que tu programa se cierre de golpe (crash), debes ignorar SIGPIPE o manejar el error (-1 y errno=EPIPE)."
+    explanation: "Cuando no hay lectores activos en un pipe, el kernel envía SIGPIPE al escritor. Por defecto, esta señal termina el proceso. Para evitarlo, se puede ignorar SIGPIPE o verificar el error EPIPE."
   },
   {
     id: "t3-q6",
-    question: "En un escenario clásico de Productor-Consumidor usando memoria compartida, ¿por qué es ABSOLUTAMENTE necesario el uso de semáforos?",
+    question: "Cuando dos procesos comparten memoria para intercambiar datos (Productor-Consumidor), ¿por qué es indispensable usar semáforos?",
     options: [
-      "Porque los semáforos aceleran la lectura de la memoria RAM.",
-      "Porque garantizan exclusión mutua, evitando que el productor sobrescriba datos antes de que el consumidor los lea, o que ambos lean/escriban a la vez.",
-      "Porque la memoria compartida no funciona sin al menos un semáforo inicializado.",
-      "Para contar cuántos procesos están actualmente ejecutándose en el sistema."
+      "Porque los semáforos hacen que la memoria RAM funcione más rápido.",
+      "Porque los semáforos evitan que ambos procesos lean o escriban al mismo tiempo, previniendo datos corruptos.",
+      "Porque sin un semáforo inicializado, la memoria compartida no se puede crear.",
+      "Porque los semáforos sirven para contar cuántos procesos hay activos."
     ],
     correctIndex: 1,
-    explanation: "La memoria compartida no tiene mecanismos de sincronización integrados. Si ambos acceden simultáneamente, ocurre una condición de carrera (race condition). Los semáforos actúan como candados para garantizar Exclusión Mutua (mutex) y también para sincronizar el estado (ej. esperar si el buffer está vacío/lleno)."
+    explanation: "La memoria compartida no incluye sincronización por sí sola. Sin semáforos, ambos procesos podrían escribir o leer al mismo tiempo, corrompiendo los datos (condición de carrera). Los semáforos actúan como candados para proteger el acceso."
   }
 ];
 
@@ -282,20 +282,20 @@ export const TEMA3_QUIZ: QuizQuestion[] = [
 export const TEMA5_QUIZ: QuizQuestion[] = [
   {
     id: "t5-q1",
-    question: "¿Cuál es la función de la Unidad de Administración de Memoria (MMU)?",
+    question: "¿Qué trabajo realiza la Unidad de Administración de Memoria (MMU) dentro de la computadora?",
     options: [
-      "Asignar prioridad a los procesos en la cola de CPU",
-      "Asociar las direcciones virtuales generadas por el programa con las direcciones físicas de la RAM",
-      "Controlar la velocidad de transferencia entre el disco duro y la memoria principal",
-      "Eliminar procesos inactivos para liberar espacio en el mapa de bits",
+      "Decide qué proceso se ejecuta primero en la CPU.",
+      "Convierte las direcciones de memoria virtuales que usa cada programa en direcciones físicas reales de la RAM.",
+      "Controla la velocidad de transferencia entre el disco duro y la memoria.",
+      "Elimina procesos inactivos para liberar espacio.",
     ],
     correctIndex: 1,
     explanation:
-      "La MMU es un chip (o parte de la CPU) que mapea direcciones virtuales a físicas. Gracias a ella, los programas pueden creer que tienen un espacio de direcciones continuo cuando en realidad está fragmentado en marcos de página físicos.",
+      "La MMU traduce las direcciones virtuales (que cada programa cree tener de forma continua) a direcciones físicas reales en la RAM, permitiendo que varios programas coexistan en memoria sin interferirse.",
   },
   {
     id: "t5-q2",
-    question: "Si un proceso espera por E/S el 80% de su tiempo (p=0.8) y hay 3 procesos en memoria, ¿cuál es el porcentaje de uso de la CPU según el modelo probabilístico?",
+    question: "Si cada proceso pasa el 80% de su tiempo esperando operaciones de disco (p=0.8) y hay 3 procesos cargados en memoria, ¿cuál es el porcentaje de uso de la CPU aplicando la fórmula: Uso CPU = 1 − p^n?",
     options: [
       "20%",
       "48.8%",
@@ -304,11 +304,11 @@ export const TEMA5_QUIZ: QuizQuestion[] = [
     ],
     correctIndex: 2,
     explanation:
-      "La fórmula es CPU = 1 - p^n. En este caso: 1 - (0.8)^3 = 1 - 0.512 = 0.488 (o 48.8% de uso). La probabilidad de que los 3 esperen a la vez es 51.2%.",
+      "Aplicando la fórmula: 1 − (0.8)³ = 1 − 0.512 = 0.488, es decir, la CPU se usa aproximadamente el 48.8% del tiempo. El 51.2% restante es la probabilidad de que los 3 procesos estén esperando simultáneamente.",
   },
   {
     id: "t5-q3",
-    question: "¿Qué algoritmo de asignación de memoria busca en toda la lista para encontrar el hueco más pequeño que sea suficiente?",
+    question: "¿Cuál algoritmo de asignación de memoria recorre toda la lista de espacios libres para elegir el que tenga el tamaño más cercano al que se necesita?",
     options: [
       "Primer ajuste (First-fit)",
       "Siguiente ajuste (Next-fit)",
@@ -317,33 +317,33 @@ export const TEMA5_QUIZ: QuizQuestion[] = [
     ],
     correctIndex: 2,
     explanation:
-      "El 'Mejor ajuste' recorre toda la lista para encontrar el hueco que más se aproxime al tamaño solicitado, intentando no desperdiciar huecos grandes para procesos pequeños.",
+      "El algoritmo 'Mejor ajuste' (Best-fit) busca el espacio libre más pequeño que sea suficiente para el proceso, con el objetivo de desperdiciar la menor cantidad de memoria posible.",
   },
   {
     id: "t5-q4",
-    question: "¿Para qué sirven los registros 'base' y 'límite' en la multiprogramación con particiones fijas?",
+    question: "En la multiprogramación con particiones fijas, ¿cuál es el propósito de los registros 'base' y 'límite'?",
     options: [
-      "Para acelerar la velocidad del bus de datos",
-      "Para resolver los problemas de reasignación y protección de memoria",
-      "Para contar cuántas páginas han sido enviadas al swap",
-      "Para permitir que un proceso crezca dinámicamente",
+      "Acelerar la velocidad del bus de datos.",
+      "Permitir que las direcciones del programa se traduzcan a direcciones reales (base) y evitar que un proceso acceda a memoria de otro (límite).",
+      "Contar cuántas páginas fueron enviadas al área de intercambio (swap).",
+      "Permitir que un proceso crezca de tamaño dinámicamente.",
     ],
     correctIndex: 1,
     explanation:
-      "El registro base permite que las direcciones relativas se conviertan en absolutas sumando el inicio de la partición. El registro límite asegura que un proceso no acceda a memoria fuera de su partición (protección).",
+      "El registro 'base' suma un desplazamiento para convertir direcciones relativas en absolutas. El registro 'límite' verifica que el proceso no acceda a memoria fuera de su partición asignada, protegiendo a los demás procesos.",
   },
   {
     id: "t5-q5",
-    question: "En Linux, ¿qué indica un valor de 'swappiness' igual a 60?",
+    question: "En Linux, si el parámetro 'swappiness' tiene un valor de 60, ¿qué significa para el manejo de la memoria?",
     options: [
-      "Que el sistema usará el swap cuando la RAM llegue al 60% de ocupación",
-      "Que el 60% de la memoria está reservada para el kernel",
-      "Que cuando la RAM llegue al 40% de uso (60% libre), empezará a paginar al disco",
-      "Que el archivo swapfile tiene un tamaño de 60 GB",
+      "Que el sistema usará el swap únicamente cuando la RAM esté al 60% de ocupación.",
+      "Que el 60% de la memoria RAM está reservada exclusivamente para el kernel.",
+      "Que el sistema comenzará a mover datos de la RAM al disco (swap) cuando la memoria libre baje a un nivel intermedio (aproximadamente 40% de uso).",
+      "Que el archivo de intercambio (swapfile) tiene un tamaño de 60 GB.",
     ],
     correctIndex: 2,
     explanation:
-      "El valor de swappiness (0-100) controla la agresividad del intercambio. Un valor de 60 (común en Ubuntu) indica que el sistema empezará a mover páginas al swap cuando la RAM disponible sea relativamente baja (aproximadamente al 40% de uso de RAM).",
+      "El valor de swappiness (0–100) controla qué tan agresivamente el sistema mueve páginas de la RAM al disco. Con un valor de 60 (el predeterminado en Ubuntu), el sistema empieza a paginar cuando la RAM disponible es relativamente baja.",
   },
 ];
 
@@ -351,68 +351,68 @@ export const TEMA5_QUIZ: QuizQuestion[] = [
 export const TEMA6_QUIZ: QuizQuestion[] = [
   {
     id: "t6-q1",
-    question: "¿Qué sección del sistema de archivos contiene metadatos como el tamaño, total de archivos y espacio libre?",
+    question: "¿En cuál de las secciones del sistema de archivos se almacena la información general como el tamaño total, la cantidad de archivos y el espacio libre disponible?",
     options: [
-      "Boot",
+      "Boot (Arranque)",
       "Superbloque",
       "Lista de Inodos",
       "Bloque de datos",
     ],
     correctIndex: 1,
     explanation:
-      "El superbloque es la estructura fundamental que describe el estado global del sistema de archivos (tamaño, bloques libres, etc.).",
+      "El superbloque contiene los metadatos globales del sistema de archivos: tamaño total, cantidad de bloques libres, tamaño de bloque, entre otros.",
   },
   {
     id: "t6-q2",
-    question: "¿Qué información NO se encuentra almacenada directamente en el inodo de un archivo?",
+    question: "De la siguiente lista, ¿cuál dato NO se guarda dentro del inodo de un archivo?",
     options: [
-      "Permisos de acceso",
-      "Identificador del propietario (UID)",
-      "El nombre del archivo",
-      "Tamaño del archivo",
+      "Los permisos de lectura, escritura y ejecución.",
+      "El identificador del propietario (UID).",
+      "El nombre del archivo.",
+      "El tamaño del archivo en bytes.",
     ],
     correctIndex: 2,
     explanation:
-      "El nombre del archivo no está en el inodo; se almacena en el directorio, el cual asocia nombres con números de inodo (enlaces).",
+      "El nombre del archivo no se almacena en el inodo. Se guarda en la entrada del directorio que contiene al archivo, la cual asocia el nombre con un número de inodo.",
   },
   {
     id: "t6-q3",
-    question: "¿Cuál es la función del 'Major Number' en un archivo de dispositivo?",
+    question: "En Linux, cada archivo de dispositivo tiene un 'Major Number'. ¿Para qué sirve ese número?",
     options: [
-      "Indicar el número de unidad dentro del dispositivo",
-      "Especificar el tamaño máximo de transferencia de datos",
-      "Identificar el tipo de dispositivo (disco, terminal, etc.) para buscar el driver correcto",
-      "Establecer la prioridad de acceso al bus de E/S",
+      "Indica cuál unidad específica es dentro de un mismo tipo de dispositivo.",
+      "Define el tamaño máximo de datos que se pueden transferir.",
+      "Identifica el tipo de dispositivo (disco, terminal, etc.) para que el kernel sepa qué driver (controlador) usar.",
+      "Establece la prioridad de acceso al bus de entrada/salida.",
     ],
     correctIndex: 2,
     explanation:
-      "El 'Major Number' identifica el tipo de dispositivo y permite al kernel asociarlo con un controlador (driver) específico. El 'Minor Number' identifica la unidad específica.",
+      "El 'Major Number' le dice al kernel qué tipo de dispositivo es para asociarlo con el controlador (driver) correcto. El 'Minor Number' identifica la unidad específica dentro de ese tipo.",
   },
   {
     id: "t6-q4",
-    question: "¿Para qué sirve la función sync() en C?",
+    question: "Cuando se llama a la función sync() en un programa en C, ¿qué acción realiza el sistema?",
     options: [
-      "Para sincronizar la hora del sistema con un servidor NTP",
-      "Para forzar que los datos y metadatos en caché se escriban físicamente en el disco",
-      "Para permitir que dos hilos compartan la misma variable",
-      "Para verificar si un sistema de archivos está montado",
+      "Sincroniza la hora del sistema con un servidor de internet (NTP).",
+      "Obliga al sistema a escribir en el disco todos los datos que aún estaban almacenados temporalmente en la memoria caché.",
+      "Permite que dos hilos de ejecución compartan la misma variable.",
+      "Verifica si un sistema de archivos está montado correctamente.",
     ],
     correctIndex: 1,
     explanation:
-      "sync() vuelca todos los buffers de caché del kernel al disco duro, asegurando la integridad de los datos ante un posible fallo de energía.",
+      "sync() fuerza la escritura de todos los buffers de la memoria caché al disco físico, asegurando que los datos no se pierdan ante una falla de energía.",
   },
   {
     id: "t6-q5",
-    question: "¿Qué diferencia a un dispositivo de bloque de uno de carácter?",
+    question: "¿Cuál es la diferencia principal entre un dispositivo de bloque y un dispositivo de carácter en Linux?",
     options: [
-      "Los de bloque son más lentos",
-      "Los de bloque usan un buffer caché y gestionan datos en unidades de tamaño fijo (sectores)",
-      "Los de carácter solo pueden leerse, no escribirse",
-      "Los de bloque solo existen en sistemas distribuidos",
+      "Los dispositivos de bloque son siempre más lentos que los de carácter.",
+      "Los dispositivos de bloque transfieren datos en unidades de tamaño fijo (sectores) y utilizan memoria caché, mientras que los de carácter manejan datos byte a byte.",
+      "Los dispositivos de carácter solo permiten lectura, no escritura.",
+      "Los dispositivos de bloque solo existen en sistemas distribuidos.",
     ],
     correctIndex: 1,
     explanation:
-      "Los dispositivos de bloque (como discos) transfieren datos en bloques fijos y usan caché. Los de carácter (como teclados) manejan flujos lineales de bytes sin buffer intermedio del kernel.",
+      "Los dispositivos de bloque (como discos duros) transfieren datos en bloques de tamaño fijo y usan caché del kernel. Los de carácter (como teclados o puertos serie) envían o reciben datos byte a byte, sin buffer intermedio.",
   },
 ];
 
@@ -420,7 +420,7 @@ export const TEMA6_QUIZ: QuizQuestion[] = [
 export const TEMA7_QUIZ: QuizQuestion[] = [
   {
     id: "t7-q1",
-    question: "¿Qué señales de Linux NO pueden ser capturadas ni ignoradas por un proceso?",
+    question: "¿Cuáles son las dos señales de Linux que un proceso NO puede capturar, bloquear ni ignorar bajo ninguna circunstancia?",
     options: [
       "SIGINT y SIGTERM",
       "SIGKILL y SIGSTOP",
@@ -429,24 +429,24 @@ export const TEMA7_QUIZ: QuizQuestion[] = [
     ],
     correctIndex: 1,
     explanation:
-      "SIGKILL (9) y SIGSTOP (19) son señales que el kernel maneja directamente para asegurar el control del sistema; el proceso no tiene oportunidad de tratarlas.",
+      "SIGKILL (señal 9) y SIGSTOP (señal 19) son manejadas directamente por el kernel. Ningún programa puede interceptarlas ni ignorarlas, lo que garantiza que siempre se pueda terminar o detener un proceso.",
   },
   {
     id: "t7-q2",
-    question: "Si llamamos a kill(0, SIGKILL), ¿a quién se le envía la señal?",
+    question: "Cuando se ejecuta kill(0, SIGKILL) pasando 0 como primer argumento, ¿a qué procesos se les envía la señal?",
     options: [
-      "Al proceso con PID 0 (kernel)",
-      "Solo al proceso que realiza la llamada",
-      "A todos los procesos que pertenecen al mismo grupo que el emisor",
-      "A todos los procesos del sistema (broadcast)",
+      "Únicamente al proceso con PID 0, que es el kernel.",
+      "Solo al proceso que ejecutó la llamada.",
+      "A todos los procesos que pertenecen al mismo grupo de procesos que el emisor.",
+      "A todos los procesos del sistema sin excepción.",
     ],
     correctIndex: 2,
     explanation:
-      "Cuando pid = 0, la señal se envía a todos los procesos cuyo ID de grupo de proceso es igual al del proceso que envía la señal.",
+      "Cuando el primer argumento de kill() es 0, la señal se envía a todos los procesos que comparten el mismo ID de grupo de proceso que el proceso que hizo la llamada.",
   },
   {
     id: "t7-q3",
-    question: "¿Qué par de funciones permiten realizar un salto no local de retorno a un estado guardado?",
+    question: "¿Qué par de funciones en C permiten guardar el estado actual del programa y después regresar a ese punto desde cualquier otra parte del código?",
     options: [
       "fork() y wait()",
       "signal() y raise()",
@@ -455,34 +455,95 @@ export const TEMA7_QUIZ: QuizQuestion[] = [
     ],
     correctIndex: 2,
     explanation:
-      "setjmp() guarda el entorno (registros, pila, etc.) y longjmp() restaura dicho entorno, permitiendo 'saltar' de vuelta a un punto anterior del programa.",
+      "setjmp() guarda el estado del programa (registros, pila, etc.) en un buffer. Posteriormente, longjmp() puede restaurar ese estado, haciendo que la ejecución 'salte' de vuelta al punto donde se llamó a setjmp().",
   },
   {
     id: "t7-q4",
-    question: "¿Cuál es el comportamiento por defecto de SIGALRM?",
+    question: "Si un proceso recibe la señal SIGALRM y no tiene definido ningún manejador (handler) para ella, ¿qué le ocurre al proceso?",
     options: [
-      "Ignorar la señal",
-      "Suspender el proceso",
-      "Terminar la ejecución del proceso",
-      "Reiniciar el temporizador",
+      "La señal se ignora y el proceso continúa normalmente.",
+      "El proceso se suspende temporalmente.",
+      "El proceso se termina (es la acción por defecto).",
+      "El temporizador se reinicia automáticamente.",
     ],
     correctIndex: 2,
     explanation:
-      "A menos que se defina un manejador (handler), la acción por defecto de SIGALRM es finalizar el proceso.",
+      "Si no se ha definido un manejador con signal(), la acción por defecto de SIGALRM es terminar el proceso. Por eso es importante registrar un handler antes de usar alarm().",
   },
   {
     id: "t7-q5",
-    question: "¿Para qué sirve la función pause()?",
+    question: "¿Qué hace exactamente la función pause() cuando se ejecuta dentro de un programa en C?",
     options: [
-      "Para detener el programa por un tiempo fijo",
-      "Para suspender el proceso hasta que se reciba cualquier señal capturable",
-      "Para liberar la memoria del proceso",
-      "Para esperar a que un hijo termine",
+      "Detiene el programa durante una cantidad fija de segundos.",
+      "Suspende el proceso y lo deja dormido hasta que reciba cualquier señal que pueda ser capturada.",
+      "Libera la memoria que el proceso estaba utilizando.",
+      "Espera a que un proceso hijo termine su ejecución.",
     ],
     correctIndex: 1,
     explanation:
-      "pause() pone al proceso a dormir hasta que llega una señal que o bien termina el proceso o bien invoca a un manejador de señales.",
+      "pause() pone al proceso a dormir indefinidamente hasta que llegue una señal. Si la señal tiene un manejador (handler), se ejecuta el handler y pause() retorna. Si no, la acción por defecto de la señal se aplica (por ejemplo, terminar el proceso).",
   },
 ];
 
-
+export const TEMA8_QUIZ: QuizQuestion[] = [
+  {
+    id: "t8-q1",
+    question: "Al implementar el comando 'mkdir' en C, ¿cuál es la llamada al sistema que se utiliza para crear el directorio?",
+    options: [
+      "mkdir()",
+      "chdir()",
+      "open()",
+      "create()"
+    ],
+    correctIndex: 0,
+    explanation: "La función mkdir() es la llamada al sistema que crea un nuevo directorio en la ruta indicada, recibiendo además los permisos iniciales como segundo argumento."
+  },
+  {
+    id: "t8-q2",
+    question: "Si quieres programar en C un comando que muestre la ruta del directorio actual (similar a 'pwd'), ¿qué función debes usar?",
+    options: [
+      "pwd()",
+      "getcwd()",
+      "chdir()",
+      "dir()"
+    ],
+    correctIndex: 1,
+    explanation: "La función getcwd() devuelve la ruta absoluta (path completo) del directorio de trabajo actual del proceso."
+  },
+  {
+    id: "t8-q3",
+    question: "El comando 'mesg' controla si otros usuarios pueden escribir mensajes en tu terminal. ¿Qué llamada al sistema usa internamente para modificar los permisos?",
+    options: [
+      "stat()",
+      "chmod()",
+      "rename()",
+      "access()"
+    ],
+    correctIndex: 1,
+    explanation: "El comando mesg usa chmod() para agregar o quitar el permiso de escritura del grupo sobre el archivo de la terminal (/dev/pts/X)."
+  },
+  {
+    id: "t8-q4",
+    question: "Para implementar en C un comando similar a 'free' que muestre el uso de memoria RAM y swap, ¿qué estructura y función del sistema se deben utilizar?",
+    options: [
+      "struct stat y stat()",
+      "struct sysinfo y sysinfo()",
+      "struct utsname y uname()",
+      "struct utmp y getutent()"
+    ],
+    correctIndex: 1,
+    explanation: "La llamada sysinfo() llena una estructura de tipo 'sysinfo' con datos globales del sistema: memoria total, memoria libre, swap usado, número de procesos, etc."
+  },
+  {
+    id: "t8-q5",
+    question: "Al implementar el comando 'rm' en C para borrar un archivo regular, ¿cuál es la llamada al sistema correcta para eliminarlo?",
+    options: [
+      "remove()",
+      "delete()",
+      "unlink()",
+      "rmdir()"
+    ],
+    correctIndex: 2,
+    explanation: "La función unlink() elimina el nombre del archivo del directorio. Si ese era el último enlace duro (hard link) apuntando al inodo, el sistema libera el espacio en disco."
+  }
+];

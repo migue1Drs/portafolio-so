@@ -51,6 +51,15 @@ export default function Tema2Page() {
           <p className="mt-6 mb-4 text-[#b0b8c4]">
             En sistemas UNIX, el diagrama es más complejo, incluyendo estados como "Ejecutándose en modo kernel/usuario", "Dormido en memoria", o el estado <strong className="text-[#ff5f56]">Zombi</strong> (terminado pero conservando una entrada en la tabla para que el padre recupere su código de salida).
           </p>
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Comprendí el <a href="#2-1-introduccion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">modelo teórico de los 5 estados</a> de un proceso (Nuevo, Listo, Ejecución, Bloqueado, Terminado) y cómo el sistema operativo gestiona las transiciones entre ellos.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Explorando herramientas como <code className="text-[#58a6ff]">htop</code> para observar en tiempo real cómo los procesos de mi máquina cambian de estado, especialmente enfocándome en los <a href="#2-1-introduccion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">procesos bloqueados (D) y dormidos (S)</a>.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.2 */}
@@ -69,6 +78,15 @@ export default function Tema2Page() {
             <li><span className="text-[#3fb950]">TASK_STOPPED</span>: detenido.</li>
             <li><span className="text-[#ff5f56]">EXIT_ZOMBIE</span>: terminado, padre aún no recoge el estado.</li>
           </ul>
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí que en el kernel de Linux cada proceso está representado por una estructura gigantesca llamada <a href="#2-2-control" className="hover:underline cursor-pointer"><code className="text-[#58a6ff] hover:text-[#79b8ff] transition-colors">task_struct</code></a>, la cual almacena todo el estado, credenciales y mapas de memoria, también conocido como <a href="#2-2-control" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">PCB (Bloque de Control de Proceso)</a>.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Escribiendo un módulo de kernel básico en C que itere sobre la lista de <code className="text-[#58a6ff]">task_struct</code> para imprimir el nombre y estado de todos los procesos actuales directamente desde el espacio del kernel.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.3 */}
@@ -125,6 +143,15 @@ int main(void) {
             output={`Padre: PID=14500, x=10
 Hijo: PID=14501, x=5`} 
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Entendí que la llamada <a href="#2-3-creacion" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">fork()</code></a> crea un proceso hijo clonando al padre. Descubrí el concepto de <a href="#2-3-creacion" className="text-white font-bold hover:text-[#f5a623] hover:underline transition-colors cursor-pointer">Copy-on-Write (CoW)</a>, un mecanismo de optimización donde el hijo comparte la memoria del padre hasta que uno de los dos intenta modificarla, ahorrando RAM y tiempo.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Escribiendo un programa que mida el tiempo que toma hacer un <code className="text-[#f5a623]">fork()</code> de un proceso que ocupa 1GB de RAM versus uno de 1MB, para comprobar experimentalmente la eficiencia del CoW.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.4 */}
@@ -239,6 +266,77 @@ Proceso PID=15004, PPID=15000
 Proceso PID=15005, PPID=15000
 Proceso PID=15000, PPID=12345`}
           />
+
+          <h3 className="text-white font-bold mt-8 mb-4 italic">Ejemplo: Árbol recursivo de procesos</h3>
+          <p className="mb-4 text-sm text-[#b0b8c4]">
+            En este código, un padre invoca recursivamente bifurcaciones para armar un árbol de procesos usando <code className="text-[#f5a623]">fork()</code> y <code className="text-[#f5a623]">waitpid()</code>.
+          </p>
+          <CopyCodeBlock 
+            filename="arbol_recursivo.c" 
+            language="C" 
+            code={`#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+void crear_arbol(int nivel_actual, int max_nivel) {
+    printf("%*sProceso: PID = %d, Padre: PID = %d\\n", nivel_actual * 2, "", getpid(), getppid());
+    fflush(stdout);
+    
+    if (nivel_actual < max_nivel) {
+        pid_t hijo1 = fork();
+        if (hijo1 == 0) {
+            // Proceso hijo 1
+            crear_arbol(nivel_actual + 1, max_nivel);
+            exit(0);
+        } else if (hijo1 > 0) {
+            pid_t hijo2 = fork();
+            if (hijo2 == 0) {
+                // Proceso hijo 2
+                crear_arbol(nivel_actual + 1, max_nivel);
+                exit(0);
+            } else if (hijo2 > 0) {
+                // Proceso padre espera a ambos hijos
+                waitpid(hijo1, NULL, 0);
+                waitpid(hijo2, NULL, 0);
+                sleep(15);
+            } else {
+                perror("Error al crear hijo2");
+                exit(1);
+            }
+        } else {
+            perror("Error al crear hijo1");
+            exit(1);
+        }
+    }
+}
+
+int main(int argc, char *argv[]) {
+    int max_nivel = 4;
+    crear_arbol(0, max_nivel);
+    return 0;
+}`} 
+            compileCommand="gcc arbol_recursivo.c -o arbol_recursivo"
+            runCommand="./arbol_recursivo"
+            output={`Proceso: PID = 15000, Padre: PID = 12345
+  Proceso: PID = 15001, Padre: PID = 15000
+  Proceso: PID = 15002, Padre: PID = 15000
+    Proceso: PID = 15003, Padre: PID = 15001
+    Proceso: PID = 15004, Padre: PID = 15001
+      Proceso: PID = 15005, Padre: PID = 15003
+      Proceso: PID = 15006, Padre: PID = 15003
+        Proceso: PID = 15007, Padre: PID = 15005
+        Proceso: PID = 15008, Padre: PID = 15005`}
+          />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí a rastrear la genealogía de los procesos usando <a href="#2-4-identificar" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">getpid()</code></a> y <a href="#2-4-identificar" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">getppid()</code></a>. Comprobé que el orden de los <a href="#2-3-creacion" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">fork()</code></a> determina si formamos una cadena lineal, un abanico (estrella) o un <a href="#2-4-identificar" className="text-white font-bold hover:text-[#f5a623] hover:underline transition-colors cursor-pointer">árbol de procesos jerárquico</a>.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Añadiendo a los ejemplos una visualización con el comando <code className="text-[#58a6ff]">pstree -p</code> en paralelo a la ejecución, para comparar gráficamente cómo el SO organiza internamente la familia de procesos creada.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.5 */}
@@ -299,6 +397,15 @@ int main() {
             output={`soy el hijo con pid = 15001 
 soy el padre con pid = 15000 e hijo con pid = 15001`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí que la función <a href="#2-5-wait" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">wait()</code></a> es esencial para sincronizar al padre con el hijo, obligando al padre a suspenderse hasta que el hijo termine, y permitiéndole recoger su código de salida, evitando así que el hijo quede flotando en la tabla de procesos.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Modificando el ejemplo para capturar explícitamente el estado de salida con la macro <code className="text-[#3fb950]">WEXITSTATUS(estado)</code>, demostrando cómo los hijos pueden enviar información útil (como códigos de error) de vuelta al padre.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.5.1 */}
@@ -358,6 +465,15 @@ El factorial de 3 es: 6
 el hijo:0 con pid 15001 termino
 el hijo:1 con pid 15002 termino`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Descubrí que <a href="#2-5-1-waitpid" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">waitpid()</code></a> ofrece mucho más control que <a href="#2-5-wait" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">wait()</code></a>. Permite esperar a un hijo en específico o usar banderas como <a href="#2-5-1-waitpid" className="hover:underline cursor-pointer"><code className="text-[#3fb950] hover:text-[#56d364] transition-colors">WNOHANG</code></a> para hacer esperas no bloqueantes, lo que es vital para servidores que manejan múltiples clientes.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Implementando un bucle asíncrono donde el padre haga otras tareas útiles mientras intermitentemente llama a <code className="text-[#f5a623]">waitpid()</code> con <code className="text-[#3fb950]">WNOHANG</code> para limpiar hijos terminados sin detener su propia ejecución.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.6 */}
@@ -393,6 +509,15 @@ el hijo:1 con pid 15002 termino`}
           <p className="mt-4">
             <code className="text-[#f5a623]">exit()</code> realiza limpieza de buffers y recursos antes de llamar al sistema <code className="text-[#f5a623]">_exit()</code>. El valor de retorno (0 por convención para éxito) está disponible para el padre a través de <code className="text-[#f5a623]">wait()</code>.
           </p>
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Comprendí la sutil pero crítica diferencia entre <a href="#2-6-exit" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">exit()</code></a> y <a href="#2-6-exit" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">_exit()</code></a>: la primera hace limpieza a nivel de librería de C (flushing de buffers IO, funciones atexit), mientras que la segunda termina inmediatamente el proceso a nivel kernel.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Demostrando el efecto de ambas en un código con buffers de <code className="text-[#f5a623]">printf()</code> sin saltos de línea (<code className="text-white">\n</code>), donde <code className="text-[#f5a623]">_exit()</code> causaría que el texto nunca se imprima en pantalla.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.7 */}
@@ -459,6 +584,15 @@ int main(void) {
             output={`Hijo terminado. PID=15001
 Padre: hijo recolectado`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Observé de primera mano la creación de un <a href="#2-7-zombi" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">proceso Zombi</a> (estado 'Z' en <code className="text-[#58a6ff]">ps</code>). Entendí que no son "procesos devoradores de recursos", sino simplemente entradas residuales en la tabla del kernel esperando a que su padre perezoso llame a <a href="#2-5-wait" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">wait()</code></a>.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Explicando el proceso de "adopción": ¿qué pasa si el padre muere antes de recoger al zombi? Podría mostrar cómo el proceso init (PID 1) o systemd los hereda y los limpia automáticamente.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.8 */}
@@ -527,6 +661,15 @@ int main() {
 -rwxr-xr-x 1 user user 16120 May 13 22:00 exec_ejemplo
 -rw-r--r-- 1 user user   387 May 13 22:00 exec_ejemplo.c`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí que <a href="#2-8-exec" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">exec()</code></a> es el complemento perfecto de <a href="#2-3-creacion" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">fork()</code></a>. Mientras que fork clona, exec muta: reemplaza completamente el programa actual por uno nuevo, manteniendo el mismo PID. Esta es la base de cómo funcionan las terminales (bash) al ejecutar comandos.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Construyendo una mini-shell personalizada en C que lea comandos del usuario, haga <code className="text-[#f5a623]">fork()</code> y use <code className="text-[#f5a623]">execvp()</code> para ejecutarlos.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.9 */}
@@ -563,6 +706,15 @@ int main() {
               </tbody>
             </table>
           </div>
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Entendí que los <a href="#2-9-hilos" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">hilos</a> son "procesos ligeros". A diferencia del modelo multiproceso donde cada quien tiene su propia RAM (aislada), los hilos comparten el mismo espacio de direcciones, haciendo el cambio de contexto mucho más rápido pero requiriendo sincronización cuidadosa.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Visualizando con <code className="text-[#58a6ff]">top -H</code> o <code className="text-[#58a6ff]">ps -T</code> cómo el kernel de Linux trata a los hilos como si fueran procesos normales bajo el capó (LWP - Light Weight Processes).
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 2.9.1 */}
@@ -694,6 +846,15 @@ void *factorial (void *valor) {
 Factorial de: 4 = 24
 Factorial de: 5 = 120`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí a usar la <a href="#2-9-1-pthreads" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">API de pthreads</a> (<code className="text-[#f5a623]">pthread_create</code>, <code className="text-[#f5a623]">pthread_join</code>) para lanzar trabajos paralelos. Fue fascinante ver cómo se pueden pasar estructuras completas por referencia a cada hilo y recuperar el resultado final sin usar IPC pesado.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Introduciendo a propósito una condición de carrera (race condition) al sumar una variable global sin <code className="text-[#f5a623]">mutex</code>, para demostrar visualmente por qué la exclusión mutua es absolutamente obligatoria al trabajar con hilos.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* Ejercicios */}
@@ -721,14 +882,6 @@ Factorial de: 5 = 120`}
           </ol>
         </section>
 
-        <ReflectionBox>
-          <p className="mb-2">
-            <strong className="text-white">¿Qué aprendí?</strong> Aprendí la importancia de la sincronización y el ciclo de vida de los procesos. Comprendí cómo <code className="text-[#f5a623]">fork()</code> duplica el espacio de memoria y cómo procesos huérfanos pueden convertirse en zombis si el padre no realiza un <code className="text-[#f5a623]">wait()</code>. Además, observé que los hilos permiten paralelismo de forma mucho más ligera compartiendo memoria (pthread).
-          </p>
-          <p>
-            <strong className="text-white">¿Cómo podría mejorarla?</strong> Podría mejorar escribiendo un programa concurrente más complejo que combine la creación de múltiples hilos manejando recursos y comparando su tiempo de ejecución con procesos independientes usando la familia de comandos <code className="text-[#f5a623]">exec()</code>.
-          </p>
-        </ReflectionBox>
 
         <TopicQuiz topicId="tema-2" title="Test - Procesos e Hilos" questions={TEMA2_QUIZ} />
         <ReadMarker topicId="tema-2" />

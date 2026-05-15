@@ -36,6 +36,15 @@ export default function Tema1Page() {
             <li><strong className="text-white">Administración de memoria:</strong> Aislar procesos, asignar espacios y controlar el acceso.</li>
             <li><strong className="text-white">Seguridad y Recursos:</strong> Políticas como no compartición o compartición controlada, equidad y eficiencia.</li>
           </ul>
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Comprendí que un <a href="#1-1-introduccion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">sistema operativo</a> no es solo una interfaz gráfica; es el software fundamental que administra procesadores, memoria, dispositivos y datos, actuando como intermediario entre el usuario y el hardware.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Investigando cómo el <a href="#1-1-introduccion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">kernel de Linux</a> gestiona la exclusión mutua en sus propias estructuras internas, comparándolo con otros kernels como el de Windows NT.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 1.2 Clasificación */}
@@ -98,6 +107,15 @@ export default function Tema1Page() {
               </div>
             </div>
           </div>
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí a distinguir las diferentes categorías de sistemas operativos según su propósito: desde los <a href="#1-2-clasificacion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">sistemas por lotes</a> y de <a href="#1-2-clasificacion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">tiempo real</a> hasta los <a href="#1-2-clasificacion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">distribuidos y móviles</a>. Cada uno resuelve problemas específicos de la computación.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Realizando un análisis comparativo práctico entre las arquitecturas de <a href="#1-2-clasificacion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">Android</a> (ART sobre kernel Linux) e <a href="#1-2-clasificacion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">iOS</a> (XNU), evaluando sus estrategias de administración de memoria y consumo energético.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* Ejecución (Requisito) */}
@@ -113,16 +131,18 @@ export default function Tema1Page() {
 342`}
             title="bash — Kernel y Procesos"
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Verifiqué en la práctica que Linux es un sistema <a href="#1-2-clasificacion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">multitarea</a> real: con un solo comando pude identificar la versión del kernel y confirmar que cientos de procesos se ejecutan simultáneamente.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Creando un script de monitoreo en tiempo real que capture métricas del sistema (CPU, memoria, procesos) periódicamente y las presente en un formato visual.
+            </p>
+          </ReflectionBox>
         </section>
 
-        <ReflectionBox>
-          <p className="mb-3">
-            <strong className="text-white">¿Qué aprendí?</strong> Aprendí a conceptualizar correctamente qué es un sistema operativo y a clasificarlo según sus paradigmas y usos históricos (por lotes, tiempo real, paralelos). Además, comprendí las diferencias arquitectónicas clave entre sistemas móviles como iOS (XNU) y Android (kernel Linux + máquina virtual).
-          </p>
-          <p>
-            <strong className="text-white">¿Cómo podría mejorarla?</strong> Podría mejorarla profundizando en cómo se implementa la máquina virtual de Android (ART) frente a Dalvik para entender cómo gestionan la memoria y afectan el consumo de batería del dispositivo, e intentar crear un script que monitorice recursos en tiempo real.
-          </p>
-        </ReflectionBox>
+
 
         <TopicQuiz topicId="tema-1" title="Test — Introducción a los SO" questions={TEMA1_QUIZ} />
 

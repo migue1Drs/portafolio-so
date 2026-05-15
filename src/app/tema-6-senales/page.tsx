@@ -10,7 +10,7 @@ export default function Tema7Page() {
   return (
     <div className="animate-in fade-in duration-700 max-w-[1000px] mx-auto w-full">
       <PageHeader
-        number="Tema 7"
+        number="Tema 6"
         title="Señales"
         description="Interrupciones de software, manejo asíncrono, rutinas de tratamiento, y control del flujo de ejecución en sistemas UNIX/Linux."
       />
@@ -22,7 +22,7 @@ export default function Tema7Page() {
             Las señales son <strong>interrupciones de software</strong> que pueden ser enviadas a un proceso para informarle de algún evento asíncrono o situación especial. El sistema operativo las identifica con un número entero positivo asociado a un nombre que generalmente inicia con <code className="text-[#58a6ff]">SIG</code>.
           </p>
 
-          <SectionHeading id="7-1-intro" number="7.1" title="Introducción" />
+          <SectionHeading id="7-1-intro" number="6.1" title="Introducción" />
           <p className="mb-4">
             Los procesos pueden enviarse señales usando llamadas al sistema como <code className="text-[#f5a623]">kill()</code>. Cuando un proceso recibe una señal, puede proceder de tres diferentes formas:
           </p>
@@ -31,11 +31,20 @@ export default function Tema7Page() {
             <li><strong className="text-white">Invocar rutina por defecto:</strong> Aportada por el kernel. Suele terminar el proceso y, en algunos casos (como error de bus o violación de segmento), generar un archivo <code className="text-[#58a6ff]">core</code> con un volcado de memoria para depuración.</li>
             <li><strong className="text-white">Invocar a una rutina propia:</strong> El programador escribe su propio manejador (handler) para ejecutar acciones específicas al recibirla.</li>
           </ol>
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Comprendí que las <a href="#7-1-intro" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">señales</a> son interrupciones de software que permiten la comunicación asíncrona entre procesos y el kernel. Un proceso puede ignorarlas, usar la acción por defecto, o definir su propio manejador.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Experimentando con la recepción de señales en un proceso multihilo para entender cómo el kernel decide a cuál hilo entregar la señal.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 7.2 Tipos de señales */}
         <section>
-          <SectionHeading id="7-2-tipos" number="7.2" title="Tipos de señales" />
+          <SectionHeading id="7-2-tipos" number="6.2" title="Tipos de señales" />
           <p className="mb-4">
             Las señales se clasifican en grupos: terminación de procesos, excepciones inducidas (accesos inválidos, coma flotante), originadas en modo usuario, interacción con la terminal y trazado de programas. En Linux, están definidas en <code className="text-[#a5d6ff]">&lt;signal.h&gt;</code>.
           </p>
@@ -110,11 +119,20 @@ export default function Tema7Page() {
               </code>
             </div>
           </div>
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí a identificar cada señal por su número y nombre (SIGINT, SIGKILL, SIGSEGV, etc.), y que <a href="#7-2-tipos" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">SIGKILL y SIGSTOP</a> son las únicas que no pueden ser capturadas ni ignoradas, porque el kernel necesita mantener el control absoluto.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Creando un programa que registre un handler para cada señal capturable y observe cuáles se reciben en situaciones reales de uso del sistema.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 7.3 Tratamiento de señales */}
         <section>
-          <SectionHeading id="7-3-tratamiento" number="7.3" title="Tratamiento de señales" />
+          <SectionHeading id="7-3-tratamiento" number="6.3" title="Tratamiento de señales" />
           <p className="mb-4">
             La llamada <code className="text-[#f5a623]">signal()</code> permite especificar el comportamiento ante la recepción de una señal: puede ser <code className="text-[#58a6ff]">SIG_DFL</code> (defecto), <code className="text-[#58a6ff]">SIG_IGN</code> (ignorar), o un puntero a una función (handler).
           </p>
@@ -185,11 +203,18 @@ Has intentado interrumpirme. Faltan 1 intentos más.
 Señal número 2 recibida
 Me rindo. Saliendo...`}
           />
-        </section>
 
-        {/* 7.3.1 Funciones setjmp y longjmp */}
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí a interceptar señales con <a href="#7-3-tratamiento" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">signal()</code></a> y a definir manejadores personalizados que alteran el comportamiento por defecto del proceso, como contar cuántas veces se presiona Ctrl+C antes de terminar.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Migrando de <code className="text-[#f5a623]">signal()</code> a <code className="text-[#f5a623]">sigaction()</code>, que es la versión moderna y portable que permite un control más preciso sobre las máscaras de señales.
+            </p>
+          </ReflectionBox>
+        </section>
         <section>
-          <SectionHeading id="7-3-setjmp" number="7.3.1" title="Funciones setjmp y longjmp" />
+          <SectionHeading id="7-3-setjmp" number="6.3.1" title="Funciones setjmp y longjmp" />
           <p className="mb-4">
             Permiten a un proceso realizar saltos no locales hacia un contexto anterior, algo muy útil al gestionar señales. <code className="text-[#f5a623]">setjmp()</code> guarda el estado (registros, pila) en un buffer, retornando 0 inicialmente. Cuando el handler llama a <code className="text-[#f5a623]">longjmp()</code>, la ejecución salta de regreso a donde estaba <code className="text-[#f5a623]">setjmp()</code>, pero ahora retornando un valor diferente (generalmente 1), rompiendo el flujo secuencial asíncronamente.
           </p>
@@ -235,11 +260,20 @@ int main() {
 He regresado asíncronamente al punto del estado 0
 Punto de guardado (estado 1). Envíame SIGUSR1 (kill -10 24891)`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Descubrí que <a href="#7-3-setjmp" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">setjmp()</code></a> y <a href="#7-3-setjmp" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">longjmp()</code></a> permiten implementar saltos no locales, funcionando como un mecanismo de recuperación similar a try/catch pero a nivel de sistema operativo.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Implementando un mini-framework de manejo de errores en C que use setjmp/longjmp para proteger secciones críticas de código contra señales inesperadas.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 7.4 Alarma y Pausa */}
         <section>
-          <SectionHeading id="7-4-alarma" number="7.4" title="Función alarma y pausa" />
+          <SectionHeading id="7-4-alarma" number="6.4" title="Función alarma y pausa" />
           <p className="mb-4">
             La función <code className="text-[#f5a623]">alarm()</code> configura un temporizador en el sistema. Cuando transcurren los segundos solicitados, el kernel envía la señal <code className="text-[#58a6ff]">SIGALRM</code>. Por otro lado, la función <code className="text-[#f5a623]">pause()</code> suspende incondicionalmente al proceso hasta que reciba una señal capturable.
           </p>
@@ -311,16 +345,18 @@ Procesando: 2
 Recibí señal: 14 (SIGALRM)
 Programa terminado correctamente.`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí que <a href="#7-4-alarma" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">alarm()</code></a> programa un temporizador que envía SIGALRM al expirar, y que <a href="#7-4-alarma" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">pause()</code></a> suspende el proceso hasta recibir cualquier señal. Juntas permiten implementar timeouts y temporizadores sin consumir CPU.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Programando un servidor en C que use alarm() para detectar conexiones inactivas y cerrarlas automáticamente, liberando recursos del sistema de forma elegante.
+            </p>
+          </ReflectionBox>
         </section>
 
-        <ReflectionBox>
-          <p className="mb-2">
-            <strong className="text-white">¿Qué aprendí?</strong> Aprendí que las señales son el mecanismo principal de interrupción asíncrona entre procesos y el kernel en Linux. Pude interactuar con los handlers modificando el comportamiento predeterminado con <code className="text-[#f5a623]">signal()</code>. Descubrí el poder asíncrono de <code className="text-[#f5a623]">longjmp()</code>, el cual rompe por completo el flujo estructurado habitual en C y funciona casi como un bloque de <code className="text-[#58a6ff]">try/catch</code> moderno para el sistema operativo.
-          </p>
-          <p>
-            <strong className="text-white">¿Cómo podría mejorarla?</strong> Se podría mejorar programando un servidor robusto en C que escuche sockets y maneje elegantemente las peticiones de cierre mediante <code className="text-[#58a6ff]">SIGTERM</code>, asegurando que se libere la memoria, se cierren descriptores de archivo y se termine la conexión de base de datos antes de hacer el <code className="text-[#f5a623]">exit()</code> definitivo, evitando dejar recursos atascados.
-          </p>
-        </ReflectionBox>
+
 
         <TopicQuiz topicId="tema-7" title="Test - Señales" questions={TEMA7_QUIZ} />
         <ReadMarker topicId="tema-7" />

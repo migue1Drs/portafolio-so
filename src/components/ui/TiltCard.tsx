@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 interface TiltCardProps {
@@ -10,20 +10,24 @@ interface TiltCardProps {
 
 export function TiltCard({ children, className }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const [isTouch, setIsTouch] = useState(false);
+
+  // Detect touch devices — disable tilt to avoid awkward interactions
+  useEffect(() => {
+    setIsTouch(window.matchMedia("(hover: none)").matches);
+  }, []);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Configuración del resorte para que la rotación sea fluida y no brusca
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 });
 
-  // Map position to rotation degrees (max 10 degrees)
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    if (!ref.current || isTouch) return;
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
@@ -42,6 +46,15 @@ export function TiltCard({ children, className }: TiltCardProps) {
     y.set(0);
   };
 
+  // On touch devices, render a plain wrapper (no 3D)
+  if (isTouch) {
+    return (
+      <div className={`relative w-full h-full ${className || ""}`}>
+        {children}
+      </div>
+    );
+  }
+
   return (
     <motion.div
       ref={ref}
@@ -54,7 +67,6 @@ export function TiltCard({ children, className }: TiltCardProps) {
       }}
       className={`relative w-full h-full perspective-1000 ${className || ""}`}
     >
-      {/* Contenedor interno que se "levanta" un poco para acentuar el 3D */}
       <motion.div 
         style={{ transform: "translateZ(30px)" }}
         className="w-full h-full"

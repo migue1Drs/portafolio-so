@@ -11,7 +11,7 @@ export default function Tema6Page() {
   return (
     <div className="animate-in fade-in duration-700 max-w-[1000px] mx-auto w-full">
       <PageHeader
-        number="Tema 6"
+        number="Tema 5"
         title="Arquitectura del sistema de archivos"
         description="Estructura lógica, superbloque, inodos, tipos de archivos, metadatos, y administración de dispositivos E/S en UNIX/Linux."
       />
@@ -22,21 +22,39 @@ export default function Tema6Page() {
           <p className="mb-4">
             El sistema de archivos en UNIX es una estructura formada por el <strong>boot</strong>, el <strong>superbloque</strong>, la <strong>lista de inodos</strong>, y el <strong>área de los datos</strong>. Dicha estructura se encuentra administrada por el Sistema de Archivo Extendido (Extended File System, como ext2, ext3, o ext4).
           </p>
-          <SectionHeading id="6-1-introduccion" number="6.1" title="Introducción" />
+          <SectionHeading id="6-1-introduccion" number="5.1" title="Introducción" />
           <p className="mb-4">
             Las características del sistema de archivos de UNIX y Linux incluyen una estructura jerárquica, consistencia, y manejo dinámico. El kernel trabaja con el sistema de archivos a un <strong>nivel lógico</strong>. Cada dispositivo tiene asociado un <em>número mayor</em> (major number) y un <em>número menor</em> (minor number), que indexan los controladores (drivers) encargados de transformar direcciones lógicas a físicas.
           </p>
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Comprendí que el <a href="#6-1-introduccion" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">sistema de archivos</a> en UNIX es una estructura jerárquica donde el kernel opera a nivel lógico, y que cada dispositivo se identifica mediante números mayor y menor que indexan sus controladores.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Explorando el directorio <code className="text-[#58a6ff]">/dev</code> para correlacionar los números major/minor con los drivers cargados en <code className="text-[#58a6ff]">/proc/devices</code>.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 6.2 */}
         <section>
-          <SectionHeading id="6-2-estructura-logica" number="6.2" title="Estructura lógica del sistema de archivos" />
+          <SectionHeading id="6-2-estructura-logica" number="5.2" title="Estructura lógica del sistema de archivos" />
           <FileSystemDiagram />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Visualicé que la <a href="#6-2-estructura-logica" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">estructura lógica</a> del sistema de archivos se compone de boot, superbloque, lista de inodos y área de datos, cada uno cumpliendo un rol específico en la organización del disco.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Usando <code className="text-[#58a6ff]">dumpe2fs</code> en una partición real para verificar cómo están distribuidos estos componentes en un disco formateado con ext4.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 6.2.1 */}
         <section>
-          <SectionHeading id="6-2-1-superbloque" number="6.2.1" title="El superbloque" />
+          <SectionHeading id="6-2-1-superbloque" number="5.2.1" title="El superbloque" />
           <p className="mb-4">
             El superbloque contiene información como el tamaño del sistema de archivos, lista de bloques libres, tamaño de la lista de inodos, y banderas de modificación. El sistema mantiene una copia en la memoria caché para acelerar el acceso, que se sincroniza periódicamente con el disco (por medio de procesos como <code className="text-white">sync_supers</code>).
           </p>
@@ -104,11 +122,18 @@ Número de Inodos Libres: 7543021
 ID del S.A.: 0x98a2f1c
 Longitud max para archivo: 255`} 
           />
-        </section>
 
-        {/* 6.2.2 */}
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Entendí que el <a href="#6-2-1-superbloque" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">superbloque</a> es la estructura de metadatos más crítica del sistema de archivos: contiene el número total de inodos, bloques, tamaño de bloque y estado general del filesystem. Su corrupción puede significar la pérdida total de datos.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Programando un análisis en C que use <code className="text-[#f5a623]">statvfs()</code> para comparar las estadísticas de diferentes particiones montadas en el sistema.
+            </p>
+          </ReflectionBox>
+        </section>
         <section>
-          <SectionHeading id="6-2-2-inodos" number="6.2.2" title="Nodos índices (inodos)" />
+          <SectionHeading id="6-2-2-inodos" number="5.2.2" title="Nodos índices (inodos)" />
           <p className="mb-4">
             Cada archivo en UNIX tiene asociado un <strong>inodo</strong>. Este no almacena el nombre del archivo ni sus datos, sino sus <strong>metadatos</strong>: tipo de archivo, permisos de acceso, identificador de usuario/grupo, tamaño, marcas de tiempo, y las referencias (punteros) a los bloques de datos donde realmente reside la información.
           </p>
@@ -170,11 +195,18 @@ int main(void) {
 lista_inodos.c  | I-nodo: 1258410  | Archivo Regular (864 bytes)
 lista_inodos    | I-nodo: 1258411  | Archivo Regular (16432 bytes)`}
           />
-        </section>
 
-        {/* 6.3 */}
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí que los <a href="#6-2-2-inodos" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">inodos</a> son la pieza clave del sistema de archivos: no almacenan el nombre del archivo, sino todos sus metadatos (permisos, tamaño, punteros a bloques). Un directorio es simplemente una tabla que mapea nombres a números de inodo.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Creando un programa que detecte <em>hard links</em> (archivos que comparten el mismo inodo) dentro de un directorio, para entender cómo funciona <code className="text-[#f5a623]">ln</code>.
+            </p>
+          </ReflectionBox>
+        </section>
         <section>
-          <SectionHeading id="6-3-tipos-archivos" number="6.3" title="Tipos de archivos y Dispositivos" />
+          <SectionHeading id="6-3-tipos-archivos" number="5.3" title="Tipos de archivos y Dispositivos" />
           <p className="mb-4">
             En Linux existen cuatro tipos principales de archivos:
           </p>
@@ -217,11 +249,20 @@ Tipo: Dispositivo de caracteres (Char)
 Número Mayor (Major): 4
 Número Menor (Minor): 1`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Comprendí que en UNIX "<a href="#6-3-tipos-archivos" className="text-white font-bold hover:text-[#58a6ff] hover:underline transition-colors cursor-pointer">todo es un archivo</a>": desde archivos regulares hasta dispositivos de hardware (<code className="text-[#58a6ff]">/dev/sda</code>, <code className="text-[#58a6ff]">/dev/tty</code>). Los dispositivos de bloque usan caché (buffer) para eficiencia, mientras que los de carácter operan byte a byte.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Escribiendo un programa que use las macros <code className="text-[#f5a623]">S_ISCHR</code> y <code className="text-[#f5a623]">S_ISBLK</code> para clasificar automáticamente todos los dispositivos en <code className="text-[#58a6ff]">/dev</code>.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* 6.4 */}
         <section>
-          <SectionHeading id="6-4-dispositivos" number="6.4" title="Dispositivos de Entrada y Salida (ioctl)" />
+          <SectionHeading id="6-4-dispositivos" number="5.4" title="Dispositivos de Entrada y Salida (ioctl)" />
           <p className="mb-4">
             El SO maneja operaciones de E/S con dispositivos, midiendo tiempos de búsqueda, latencia de giro, y acceso. En la terminal (<code className="text-[#58a6ff]">/dev/tty</code>), que es un dispositivo de carácter, se pueden enviar configuraciones o extraer datos directamente del hardware con la función de control de entrada y salida: <code className="text-[#f5a623]">ioctl()</code>.
           </p>
@@ -279,6 +320,15 @@ Filas: 24, Columnas: 80
 --- Red (eth0) ---
 MAC: 00:1a:2b:3c:4d:5e`}
           />
+
+          <ReflectionBox>
+            <p className="mb-2">
+              <strong className="text-white">¿Qué aprendí?</strong> Aprendí que <a href="#6-4-dispositivos" className="hover:underline cursor-pointer"><code className="text-[#f5a623] hover:text-[#ffd33d] transition-colors">ioctl()</code></a> es la interfaz universal para comunicarse directamente con los controladores de hardware, permitiendo operaciones que van más allá de las lecturas y escrituras estándar, como obtener la dirección MAC de una interfaz de red.
+            </p>
+            <p>
+              <strong className="text-white">¿Cómo podría mejorarla?</strong> Explorando más operaciones de ioctl como <code className="text-[#f5a623]">TIOCGWINSZ</code> para obtener las dimensiones de la terminal, o <code className="text-[#f5a623]">FIONREAD</code> para conocer bytes disponibles en un descriptor.
+            </p>
+          </ReflectionBox>
         </section>
 
         {/* Ejercicios */}
@@ -307,14 +357,7 @@ MAC: 00:1a:2b:3c:4d:5e`}
           </ol>
         </section>
 
-        <ReflectionBox>
-          <p className="mb-2">
-            <strong className="text-white">¿Qué aprendí?</strong> Aprendí que los archivos en UNIX no están definidos por sus nombres, sino por sus <strong>inodos</strong>. Los directorios solo son listas que vinculan nombres humanos con esos inodos. También descubrí que el hardware es tratado universalmente como un archivo dentro de <code className="text-white">/dev</code>, separándose en dispositivos de bloque (usando buffer/caché) y de carácter (flujos continuos). Funciones como <code className="text-[#f5a623]">ioctl()</code> nos dan la flexibilidad de interactuar profundamente con estos drivers.
-          </p>
-          <p>
-            <strong className="text-white">¿Cómo podría mejorarla?</strong> Se podría crear un explorador de archivos básico desde la terminal en C que aplique <code className="text-[#f5a623]">stat()</code> recursivamente a un directorio, calculando el tamaño sumado de sus directorios internos para simular cómo opera el comando <code className="text-white">du -sh</code>.
-          </p>
-        </ReflectionBox>
+
 
         <TopicQuiz topicId="tema-6" title="Test - Sistema de Archivos" questions={TEMA6_QUIZ} />
         <ReadMarker topicId="tema-6" />

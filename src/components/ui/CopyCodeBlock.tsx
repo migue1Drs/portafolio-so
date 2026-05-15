@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { SyntaxHighlighter } from "./SyntaxHighlighter";
 
 interface CopyCodeBlockProps {
@@ -97,7 +98,13 @@ export function CopyCodeBlock({
   };
 
   return (
-    <div className="rounded-xl overflow-hidden bg-[#0d1117] border border-[#30363d] shadow-2xl my-6 flex flex-col">
+    <motion.div 
+      initial={{ opacity: 0, y: 20, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="rounded-xl overflow-hidden bg-[#0d1117] border border-[#30363d] shadow-2xl my-6 flex flex-col group hover:border-[#484f58] hover:shadow-[0_8px_30px_rgba(88,166,255,0.05)] transition-all duration-300"
+    >
       {/* File header */}
       <div className="flex items-center px-4 py-2 bg-[#161b22] border-b border-[#30363d] shrink-0">
         <div className="flex space-x-2 mr-4">
@@ -169,13 +176,14 @@ export function CopyCodeBlock({
 
       {/* Simulated Terminal Output */}
       <div 
-        className={`transition-all duration-500 ease-in-out border-t border-[#30363d] bg-[#090c10] overflow-hidden flex flex-col`}
+        className={`transition-all duration-500 ease-in-out border-t border-[#30363d] bg-[#090c10] grid`}
         style={{ 
-          height: isExpanded ? (contentRef.current?.scrollHeight || 200) + 'px' : '0px',
+          gridTemplateRows: isExpanded ? '1fr' : '0fr',
           opacity: isExpanded ? 1 : 0 
         }}
       >
-        <div ref={contentRef} className="p-4 font-mono text-xs flex flex-col min-h-[120px]">
+        <div ref={contentRef} className="font-mono text-xs flex flex-col min-h-[120px] overflow-hidden">
+          <div className="p-4 flex flex-col h-full">
           {/* Terminal Tab Bar */}
           <div className="flex items-center gap-2 mb-3 text-[#8b949e]">
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,7 +203,7 @@ export function CopyCodeBlock({
             )}
           </div>
 
-          <div className="flex-1 overflow-y-auto space-y-1">
+          <div className="flex-1 space-y-1">
             {/* Compiling step */}
             {(terminalPhase === "compiling" || terminalPhase === "running" || terminalPhase === "done") && (
               <div className="text-[#8b949e]">
@@ -237,8 +245,9 @@ export function CopyCodeBlock({
               </div>
             )}
           </div>
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

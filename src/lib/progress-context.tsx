@@ -102,7 +102,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
   const getCompletionPercent = useCallback(() => {
     const topicIds = [
-      "prologo", "tema-1", "tema-2", "tema-3",
+      "tema-1", "tema-2", "tema-3",
       "tema-5", "tema-6", "tema-7", "tema-8",
     ];
     const completed = topicIds.filter((id) => isTopicComplete(id)).length;
