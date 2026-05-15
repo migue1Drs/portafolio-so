@@ -40,6 +40,7 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -67,7 +68,11 @@ export function Navbar() {
   // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const insideDesktop = searchRef.current?.contains(target);
+      const insideMobile = mobileSearchContainerRef.current?.contains(target);
+      
+      if (!insideDesktop && !insideMobile) {
         setIsFocused(false);
       }
     }
@@ -126,13 +131,15 @@ export function Navbar() {
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelectedIdx((prev) => (prev > 0 ? prev - 1 : filteredResults.length - 1));
-      } else if (e.key === "Enter" && selectedIdx >= 0) {
+      } else if (e.key === "Enter") {
         e.preventDefault();
-        const target = filteredResults[selectedIdx];
+        const targetIdx = selectedIdx >= 0 ? selectedIdx : 0;
+        const target = filteredResults[targetIdx];
         if (target) {
           window.location.href = target.entry.href;
           setIsFocused(false);
           setSearchQuery("");
+          setMobileMenuOpen(false);
         }
       }
     },
@@ -331,6 +338,7 @@ export function Navbar() {
           <AnimatePresence>
             {mobileSearchOpen && (
               <motion.div
+                ref={mobileSearchContainerRef}
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}

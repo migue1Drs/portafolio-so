@@ -123,37 +123,69 @@ export function buildSearchIndex(topics: Topic[]): SearchEntry[] {
   return entries;
 }
 
-/** Score a search entry against a query — higher is better */
+/** Normalize a string: lowercase + remove diacritics (á→a, é→e, etc.) */
+function normalize(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+/**
+ * Score a search entry against a query.
+ * Scoring tiers (higher = better ranking):
+ *
+ *  TIER 1 — Title matches (always beat anything else)
+ *    300 · exact title
+ *    260 · title starts-with query
+ *    200 · title contains query (any position)
+ *    180 · every query token found in title
+ *
+ *  TIER 2 — Keyword matches
+ *    150 · keyword exact match
+ *    120 · keyword starts-with query
+ *     90 · keyword contains query
+ *     70 · every query token found in any keyword
+ *
+ *  TIER 3 — Description / fallback
+ *     50 · description contains query
+ *     30 · every token found across title+desc+keywords
+ */
 export function scoreEntry(entry: SearchEntry, query: string): number {
-  const q = query.toLowerCase().trim();
+  const q = normalize(query.trim());
   if (!q) return 0;
 
-  const titleLower = entry.title.toLowerCase();
-  const descLower = entry.description.toLowerCase();
+  const title = normalize(entry.title);
+  const desc = normalize(entry.description);
+  const kwNorm = entry.keywords.map(normalize);
 
-  // Exact title match
-  if (titleLower === q) return 100;
-  // Title starts with query
-  if (titleLower.startsWith(q)) return 90;
-  // Title contains query
-  if (titleLower.includes(q)) return 70;
+  // ── TIER 1: Title ──────────────────────────────────────────
+  if (title === q) return 300;
+  if (title.startsWith(q)) return 260;
+  if (title.includes(q)) return 200;
 
-  // Keyword exact match
-  for (const kw of entry.keywords) {
-    if (kw === q) return 85;
-    if (kw.startsWith(q)) return 75;
-    if (kw.includes(q)) return 55;
+  // All query tokens inside the title
+  const tokens = q.split(/\s+/).filter(Boolean);
+  if (tokens.length > 1 && tokens.every((t) => title.includes(t))) return 180;
+
+  // ── TIER 2: Keywords ───────────────────────────────────────
+  let kwScore = 0;
+  for (const kw of kwNorm) {
+    if (kw === q)            { kwScore = Math.max(kwScore, 150); break; }
+    if (kw.startsWith(q))   { kwScore = Math.max(kwScore, 120); }
+    else if (kw.includes(q)){ kwScore = Math.max(kwScore, 90);  }
+    else if (tokens.length > 1 && tokens.every((t) => kw.includes(t))) {
+      kwScore = Math.max(kwScore, 70);
+    }
   }
+  if (kwScore > 0) return kwScore;
 
-  // Description match
-  if (descLower.includes(q)) return 40;
+  // ── TIER 3: Description / full-blob fallback ───────────────
+  if (desc.includes(q)) return 50;
 
-  // Multi-word: all tokens must match somewhere
-  const tokens = q.split(/\s+/);
   if (tokens.length > 1) {
-    const blob = `${titleLower} ${descLower} ${entry.keywords.join(" ")}`;
-    const allMatch = tokens.every((t) => blob.includes(t));
-    if (allMatch) return 50;
+    const blob = `${title} ${desc} ${kwNorm.join(" ")}`;
+    if (tokens.every((t) => blob.includes(t))) return 30;
   }
 
   return 0;

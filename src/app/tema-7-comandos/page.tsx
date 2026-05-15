@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CopyCodeBlock } from "@/components/ui/CopyCodeBlock";
+import { SyscallCard } from "@/components/ui/SyscallCard";
 import { ReflectionBox } from "@/components/ui/ReflectionBox";
 import { TopicQuiz } from "@/components/ui/TopicQuiz";
 import { ReadMarker } from "@/components/ui/ReadMarker";
@@ -30,6 +31,20 @@ export default function Tema8Page() {
           </p>
 
           <h3 id="cmd-pwd" className="text-white font-bold mb-3 mt-6">Comando pwd</h3>
+          <p className="mb-4 text-sm">
+            Muestra la ruta absoluta del <strong>directorio de trabajo actual</strong>. Internamente invoca <code className="text-[#f5a623]">getcwd()</code>, que recorre la cadena de directorios padre hasta llegar a la raíz (<code className="text-[#f5a623]">/</code>) y construye la ruta completa. Es uno de los comandos más básicos de navegación en cualquier shell UNIX.
+          </p>
+          <SyscallCard
+            name="getcwd"
+            prototype="char *getcwd(char *buf, size_t size);"
+            header="<unistd.h>"
+            description="Obtiene la ruta absoluta del directorio de trabajo actual y la almacena en el buffer proporcionado."
+            returns="Puntero al buffer con la ruta en caso de éxito, o NULL si ocurre un error (buffer insuficiente, permisos, etc.)."
+            params={[
+              { name: "buf", desc: "Buffer donde se almacenará la ruta absoluta del directorio actual." },
+              { name: "size", desc: "Tamaño máximo en bytes del buffer proporcionado." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_pwd.c" language="C" 
             code={`#include <stdio.h>
@@ -59,6 +74,19 @@ int main() {
           />
 
           <h3 id="cmd-cd" className="text-white font-bold mb-3 mt-10">Comando cd</h3>
+          <p className="mb-4 text-sm">
+            Cambia el <strong>directorio de trabajo actual</strong> del proceso. A diferencia de otros comandos, <code className="text-[#f5a623]">cd</code> debe ser un comando integrado (<em>built-in</em>) del shell, ya que si se ejecutara como proceso externo, el cambio de directorio solo afectaría al proceso hijo y no al shell padre. Si no se proporciona argumento, navega al directorio <code className="text-[#f5a623]">HOME</code> del usuario.
+          </p>
+          <SyscallCard
+            name="chdir"
+            prototype="int chdir(const char *path);"
+            header="<unistd.h>"
+            description="Cambia el directorio de trabajo actual del proceso que la invoca a la ruta especificada."
+            returns="0 en éxito, -1 en error (establece errno: ENOENT si no existe, EACCES si no tiene permiso, ENOTDIR si no es directorio)."
+            params={[
+              { name: "path", desc: "Ruta absoluta o relativa del directorio destino." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_cd.c" language="C" 
             code={`#include <stdio.h>
@@ -94,6 +122,20 @@ int main() {
           />
 
           <h3 id="cmd-mkdir" className="text-white font-bold mb-3 mt-10">Comando mkdir</h3>
+          <p className="mb-4 text-sm">
+            Crea un <strong>nuevo directorio</strong> en el sistema de archivos. Utiliza la syscall <code className="text-[#f5a623]">mkdir()</code> que crea una nueva entrada de directorio con los permisos especificados por el parámetro <code className="text-[#f5a623]">mode</code>. Los permisos finales son modificados por la <code className="text-[#f5a623]">umask</code> del proceso. El manejo de <code className="text-[#f5a623]">errno</code> permite diferenciar entre errores como directorio existente o permisos insuficientes.
+          </p>
+          <SyscallCard
+            name="mkdir"
+            prototype="int mkdir(const char *pathname, mode_t mode);"
+            header="<sys/stat.h>"
+            description="Crea un nuevo directorio vacío con el nombre y permisos especificados. Los permisos efectivos se calculan como (mode & ~umask)."
+            returns="0 en éxito, -1 en error (EEXIST si ya existe, EACCES si no tiene permiso en el directorio padre, ENOENT si la ruta padre no existe)."
+            params={[
+              { name: "pathname", desc: "Ruta del directorio a crear." },
+              { name: "mode", desc: "Permisos del directorio (ej. 0777). Se aplica la umask del proceso." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_mkdir.c" language="C" 
             code={`#include <stdio.h>
@@ -129,6 +171,25 @@ int main() {
           />
 
           <h3 id="cmd-ls" className="text-white font-bold mb-3 mt-10">Comando ls</h3>
+          <p className="mb-4 text-sm">
+            Lista el contenido de un directorio. Esta implementación soporta las banderas <code className="text-[#f5a623]">-a</code> (mostrar ocultos), <code className="text-[#f5a623]">-l</code> (formato largo con permisos, propietario, tamaño y fecha) y <code className="text-[#f5a623]">-i</code> (mostrar número de inodo). Internamente combina <code className="text-[#f5a623]">opendir()</code>/<code className="text-[#f5a623]">readdir()</code> para iterar entradas y <code className="text-[#f5a623]">stat()</code> para obtener metadatos detallados de cada archivo.
+          </p>
+          <SyscallCard
+            name="opendir"
+            manSection={3}
+            prototype="DIR *opendir(const char *name);"
+            header="<dirent.h>"
+            description="Abre un flujo de directorio (DIR stream) asociado al directorio indicado. Se usa junto con readdir() para iterar sobre cada entrada del directorio."
+            returns="Puntero a DIR en éxito, NULL en error. Se debe cerrar con closedir() al terminar."
+            params={[
+              { name: "name", desc: "Ruta del directorio a abrir." },
+            ]}
+            structDef={`struct dirent {
+    ino_t  d_ino;       // Número de inodo
+    char   d_name[256]; // Nombre del archivo
+    // ... otros campos dependientes del SO
+};`}
+          />
           <CopyCodeBlock 
             filename="cmd_ls.c" language="C" 
             code={`#include <stdio.h>
@@ -212,6 +273,19 @@ int main() {
           />
 
           <h3 id="cmd-rm" className="text-white font-bold mb-3 mt-10">Comando rm</h3>
+          <p className="mb-4 text-sm">
+            Elimina un archivo del sistema de archivos. A nivel del kernel, <code className="text-[#f5a623]">unlink()</code> no borra los datos directamente, sino que <strong>elimina el enlace</strong> (link) del nombre al inodo. El espacio en disco solo se libera cuando el contador de enlaces del inodo llega a cero y ningún proceso tiene el archivo abierto.
+          </p>
+          <SyscallCard
+            name="unlink"
+            prototype="int unlink(const char *pathname);"
+            header="<unistd.h>"
+            description="Elimina un nombre (hard link) del sistema de archivos. Si es el último enlace al inodo y ningún proceso lo tiene abierto, los datos se liberan."
+            returns="0 en éxito, -1 en error (ENOENT si no existe, EACCES si no tiene permiso, EISDIR si es un directorio)."
+            params={[
+              { name: "pathname", desc: "Ruta del archivo a eliminar." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_rm.c" language="C" 
             code={`#include <stdio.h>
@@ -246,6 +320,20 @@ int main() {
           />
 
           <h3 id="cmd-rename" className="text-white font-bold mb-3 mt-10">Comando rename</h3>
+          <p className="mb-4 text-sm">
+            Renombra o mueve un archivo dentro del mismo sistema de archivos. La syscall <code className="text-[#f5a623]">rename()</code> es una operación <strong>atómica</strong>: si el archivo destino ya existe, se reemplaza sin dejar ventana de tiempo donde no exista ninguno de los dos. Esto la hace ideal para actualizaciones seguras de archivos de configuración.
+          </p>
+          <SyscallCard
+            name="rename"
+            prototype="int rename(const char *oldpath, const char *newpath);"
+            header="<stdio.h>"
+            description="Renombra un archivo o directorio. Si newpath ya existe, se reemplaza atómicamente. Ambas rutas deben estar en el mismo sistema de archivos montado."
+            returns="0 en éxito, -1 en error (ENOENT si el archivo origen no existe, EXDEV si están en filesystems distintos)."
+            params={[
+              { name: "oldpath", desc: "Ruta actual del archivo o directorio." },
+              { name: "newpath", desc: "Nueva ruta o nombre destino." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_rename.c" language="C" 
             code={`#include <stdio.h>
@@ -273,6 +361,21 @@ int main() {
           />
 
           <h3 id="cmd-cat" className="text-white font-bold mb-3 mt-10">Comando cat</h3>
+          <p className="mb-4 text-sm">
+            Muestra el contenido de un archivo en la salida estándar. Opera a nivel de <strong>descriptores de archivo</strong> usando las syscalls <code className="text-[#f5a623]">open()</code>, <code className="text-[#f5a623]">read()</code> y <code className="text-[#f5a623]">write()</code>, lo cual es más eficiente que las funciones de la biblioteca estándar de C (<code className="text-[#f5a623]">fopen</code>/<code className="text-[#f5a623]">fread</code>) al evitar el buffering adicional. Antes de leer, verifica con <code className="text-[#f5a623]">stat()</code> que la ruta sea un archivo regular y no un directorio.
+          </p>
+          <SyscallCard
+            name="read"
+            prototype="ssize_t read(int fd, void *buf, size_t count);"
+            header="<unistd.h>"
+            description="Lee hasta count bytes del descriptor de archivo fd al buffer buf. Es la syscall fundamental de lectura en UNIX: todo archivo, socket o pipe se lee con read()."
+            returns="Número de bytes leídos (puede ser menor que count), 0 indica fin de archivo (EOF), -1 en error."
+            params={[
+              { name: "fd", desc: "Descriptor de archivo obtenido con open()." },
+              { name: "buf", desc: "Buffer donde se almacenarán los datos leídos." },
+              { name: "count", desc: "Número máximo de bytes a leer." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_cat.c" language="C" 
             code={`#include <stdio.h>
@@ -332,6 +435,32 @@ int main() {
           <SectionHeading id="8-2-info-archivos" number="7.2" title="Información de Archivos y Dispositivos" />
           
           <h3 id="cmd-stat" className="text-white font-bold mb-3 mt-6">Comando stat</h3>
+          <p className="mb-4 text-sm">
+            Muestra los <strong>metadatos completos</strong> de un archivo o directorio: tamaño, número de inodo, cantidad de enlaces duros, permisos, UID/GID del propietario, timestamps de acceso, modificación y cambio de estado, y el tipo de archivo. Toda esta información se obtiene de la estructura <code className="text-[#f5a623]">struct stat</code> que el kernel llena con los datos almacenados en el inodo.
+          </p>
+          <SyscallCard
+            name="stat"
+            prototype="int stat(const char *pathname, struct stat *statbuf);"
+            header="<sys/stat.h>"
+            description="Obtiene información detallada sobre un archivo identificado por su ruta. Lee los metadatos del inodo sin necesidad de abrir el archivo."
+            returns="0 en éxito, -1 en error (ENOENT si no existe, EACCES si no tiene permiso de lectura en el directorio padre)."
+            params={[
+              { name: "pathname", desc: "Ruta del archivo a consultar." },
+              { name: "statbuf", desc: "Puntero a struct stat donde se almacenarán los metadatos." },
+            ]}
+            structDef={`struct stat {
+    ino_t     st_ino;     // Número de inodo
+    mode_t    st_mode;    // Tipo y permisos del archivo
+    nlink_t   st_nlink;   // Número de enlaces duros
+    uid_t     st_uid;     // UID del propietario
+    gid_t     st_gid;     // GID del grupo
+    off_t     st_size;    // Tamaño total en bytes
+    blkcnt_t  st_blocks;  // Bloques de 512B asignados
+    time_t    st_atime;   // Último acceso
+    time_t    st_mtime;   // Última modificación
+    time_t    st_ctime;   // Último cambio de estado
+};`}
+          />
           <CopyCodeBlock 
             filename="cmd_stat.c" language="C" 
             code={`#include <stdio.h>
@@ -385,6 +514,29 @@ int main() {
           />
 
           <h3 id="cmd-statvfs" className="text-white font-bold mb-3 mt-10">Comando statvfs</h3>
+          <p className="mb-4 text-sm">
+            Muestra información global del <strong>sistema de archivos</strong> montado: tamaño de bloque, total de bloques y bloques libres, total de inodos, e ID del filesystem. Es el equivalente en C del comando <code className="text-[#f5a623]">df</code>. La estructura <code className="text-[#f5a623]">statvfs</code> proporciona una vista abstracta que funciona independientemente del filesystem subyacente (ext4, xfs, btrfs, etc.).
+          </p>
+          <SyscallCard
+            name="statvfs"
+            prototype="int statvfs(const char *path, struct statvfs *buf);"
+            header="<sys/statvfs.h>"
+            description="Obtiene estadísticas del sistema de archivos donde reside la ruta indicada: espacio total, libre, inodos disponibles, etc."
+            returns="0 en éxito, -1 en error."
+            params={[
+              { name: "path", desc: "Cualquier ruta dentro del sistema de archivos a consultar." },
+              { name: "buf", desc: "Puntero a struct statvfs donde se almacenarán las estadísticas." },
+            ]}
+            structDef={`struct statvfs {
+    unsigned long f_bsize;   // Tamaño de bloque del FS
+    unsigned long f_blocks;  // Total de bloques
+    unsigned long f_bfree;   // Bloques libres
+    unsigned long f_bavail;  // Bloques disponibles (no-root)
+    unsigned long f_files;   // Total de inodos
+    unsigned long f_ffree;   // Inodos libres
+    unsigned long f_fsid;    // ID del sistema de archivos
+};`}
+          />
           <CopyCodeBlock 
             filename="cmd_statvfs.c" language="C" 
             code={`#include <stdio.h>
@@ -420,6 +572,20 @@ int main() {
           />
 
           <h3 id="cmd-disp" className="text-white font-bold mb-3 mt-10">Comando disp (Dispositivos)</h3>
+          <p className="mb-4 text-sm">
+            Lista los <strong>dispositivos de hardware</strong> registrados en <code className="text-[#f5a623]">/dev</code>. Utiliza <code className="text-[#f5a623]">lstat()</code> para identificar si cada entrada es un dispositivo de caracteres (<code className="text-[#f5a623]">S_ISCHR</code>) o de bloques (<code className="text-[#f5a623]">S_ISBLK</code>), y las macros <code className="text-[#f5a623]">major()</code>/<code className="text-[#f5a623]">minor()</code> para extraer los números de dispositivo que el kernel utiliza para identificar el driver asociado.
+          </p>
+          <SyscallCard
+            name="lstat"
+            prototype="int lstat(const char *pathname, struct stat *statbuf);"
+            header="<sys/stat.h>"
+            description="Idéntica a stat(), pero si pathname es un enlace simbólico, devuelve información del enlace mismo y no del archivo al que apunta. Esencial para recorrer /dev sin seguir symlinks."
+            returns="0 en éxito, -1 en error."
+            params={[
+              { name: "pathname", desc: "Ruta del archivo o enlace simbólico a consultar." },
+              { name: "statbuf", desc: "Puntero a struct stat donde se almacenarán los metadatos." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_disp.c" language="C" 
             code={`#include <stdio.h>
@@ -483,6 +649,31 @@ null                 Caracter   1        3       `}
           <SectionHeading id="8-3-info-sistema" number="7.3" title="Información del Sistema y Usuarios" />
           
           <h3 id="cmd-date" className="text-white font-bold mb-3 mt-6">Comando date</h3>
+          <p className="mb-4 text-sm">
+            Muestra la <strong>fecha y hora actual</strong> del sistema. Combina <code className="text-[#f5a623]">time()</code> para obtener el tiempo UNIX (segundos desde el epoch del 1 enero 1970) con <code className="text-[#f5a623]">localtime()</code> para convertirlo a la zona horaria local, y finalmente <code className="text-[#f5a623]">strftime()</code> para formatearlo como texto legible. La separación de estas tres funciones permite una gran flexibilidad al cambiar el formato de salida.
+          </p>
+          <SyscallCard
+            name="localtime"
+            manSection={3}
+            prototype="struct tm *localtime(const time_t *timep);"
+            header="<time.h>"
+            description="Convierte un valor time_t (tiempo UNIX en segundos desde el epoch) a una estructura tm descompuesta en año, mes, día, hora, minuto y segundo en la zona horaria local del sistema."
+            returns="Puntero a una struct tm estática (compartida entre llamadas). No es thread-safe; usar localtime_r() en programas concurrentes."
+            params={[
+              { name: "timep", desc: "Puntero al valor time_t obtenido con time(NULL)." },
+            ]}
+            structDef={`struct tm {
+    int tm_sec;   // Segundos [0-60]
+    int tm_min;   // Minutos [0-59]
+    int tm_hour;  // Horas [0-23]
+    int tm_mday;  // Día del mes [1-31]
+    int tm_mon;   // Mes [0-11] (0=enero)
+    int tm_year;  // Años desde 1900
+    int tm_wday;  // Día de la semana [0-6]
+    int tm_yday;  // Día del año [0-365]
+    int tm_isdst; // Horario de verano
+};`}
+          />
           <CopyCodeBlock 
             filename="cmd_date.c" language="C" 
             code={`#include <stdio.h>
@@ -509,6 +700,26 @@ int main() {
           />
 
           <h3 id="cmd-who" className="text-white font-bold mb-3 mt-10">Comando who</h3>
+          <p className="mb-4 text-sm">
+            Lista todos los <strong>usuarios actualmente conectados</strong> al sistema, con su terminal (<code className="text-[#f5a623]">pts/0</code>, <code className="text-[#f5a623]">tty1</code>) y su hora de inicio de sesión. Lee directamente el archivo binario <code className="text-[#f5a623]">/var/run/utmp</code> a través de las funciones <code className="text-[#f5a623]">getutent()</code>/<code className="text-[#f5a623]">setutent()</code>/<code className="text-[#f5a623]">endutent()</code>, filtrando únicamente las entradas de tipo <code className="text-[#f5a623]">USER_PROCESS</code>.
+          </p>
+          <SyscallCard
+            name="getutent"
+            manSection={3}
+            prototype="struct utmp *getutent(void);"
+            header="<utmp.h>"
+            description="Lee la siguiente entrada del archivo utmp (/var/run/utmp). Cada entrada describe una sesión de usuario activa, un proceso de sistema o un reinicio del sistema."
+            returns="Puntero a una struct utmp estática en éxito, NULL al llegar al final del archivo. Usar setutent() para rebobinar y endutent() para cerrar."
+            params={[]}
+            structDef={`struct utmp {
+    short   ut_type;          // Tipo: USER_PROCESS, etc.
+    pid_t   ut_pid;           // PID del proceso
+    char    ut_line[32];      // Terminal (ej. pts/0)
+    char    ut_user[32];      // Nombre de usuario
+    char    ut_host[256];     // Host remoto o IP
+    struct timeval ut_tv;     // Tiempo de inicio de sesión
+};`}
+          />
           <CopyCodeBlock 
             filename="cmd_who.c" language="C" 
             code={`#include <stdio.h>
@@ -544,6 +755,30 @@ int main() {
           />
 
           <h3 id="cmd-free" className="text-white font-bold mb-3 mt-10">Comando free</h3>
+          <p className="mb-4 text-sm">
+            Muestra el uso de <strong>memoria RAM y swap</strong> del sistema. Usa la syscall <code className="text-[#f5a623]">sysinfo()</code> que proporciona estadísticas globales del kernel en tiempo real: RAM total, libre, compartida, usada en buffers, y estado del espacio de intercambio. Los valores se expresan en unidades de <code className="text-[#f5a623]">mem_unit</code> bytes, por lo que hay que multiplicar antes de convertir a kilobytes.
+          </p>
+          <SyscallCard
+            name="sysinfo"
+            prototype="int sysinfo(struct sysinfo *info);"
+            header="<sys/sysinfo.h>"
+            description="Obtiene estadísticas globales del sistema operativo: memoria RAM, swap, carga del sistema y tiempo de actividad (uptime). Es la syscall detrás de comandos como free y uptime."
+            returns="0 en éxito, -1 en error."
+            params={[
+              { name: "info", desc: "Puntero a struct sysinfo donde el kernel escribirá los datos." },
+            ]}
+            structDef={`struct sysinfo {
+    long    uptime;       // Segundos desde el arranque
+    unsigned long totalram;  // RAM total
+    unsigned long freeram;   // RAM libre
+    unsigned long sharedram; // RAM compartida
+    unsigned long bufferram; // RAM en buffers
+    unsigned long totalswap; // Swap total
+    unsigned long freeswap;  // Swap libre
+    unsigned short procs;    // Número de procesos activos
+    unsigned long mem_unit;  // Tamaño de unidad en bytes
+};`}
+          />
           <CopyCodeBlock 
             filename="cmd_free.c" language="C" 
             code={`#include <stdio.h>
@@ -583,6 +818,26 @@ Inter:      2097152            0      2097152`}
           />
 
           <h3 id="cmd-uname" className="text-white font-bold mb-3 mt-10">Comando uname</h3>
+          <p className="mb-4 text-sm">
+            Muestra información de identificación del <strong>sistema operativo y del hardware</strong>: nombre del kernel, hostname, versión de release, versión del kernel y arquitectura. Soporta las banderas estándar <code className="text-[#f5a623]">-s</code>, <code className="text-[#f5a623]">-n</code>, <code className="text-[#f5a623]">-r</code>, <code className="text-[#f5a623]">-v</code>, <code className="text-[#f5a623]">-m</code> y <code className="text-[#f5a623]">-a</code> (todas a la vez), igual que el comando real.
+          </p>
+          <SyscallCard
+            name="uname"
+            prototype="int uname(struct utsname *buf);"
+            header="<sys/utsname.h>"
+            description="Obtiene información de identificación del sistema operativo directamente desde el kernel. Los datos provienen del núcleo y no pueden ser modificados por el usuario."
+            returns="0 en éxito, -1 en error."
+            params={[
+              { name: "buf", desc: "Puntero a struct utsname donde se almacenará la información del sistema." },
+            ]}
+            structDef={`struct utsname {
+    char sysname[65];   // Nombre del SO (ej. "Linux")
+    char nodename[65];  // Hostname del equipo
+    char release[65];   // Versión del kernel (ej. "6.8.0")
+    char version[65];   // Fecha y hora de compilación
+    char machine[65];   // Arquitectura (ej. "x86_64")
+};`}
+          />
           <CopyCodeBlock 
             filename="cmd_uname.c" language="C" 
             code={`#include <stdio.h>
@@ -646,6 +901,20 @@ int main() {
           <SectionHeading id="8-4-mensajes-control" number="7.4" title="Mensajes, Terminal y Control" />
 
           <h3 id="cmd-mesg" className="text-white font-bold mb-3 mt-6">Comando mesg</h3>
+          <p className="mb-4 text-sm">
+            Controla si otros usuarios pueden escribir mensajes en tu <strong>terminal actual</strong>. Usa <code className="text-[#f5a623]">ttyname()</code> para obtener el archivo de dispositivo del terminal actual (ej. <code className="text-[#f5a623]">/dev/pts/0</code>), <code className="text-[#f5a623]">stat()</code> para leer sus permisos actuales, y <code className="text-[#f5a623]">chmod()</code> para activar o revocar el bit de escritura de grupo (<code className="text-[#f5a623]">S_IWGRP</code>). Si ese bit está activo, comandos como <code className="text-[#f5a623]">write</code> o <code className="text-[#f5a623]">wall</code> pueden escribir en tu terminal.
+          </p>
+          <SyscallCard
+            name="chmod"
+            prototype="int chmod(const char *pathname, mode_t mode);"
+            header="<sys/stat.h>"
+            description="Cambia los permisos (bits de modo) de un archivo. En mesg, se usa para activar (S_IWGRP) o revocar (~S_IWGRP) el permiso de escritura de grupo sobre el archivo de dispositivo del terminal."
+            returns="0 en éxito, -1 en error (EPERM si no es el propietario o root, ENOENT si el archivo no existe)."
+            params={[
+              { name: "pathname", desc: "Ruta del archivo cuyo modo se modificará." },
+              { name: "mode", desc: "Nuevos permisos expresados como máscara de bits (ej. info.st_mode | S_IWGRP)." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_mesg.c" language="C" 
             code={`#include <stdio.h>
@@ -682,6 +951,21 @@ int main() {
           />
 
           <h3 id="cmd-wall" className="text-white font-bold mb-3 mt-10">Comando wall</h3>
+          <p className="mb-4 text-sm">
+            Envía un <strong>mensaje de difusión</strong> (<em>broadcast</em>) a los terminales de todos los usuarios activos. Lee el archivo <code className="text-[#f5a623]">/var/run/utmp</code> con <code className="text-[#f5a623]">getutent()</code> para obtener la lista de sesiones activas, construye la ruta del dispositivo de cada terminal (<code className="text-[#f5a623]">/dev/pts/N</code>), lo abre con <code className="text-[#f5a623]">open()</code> y escribe directamente el mensaje con <code className="text-[#f5a623]">write()</code>. El flag <code className="text-[#f5a623]">O_NOCTTY</code> evita que el proceso tome control del terminal destino.
+          </p>
+          <SyscallCard
+            name="write"
+            prototype="ssize_t write(int fd, const void *buf, size_t count);"
+            header="<unistd.h>"
+            description="Escribe hasta count bytes del buffer buf en el descriptor fd. En wall, se usa para escribir el mensaje directamente en los archivos de dispositivo de terminal de otros usuarios (/dev/pts/N)."
+            returns="Número de bytes escritos en éxito (puede ser menor que count), -1 en error (EACCES si el terminal tiene mesg n)."
+            params={[
+              { name: "fd", desc: "Descriptor de archivo, aquí el fd del terminal de otro usuario." },
+              { name: "buf", desc: "Buffer con el contenido a escribir." },
+              { name: "count", desc: "Número de bytes a escribir." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_wall.c" language="C" 
             code={`#include <stdio.h>
@@ -738,6 +1022,20 @@ Hola a todos! `}
           />
 
           <h3 id="cmd-exit" className="text-white font-bold mb-3 mt-10">Comando exit</h3>
+          <p className="mb-4 text-sm">
+            Termina la ejecución del shell devolviendo un <strong>código de salida</strong> al proceso padre. La diferencia entre <code className="text-[#f5a623]">exit()</code> (biblioteca estándar) y <code className="text-[#f5a623]">_exit()</code> (syscall directa) es crucial: <code className="text-[#f5a623]">exit()</code> ejecuta los <em>handlers</em> registrados con <code className="text-[#f5a623]">atexit()</code> y vacía los buffers de I/O antes de llamar al kernel, mientras que <code className="text-[#f5a623]">_exit()</code> termina inmediatamente sin limpieza.
+          </p>
+          <SyscallCard
+            name="exit"
+            manSection={3}
+            prototype="void exit(int status);"
+            header="<stdlib.h>"
+            description="Finaliza el proceso actual con el código de estado indicado. Ejecuta las funciones registradas con atexit(), vacía y cierra todos los streams de stdio, y luego llama a _exit(status) para notificar al kernel."
+            returns="No retorna (el proceso termina). El código de salida (0-255) queda disponible para el proceso padre mediante wait() o waitpid()."
+            params={[
+              { name: "status", desc: "Código de salida. Por convención: 0 indica éxito, cualquier valor distinto indica error." },
+            ]}
+          />
           <CopyCodeBlock 
             filename="cmd_exit.c" language="C" 
             code={`#include <stdio.h>
@@ -781,8 +1079,25 @@ int main() {
 
           <h3 id="cmd-getip" className="text-white font-bold mb-3 mt-6">Comando getip</h3>
           <p className="mb-4 text-sm">
-            Este comando consulta las interfaces de red del sistema utilizando la función <code className="text-[#f5a623]">getifaddrs()</code>, que devuelve una lista enlazada con todas las interfaces disponibles. El programa recorre la lista filtrando únicamente las direcciones <strong>IPv4</strong> (<code className="text-[#f5a623]">AF_INET</code>) y descartando la interfaz de loopback (<code className="text-[#f5a623]">lo</code>). Una vez encontrada una interfaz válida, convierte la dirección binaria a texto legible con <code className="text-[#f5a623]">inet_ntoa()</code>. El uso de <code className="text-[#f5a623]">freeifaddrs()</code> al final garantiza que no se produzcan fugas de memoria.
+            Consulta las <strong>interfaces de red</strong> del sistema usando <code className="text-[#f5a623]">getifaddrs()</code>, que devuelve una lista enlazada con todas las interfaces disponibles. Filtra únicamente las direcciones <strong>IPv4</strong> (<code className="text-[#f5a623]">AF_INET</code>) descartando el loopback (<code className="text-[#f5a623]">lo</code>). Convierte la dirección binaria a texto legible con <code className="text-[#f5a623]">inet_ntoa()</code> y libera los recursos con <code className="text-[#f5a623]">freeifaddrs()</code> para evitar fugas de memoria.
           </p>
+          <SyscallCard
+            name="getifaddrs"
+            prototype="int getifaddrs(struct ifaddrs **ifap);"
+            header="<ifaddrs.h>"
+            description="Crea una lista enlazada de estructuras ifaddrs describiendo cada interfaz de red del sistema (nombre, familia de dirección, dirección, máscara, flags). Se debe liberar con freeifaddrs()."
+            returns="0 en éxito, -1 en error."
+            params={[
+              { name: "ifap", desc: "Puntero al puntero donde se almacenará el inicio de la lista de interfaces." },
+            ]}
+            structDef={`struct ifaddrs {
+    struct ifaddrs  *ifa_next;    // Siguiente interfaz en la lista
+    char            *ifa_name;   // Nombre (ej. "eth0", "enp3s0")
+    unsigned int     ifa_flags;  // Flags (IFF_UP, IFF_LOOPBACK...)
+    struct sockaddr *ifa_addr;   // Dirección de la interfaz
+    struct sockaddr *ifa_netmask;// Máscara de red
+};`}
+          />
           <CopyCodeBlock
             filename="cmd_getip.c" language="C"
             code={`#include <stdio.h>
@@ -837,8 +1152,27 @@ int main() {
 
           <h3 id="cmd-getmac" className="text-white font-bold mb-3 mt-10">Comando getmac</h3>
           <p className="mb-4 text-sm">
-            Obtiene la dirección MAC (dirección física del hardware de red) de la primera interfaz válida. A diferencia de <code className="text-[#f5a623]">getip</code>, este comando necesita abrir un <strong>socket genérico</strong> (<code className="text-[#f5a623]">socket(AF_INET, SOCK_DGRAM, 0)</code>) para poder comunicarse con el hardware a través de <code className="text-[#f5a623]">ioctl()</code> con la operación <code className="text-[#f5a623]">SIOCGIFHWADDR</code>. Esta llamada lee directamente los 6 bytes de la dirección MAC desde el controlador de la interfaz, sin importar si tiene conectividad de red o no. El programa filtra interfaces virtuales vacías verificando que la MAC no sea <code className="text-[#f5a623]">00:00:00:00:00:00</code>.
+            Obtiene la dirección <strong>MAC</strong> (dirección física del hardware de red) de la primera interfaz válida. Necesita abrir un <strong>socket genérico</strong> (<code className="text-[#f5a623]">socket(AF_INET, SOCK_DGRAM, 0)</code>) para comunicarse con el hardware a través de <code className="text-[#f5a623]">ioctl()</code> con la operación <code className="text-[#f5a623]">SIOCGIFHWADDR</code>. Lee directamente los 6 bytes de la dirección MAC desde el driver de la interfaz, sin importar si tiene conectividad de red. Filtra interfaces vacías verificando que la MAC no sea <code className="text-[#f5a623]">00:00:00:00:00:00</code>.
           </p>
+          <SyscallCard
+            name="ioctl"
+            prototype="int ioctl(int fd, unsigned long request, ...);" 
+            header="<sys/ioctl.h>"
+            description="Operación de control de E/S genérica para comunicarse con drivers de dispositivo. Con SIOCGIFHWADDR lee la dirección MAC del hardware de red. Con SIOCGIFADDR obtiene la dirección IP. Es la interfaz universal para operaciones que no tienen syscall propia."
+            returns="0 en éxito, -1 en error (EPERM si no tiene permisos, ENODEV si la interfaz no existe)."
+            params={[
+              { name: "fd", desc: "Descriptor de un socket abierto con socket()." },
+              { name: "request", desc: "Código de operación: SIOCGIFHWADDR (MAC), SIOCGIFADDR (IP), etc." },
+            ]}
+            structDef={`struct ifreq {
+    char  ifr_name[IFNAMSIZ]; // Nombre interfaz (ej. "eth0")
+    union {
+        struct sockaddr ifr_addr;    // Dirección IP
+        struct sockaddr ifr_hwaddr;  // Dirección MAC
+        // ... otros campos
+    };
+};`}
+          />
           <CopyCodeBlock
             filename="cmd_getmac.c" language="C"
             code={`#include <stdio.h>
@@ -912,8 +1246,19 @@ int main() {
 
           <h3 id="cmd-find" className="text-white font-bold mb-3 mt-10">Comando find</h3>
           <p className="mb-4 text-sm">
-            Implementación simplificada del comando <code className="text-[#f5a623]">find</code> que busca un archivo por nombre dentro de un <strong>único directorio</strong> (sin recursión). Utiliza <code className="text-[#f5a623]">opendir()</code> y <code className="text-[#f5a623]">readdir()</code> para iterar sobre las entradas del directorio, comparando cada nombre con <code className="text-[#f5a623]">strcmp()</code>. Si encuentra una coincidencia, imprime la ruta completa. Es la versión más básica de búsqueda: rápida pero limitada a un solo nivel de profundidad.
+            Implementación simplificada del comando <code className="text-[#f5a623]">find</code> que busca un archivo por nombre dentro de un <strong>único directorio</strong> (sin recursión). Utiliza <code className="text-[#f5a623]">opendir()</code> y <code className="text-[#f5a623]">readdir()</code> para iterar sobre las entradas, comparando cada nombre con <code className="text-[#f5a623]">strcmp()</code>. Es la versión más básica de búsqueda: rápida pero limitada a un solo nivel de profundidad.
           </p>
+          <SyscallCard
+            name="readdir"
+            manSection={3}
+            prototype="struct dirent *readdir(DIR *dirp);"
+            header="<dirent.h>"
+            description="Lee la siguiente entrada del directorio apuntado por el DIR stream. Cada llamada devuelve la siguiente entrada hasta agotar todas. El orden de las entradas no está garantizado."
+            returns="Puntero a una struct dirent (estática, sobreescrita en la próxima llamada) en éxito, NULL cuando no quedan más entradas o en error."
+            params={[
+              { name: "dirp", desc: "Stream de directorio obtenido con opendir()." },
+            ]}
+          />
           <CopyCodeBlock
             filename="cmd_find.c" language="C"
             code={`#include <stdio.h>
@@ -974,8 +1319,19 @@ int main() {
 
           <h3 id="cmd-find-r" className="text-white font-bold mb-3 mt-10">Comando find_r (búsqueda recursiva)</h3>
           <p className="mb-4 text-sm">
-            Versión avanzada del comando anterior. Este programa recorre el árbol de directorios de forma <strong>recursiva</strong> utilizando <code className="text-[#f5a623]">lstat()</code> para identificar subdirectorios (verificando <code className="text-[#f5a623]">S_ISDIR</code>) y descender a ellos. Los resultados se almacenan en un arreglo dinámico asignado con <code className="text-[#f5a623]">malloc()</code> (hasta 1024 coincidencias), evitando imprimir durante la recursión para mantener un despliegue limpio al final. Las entradas especiales <code className="text-[#f5a623]">.</code> y <code className="text-[#f5a623]">..</code> se filtran para evitar bucles infinitos. Al terminar, la memoria se libera con <code className="text-[#f5a623]">free()</code>, garantizando una gestión responsable de recursos.
+            Versión avanzada del comando anterior. Recorre el árbol de directorios de forma <strong>recursiva</strong> usando <code className="text-[#f5a623]">lstat()</code> para identificar subdirectorios (<code className="text-[#f5a623]">S_ISDIR</code>) y descender en ellos. Los resultados se almacenan en un arreglo dinámico asignado con <code className="text-[#f5a623]">malloc()</code> (hasta 1024 coincidencias). Las entradas <code className="text-[#f5a623]">.</code> y <code className="text-[#f5a623]">..</code> se filtran para evitar bucles infinitos. Al terminar libera la memoria con <code className="text-[#f5a623]">free()</code>.
           </p>
+          <SyscallCard
+            name="malloc"
+            manSection={3}
+            prototype="void *malloc(size_t size);"
+            header="<stdlib.h>"
+            description="Asigna dinámicamente un bloque de memoria de size bytes en el heap. En find_r, se usa para crear un buffer con capacidad para 1024 rutas de hasta 4096 bytes cada una, ya que el número de resultados es desconocido en tiempo de compilación."
+            returns="Puntero al bloque asignado en éxito, NULL si no hay memoria disponible. La memoria debe liberarse con free() para evitar memory leaks."
+            params={[
+              { name: "size", desc: "Número de bytes a asignar. Ej: 1024 * sizeof(char[4096])." },
+            ]}
+          />
           <CopyCodeBlock
             filename="cmd_find_r.c" language="C"
             code={`#include <stdio.h>
